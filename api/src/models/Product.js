@@ -18,16 +18,16 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    title: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate:{
         notNull: {
-          msg: 'Se requiere un título'
+          msg: 'Se requiere un nombre'
         },
         len: {
           args: [10, 67],
-          msg: 'El titulo debe contener entre 10 y 67 caracteres'
+          msg: 'El nombre debe contener entre 10 y 67 caracteres'
         }
       }
     },
