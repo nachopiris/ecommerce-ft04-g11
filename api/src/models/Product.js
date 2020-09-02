@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
           msg: 'Se requiere un nombre'
         },
         len: {
-          args: [10, 67],
+          args: [[10, 67]],
           msg: 'El nombre debe contener entre 10 y 67 caracteres'
         }
       }
