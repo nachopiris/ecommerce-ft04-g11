@@ -1,8 +1,8 @@
 const server = require('express').Router();
-const { Categories } = require('../db.js');
+const { Category } = require('../db.js');
 
 server.post('/', (req, res, next) => {
-	Categories.create({
+	Category.create({
         name: req.body.name,
         description: req.body.description
     })
@@ -10,7 +10,7 @@ server.post('/', (req, res, next) => {
         res.status(201);
     })
     .catch(() => {
-        res.send(400);
+        res.send(401);
     });
 });
 
