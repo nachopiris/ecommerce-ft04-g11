@@ -6,10 +6,10 @@ import React from 'react';
 // precio
 // cantidad
 
-const Product = ({ titulo, description, price, stock}) => (
+const Product = ({ name, description, price, stock}) => (
   <div>
-  	<div><h2>PRODUCTO</h2></div>
-     <div><h3>{titulo}</h3></div>
+  	<div><h2>PRODUCT</h2></div>
+     <div><h3>{name}</h3></div>
      <div><h4>{description}</h4></div>
      <div>{price}</div>
      <div>{stock}</div>
