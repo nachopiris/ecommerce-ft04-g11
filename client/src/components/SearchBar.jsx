@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEffect } from 'react';
+import {Form, Button, Col, Row} from 'react-bootstrap';
 
 export function SearchBar({searchProducts}) {
 
@@ -24,23 +25,23 @@ export function SearchBar({searchProducts}) {
     },[])
 
     return (
-        <form className="row" onSubmit={handleSearch}>
-            <div className="col-10 p-2">
-                <input
-                    autoFocus={true}
-                    name="search"
-                    value={input.search}
-                    placeholder="Buscar..."
-                    className="form-control"
-                    onChange={handleInputChange}
-                />
-            </div>
-            <div className="col-2 p-2">
-                <button type="submit">
-                    Buscar
-                </button>
-            </div>
-        </form>
+        <Form onSubmit={handleSearch}>
+            <Form.Group className="row p-2">
+                <Col className="col-10">
+                    <input
+                        autoFocus={true}
+                        name="search"
+                        value={input.search}
+                        placeholder="Buscar..."
+                        className="form-control"
+                        onChange={handleInputChange}
+                    />
+                </Col>
+                <Col>
+                    <Button type="submit" variant="primary" block>Buscar</Button>
+                </Col>
+            </Form.Group>
+        </Form>
     );
 }
 
