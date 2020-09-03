@@ -26,9 +26,9 @@ class AddCategory extends React.Component {
             <div>
                 <form onSubmit={(e) => this.handleSubmit(e)}>
                     <label>Nombre de la categoria:</label><br />
-                    <input type="text" name="name" onChange={(e) => this.handleChange(e)} placeholder="Nombre de categoria" /><br />
+                    <input value={this.state.name} type="text" name="name" onChange={(e) => this.handleChange(e)} placeholder="Nombre de categoria" /><br />
                     <label>Descripcion:</label><br />
-                    <input type="text" name="description" onChange={(e) => this.handleChange(e)} placeholder="Descripcion" /><br />
+                    <input value={this.state.description} type="text" name="description" onChange={(e) => this.handleChange(e)} placeholder="Descripcion" /><br />
                     <button type="submit">Crear</button>
                 </form>
             </div>
