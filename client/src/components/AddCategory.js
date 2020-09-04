@@ -1,39 +1,51 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import { Card, Form } from 'react-bootstrap';
 
-class AddCategory extends React.Component {
+const AddCategory = () => {
 
-    constructor(props) {
-        super(props);
+    const [inputs, setInputs] = useState({
+        name: '',
+        description: ''
+    });
+    
 
-        this.state = {
-            name: '',
-            description: ''
-        };
-    };
-
-    handleChange(e) {
-        this.setState({
+    const handleInputChange = (e) => {
+        setInputs({
+            ...inputs,
             [e.target.name]: e.target.value
         })
-    };
 
-    handleSubmit(e) {
-        e.preventDefault();
     }
 
-    render() {
-        return (
-            <div>
-                <form onSubmit={(e) => this.handleSubmit(e)}>
-                    <label>Nombre de la categoria:</label><br />
-                    <input value={this.state.name} type="text" name="name" onChange={(e) => this.handleChange(e)} placeholder="Nombre de categoria" /><br />
-                    <label>Descripcion:</label><br />
-                    <input value={this.state.description} type="text" name="description" onChange={(e) => this.handleChange(e)} placeholder="Descripcion" /><br />
-                    <button type="submit">Crear</button>
-                </form>
-            </div>
-        );
-    };
-};
+    const handleSubmit = (e) => {
+        e.preventDefault()
+    }
+
+    return (
+            <Card style={{width: '400px'}}>
+                <Card.Header>
+                    <h3>Crear Categoria</h3>
+                </Card.Header>
+                <Card.Body>
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group>
+                            <Form.Label>
+                                Nombre de la Categoria
+                            </Form.Label>
+                            <Form.Control value={inputs.name} onChange={handleInputChange} type="text" placeholder="Nombre" />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>
+                                Descripcion
+                            </Form.Label>
+                            <Form.Control value={inputs.description} onChange={handleInputChange} type="textarea" placeholder="Descripcion" />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">Crear</Button>
+                    </Form>
+                </Card.Body>
+            </Card>
+    )
+}
 
 export default AddCategory;
