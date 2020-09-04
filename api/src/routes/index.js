@@ -1,5 +1,9 @@
 const { Router } = require('express');
 const { Product } = require('../db.js');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
+
 // import all routers;
 const productRouter = require('./product.js');
 const categoriesRouter = require('./categories.js');
@@ -15,20 +19,26 @@ router.use('/categories', categoriesRouter);
 router.get('/search', (req,res)=>{
 
     const query = req.query.query;
-    let filter = []
+    
+    Product.findAll({
+        where: {
+                [Op.or]: [
+                    {
+                        name: {
+                            [Op.substring]: query
+                        }
+                    },
+                    {
+                        description: {
+                            [Op.substring]: query
+                        }
+                    }
+                ]
+            }  
+        })  .then((product)=>{
+            res.send(product)
+            })  
+    })
 
-    function filtrar (product){
-         product.map((e,i)=>{
-            if(e.dataValues.name.indexOf(query)!==-1 || e.dataValues.description.indexOf(query)!==-1){
-                filter.push(e.dataValues)
-            }
-         }) 
-    }
-    Product.findAll().then((products) => {
-             filtrar(products);
-    }).then(() => {
-        res.send(filter);
-    }) 
-})
 
 module.exports = router;
