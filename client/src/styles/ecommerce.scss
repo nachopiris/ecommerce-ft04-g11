@@ -1,9 +1,15 @@
-$body-bg: #010101;
+$body-bg: #1F2747; //161E57;
 $body-color: #fff;
 
+//$enable-gradients: true;
+//$enable-shadows: true;
+
 $theme-colors: (
-    "dark": tomato,
-    "danger": teal
+    "success": #309257,
+    "dark": #303557,
+    "primary": #293AA3,
+    "info": #7A87DE,
+    "dark2": #343a61
 );
 
 
