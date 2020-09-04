@@ -4,7 +4,7 @@ const { Product } = require('../db.js');
 server.get('/', (req, res, next) => {
 	Product.findAll()
 		.then(products => {
-			res.send({data: products});
+			res.send({ data: products });
 		})
 		.catch(next);
 });
