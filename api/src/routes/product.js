@@ -9,4 +9,15 @@ server.get('/', (req, res, next) => {
 		.catch(next);
 });
 
+server.get('/:id', (req, res, next) => {
+	Product.findByPk(req.params.id)
+		.then(product => {
+			if(!product){
+				return res.send({errors: {messages:['Producto no encontrado'], status:404}}).status(404);
+			}
+			res.send({ data: product });
+		})
+		.catch(next);
+});
+
 module.exports = server;
