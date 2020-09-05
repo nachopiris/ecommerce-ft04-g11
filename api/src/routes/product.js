@@ -1,5 +1,7 @@
 const server = require('express').Router();
 const { Product } = require('../db.js');
+const { Category } = require('../db.js');
+const Sequelize = require('sequelize');
 
 server.get('/', (req, res, next) => {
 	Product.findAll()
@@ -8,5 +10,97 @@ server.get('/', (req, res, next) => {
 		})
 		.catch(next);
 });
+
+
+server.post('/', (req, res, next) => {
+	Product.create({
+        name: req.body.name,
+		description: req.body.description, 
+		stock: req.body.stock,
+		price: req.body.price,
+		images: JSON.stringify(req.body.images)
+    })
+    .then(() => {
+        res.sendStatus(201);
+    })
+    .catch(() => { 
+        res.sendStatus(401).send({Error: "error"}, Error);
+    });
+});
+
+// ---------------------------------------------------------
+
+server.get('/category/:nombreCat', function(req, res, next) {
+    Category.findOne({
+  
+		where: {
+			name: {[Sequelize.Op.iLike]: req.params.nombreCat}   // case insensitive search
+			}
+
+      })
+    .then(function(categories){
+
+        if(categories === null){
+            return 
+          } else {
+			console.log('cat ', categories.id);
+            return Product.findAll({
+				
+				include: [{model: Category,
+					where:{
+						id: categories.id
+					},
+					attributes: ['id','name']
+				}],
+            })
+          }
+    }) 
+    .then(function(products){
+		if(!products) {return res.send('no existe esa categoria').status(500);}
+		if(products == [] ||products == 0  ) {return res.send('no existen productos para esa categoria').status(500);}
+
+          return res.status(200).send({data: products});
+        }).catch(err => {
+			console.log('err');
+		return res.send(err).status(500);
+		})
+	});
+
+
+	
+// ---------------------------------------------------------
+
+	server.post('/:idProduct/category/:idCategory', (req, res) => {
+		const {idProduct, idCategory} = req.params;
+	
+		if(!Number.isInteger(idProduct * 1)){ //multiplicar * 1 es muy IMPORTANTE (cositas de javascript xd)!
+			return res.send({errors: {messages:['El id del producto no es valido.'], status:422}}).status(422);
+		}
+		if(!Number.isInteger(idCategory * 1)){//multiplicar * 1 es muy IMPORTANTE (cositas de javascript xd)!
+			return res.send({errors: {messages:['La id de la categoría no es valido.'], status:422}}).status(422);
+		}
+	
+		Product.findByPk(idProduct).then(product => {
+			if(!product){
+				return res.send({errors: {messages:['Producto no encontrado'], status:404}}).status(404);
+			}
+			Category.findByPk(idCategory).then(category => {
+				if(!category){
+					return res.send({errors: {messages:['Categoría no encontrada'], status:404}}).status(404);
+				}
+				product.addCategory(category).then(()=>{
+					return res.sendStatus(201);
+				});
+			}).catch(err => {
+				return res.send({errors: {messages:['es este error.'], status:500}}).status(500);
+				
+			});
+		}).catch(err => {
+			return res.send({errors: {messages:['es este otro'], status:500}}).status(500);
+		});
+	});
+
+
+
 
 module.exports = server;
