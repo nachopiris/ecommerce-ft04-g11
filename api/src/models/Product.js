@@ -92,7 +92,7 @@ module.exports = (sequelize) => {
             throw new Error('Se requiere como mínimo una imagen o foto.');
           }
         },
-        arrayMax(){
+        arrayMax(value){
           let imgs = JSON.parse(value);
           if(Array.isArray(imgs) && imgs.length > 10){
             throw new Error('Se admiten como máximo hasta 10 imágenes o fotos.');
