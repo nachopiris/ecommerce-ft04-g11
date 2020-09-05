@@ -1,6 +1,16 @@
 const server = require('express').Router();
 const { Category } = require('../db.js');
 const { request } = require('../app.js');
+const { Product } = require('../db.js');
+
+
+server.get('/', (req, res, next) => {
+	Category.findAll()
+		.then(products => {
+			res.send({ data: products });
+		})
+		.catch(next);
+});
 
 server.post('/', (req, res, next) => {
 	Category.create({
