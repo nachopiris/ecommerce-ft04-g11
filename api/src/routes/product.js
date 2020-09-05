@@ -1,5 +1,9 @@
 const server = require('express').Router();
+
+const Sequelize = require('sequelize');
+
 const { Product, Category} = require('../db.js');
+
 
 server.get('/', (req, res, next) => {
 	Product.findAll()
@@ -8,6 +12,7 @@ server.get('/', (req, res, next) => {
 		})
 		.catch(next);
 });
+
 
 server.post('/', (req, res) => {
 	Product.create({
@@ -24,6 +29,36 @@ server.post('/', (req, res) => {
 		res.status(401).send('hubo un error')
 	})
 })
+
+server.put('/:id', (req, res) => {
+    const id = req.params.id;
+    if(!req.body.description) req.body.description = null;
+    const {name, description, stock, price, images} = req.body
+
+    if(!Number.isInteger(id * 1)){//multiplicar * 1 es muy IMPORTANTE (cositas de javascript xd)!
+		return res.send({errors: [{message:'La id del producto no es valida.'}], status:422}).status(422);
+	}
+
+    Product.findByPk(id).then(product => {
+        if(!product) {
+            return res.send({errors: [{message:'Producto no encontrado'}], status: 404}).status(404);
+        }
+        product.name = name;
+        product.stock = stock;
+        product.price = price;
+        product.images = JSON.stringify(images);
+        product.description = description;
+        product.save().then(()=>{
+            return res.send({data: product}).status(200);
+        }).catch(err => {
+            var status = 500;
+            if (err.name === 'SequelizeValidationError') status = 422;
+            return res.send({errors: err.errors, status}).status(status);
+        });
+    }).catch(err => {
+        return res.sendStatus(500);
+    });
+});
 
 server.post('/:idProduct/category/:idCategory', (req, res) => {
 	const {idProduct, idCategory} = req.params;
@@ -83,6 +118,7 @@ server.delete('/:idProduct/category/:idCategory', (req, res) => {
 	});
 });
 
+
 server.delete('/:id', function(req, res) {
     if (!Number.isInteger(req.params.id * 1)){
 		res.send({errors: {messages:['el id del producto debe ser un numero'], status:422}}).status(422);
@@ -103,4 +139,46 @@ server.delete('/:id', function(req, res) {
 			return res.sendStatus(500);})
     });
 
+
+
+server.get('/category/:nombreCat', function(req, res, next) {
+    Category.findOne({
+  
+		where: {
+			name: {[Sequelize.Op.iLike]: req.params.nombreCat}   // case insensitive search
+			}
+
+      })
+    .then(function(categories){
+
+        if(categories === null){
+            return 
+          } else {
+			console.log('cat ', categories.id);
+            return Product.findAll({
+				
+				include: [{model: Category,
+					where:{
+						id: categories.id
+					},
+					attributes: ['id','name']
+				}],
+            })
+          }
+    }) 
+    .then(function(products){
+		if(!products) {return res.send('no existe esa categoria').status(500);}
+		if(products == [] ||products == 0  ) {return res.send('no existen productos para esa categoria').status(500);}
+
+          return res.status(200).send({data: products});
+        }).catch(err => {
+			console.log('err');
+		return res.send(err).status(500);
+		})
+	});
+
+
+
 module.exports = server;
+
+
