@@ -85,8 +85,8 @@ server.delete('/:idProduct/category/:idCategory', (req, res) => {
 
 server.delete('/:id', function(req, res) {
     if (!Number.isInteger(req.params.id * 1)){
-    res.status(404).send('la categoria debe ser un numero');
-    return;
+		res.send({errors: {messages:['el id del producto debe ser un numero'], status:422}}).status(422);
+    	return;
     }
     Product.destroy({
             where: {
@@ -94,14 +94,13 @@ server.delete('/:id', function(req, res) {
             }
         }).then(function(rowDeleted){ // rowDeleted will return number of rows deleted
         if(rowDeleted === 1){
-            res.status(200).send('ok');
+			res.send({errors: {messages:['registro borrado'], status:204}}).status(204);
             }else{
-                res.status(404).send('no existe el producto');
+				res.send({errors: {messages:['no existe el producto'], status:404}}).status(404);
             }
-        }, function(err){
-            res.status(404).send(err);
- 
-        });
+        }
+        ).catch(err => {
+			return res.sendStatus(500);})
     });
 
 module.exports = server;
