@@ -83,4 +83,25 @@ server.delete('/:idProduct/category/:idCategory', (req, res) => {
 	});
 });
 
+server.delete('/:id', function(req, res) {
+    if (!Number.isInteger(req.params.id * 1)){
+    res.status(404).send('la categoria debe ser un numero');
+    return;
+    }
+    Product.destroy({
+            where: {
+            id: req.params.id
+            }
+        }).then(function(rowDeleted){ // rowDeleted will return number of rows deleted
+        if(rowDeleted === 1){
+            res.status(200).send('ok');
+            }else{
+                res.status(404).send('no existe el producto');
+            }
+        }, function(err){
+            res.status(404).send(err);
+ 
+        });
+    });
+
 module.exports = server;
