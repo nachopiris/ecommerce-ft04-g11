@@ -1,6 +1,37 @@
 const server = require('express').Router();
 const { Category } = require('../db.js');
 const { request } = require('../app.js');
+const { Product } = require('../db.js');
+
+// RUTA DE FILTRADO DE PRODUCTOS POR CATEGORIA, DEVUELVE TODOS LOS PRODUCTOS PERTENECIENTES A UNA CATEGORIA
+server.get('/_filterforcategoriescomponent/:nameCategory', (req,res)=>{  
+
+    let nameCategory = req.params.nameCategory;
+
+    Category.findAll({
+        include:[ 
+            {
+                model: Product,
+            },
+            
+        ], 
+        where: {
+            name:nameCategory
+        }
+
+        })  .then((product)=>{
+            res.send(product)
+            })  
+    })
+// **************************************************************************************************************
+
+server.get('/', (req, res, next) => {
+	Category.findAll()
+		.then(products => {
+			res.send({ data: products });
+		})
+		.catch(next);
+});
 
 server.post('/', (req, res, next) => {
 	Category.create({
