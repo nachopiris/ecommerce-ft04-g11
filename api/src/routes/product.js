@@ -1,5 +1,9 @@
 const server = require('express').Router();
+
+const Sequelize = require('sequelize');
+
 const { Product, Category} = require('../db.js');
+
 
 server.get('/', (req, res, next) => {
 	Product.findAll()
@@ -8,6 +12,7 @@ server.get('/', (req, res, next) => {
 		})
 		.catch(next);
 });
+
 
 server.post('/', (req, res) => {
 	Product.create({
@@ -113,4 +118,43 @@ server.delete('/:idProduct/category/:idCategory', (req, res) => {
 	});
 });
 
+server.get('/category/:nombreCat', function(req, res, next) {
+    Category.findOne({
+  
+		where: {
+			name: {[Sequelize.Op.iLike]: req.params.nombreCat}   // case insensitive search
+			}
+
+      })
+    .then(function(categories){
+
+        if(categories === null){
+            return 
+          } else {
+			console.log('cat ', categories.id);
+            return Product.findAll({
+				
+				include: [{model: Category,
+					where:{
+						id: categories.id
+					},
+					attributes: ['id','name']
+				}],
+            })
+          }
+    }) 
+    .then(function(products){
+		if(!products) {return res.send('no existe esa categoria').status(500);}
+		if(products == [] ||products == 0  ) {return res.send('no existen productos para esa categoria').status(500);}
+
+          return res.status(200).send({data: products});
+        }).catch(err => {
+			console.log('err');
+		return res.send(err).status(500);
+		})
+	});
+
+
+
 module.exports = server;
+
