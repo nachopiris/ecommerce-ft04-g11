@@ -12,9 +12,7 @@ export default function Catalogue({ products }) {
     function getCategories(){
         axios.get('http://localhost:3001/categories')
             .then((res)=>{
-                setCategories({categories: res.data.data});
-                console.log('esta es la respuesta guardada en categorias');
-                
+                setCategories({categories: res.data.data});                
             })
             .catch(()=>{
                 Error ("Error to recive data");
@@ -31,18 +29,14 @@ export default function Catalogue({ products }) {
        
         let nombreCat = e.target.value;
 
-        axios.get('http://localhost:3001/categories/_filterforcategoriescomponent/'+nombreCat)
+        axios.get('http://localhost:3001/products/category/'+nombreCat)
             .then((res) =>{
-                setFilterProducts({filterProducts: res.data[0].products});
-                console.log('esta es la respuesta de los productos filtrados por categoria'); 
-                console.log (res.data[0].products);
+                setFilterProducts({filterProducts: res.data.data});
+         
             })
             .catch(()=>{
                 Error ("Error to recive data");
             })
-        
-
-
     }  
 
     return (
@@ -62,13 +56,15 @@ export default function Catalogue({ products }) {
                 <div>
                         <select onChange={getFilterCategories}>      
                         {
+                                        
                             categories.map((e, i) => {
                                     return (
                                         <option key={e.id} > {e.name} </option>
+                                    
                                     )
                                 }
                             )
-                        } {console.log(categories)} 
+                        } 
 
                         </select>
                 </div>  
@@ -80,7 +76,7 @@ export default function Catalogue({ products }) {
                     {
                         filterProducts.map((e,i) => {
                             return (
-                                <ul>
+                                <ul key={e.id} >
                                    <li>     
                                         <h3> {e.name} </h3>
                                         <h6> {e.description} </h6>
