@@ -14,14 +14,18 @@ export default function ProductCard({name,price,img}) {
             <div className={s.card}>
                 <Card className={'border-0 bg-dark rounded-0 ' + s['card-bootstrap']}>
                     
-                    <a href="#" className={s['cover-image']}>
-                        <img
-                            src={img} alt=""
-                            title=""
-                        />
-                    </a>
-                    <Card.Body className={s['card-bootstrap-body']}>
-                        <p className={'mb-0 text-uppercase ' + s['card-title']}>{name}</p>
+                    
+                    <Card.Body className={s['card-bootstrap-body'] + ' p-0'}>
+                        <a href="#" className={s['cover-image']}>
+                            <img
+                                src={img} alt=""
+                                title=""
+                            />
+
+                            <div className={s['product-title'] + ' position-absolute p-2'}>
+                                <p className={'mb-0 text-uppercase ' + s['card-title']}>{name}</p>
+                            </div>
+                        </a>
                     </Card.Body>
                     <Card.Footer className="border-0 d-flex align-items-center py-1 bg-dark2 px-1 justify-content-between">
                             <span className={s.price + ' ml-2'}>
