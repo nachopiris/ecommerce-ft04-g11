@@ -25,7 +25,6 @@ server.post('/', (req, res) => {
 	})
 })
 
-
 server.put('/:id', (req, res) => {
     const id = req.params.id;
     if(!req.body.description) req.body.description = null;
