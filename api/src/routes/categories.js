@@ -15,7 +15,7 @@ server.post('/', (req, res, next) => {
 });
 
 server.delete('/:id', function(req, res) {
-    if (!Number.isInteger(req.params.id)){
+    if (!Number.isInteger(req.params.id * 1)){
     res.status(404).send('la categoria debe ser un numero');
     return;
     }
@@ -35,4 +35,4 @@ server.delete('/:id', function(req, res) {
         });
     });
 
-module.exports = server;
+module.exports = server;  
