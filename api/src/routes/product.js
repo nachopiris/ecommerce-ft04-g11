@@ -118,6 +118,29 @@ server.delete('/:idProduct/category/:idCategory', (req, res) => {
 	});
 });
 
+
+server.delete('/:id', function(req, res) {
+    if (!Number.isInteger(req.params.id * 1)){
+		res.send({errors: {messages:['el id del producto debe ser un numero'], status:422}}).status(422);
+    	return;
+    }
+    Product.destroy({
+            where: {
+            id: req.params.id
+            }
+        }).then(function(rowDeleted){ // rowDeleted will return number of rows deleted
+        if(rowDeleted === 1){
+			res.send({errors: {messages:['registro borrado'], status:204}}).status(204);
+            }else{
+				res.send({errors: {messages:['no existe el producto'], status:404}}).status(404);
+            }
+        }
+        ).catch(err => {
+			return res.sendStatus(500);})
+    });
+
+
+
 server.get('/category/:nombreCat', function(req, res, next) {
     Category.findOne({
   
@@ -157,4 +180,5 @@ server.get('/category/:nombreCat', function(req, res, next) {
 
 
 module.exports = server;
+
 
