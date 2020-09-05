@@ -29,7 +29,7 @@ export default function Catalogue({ products }) {
        
         let nombreCat = e.target.value;
 
-        axios.get('http://localhost:3001/products/category/'+nombreCat)
+        axios.get('http://localhost:3001/products/category/'+nombreCat)        
             .then((res) =>{
                 setFilterProducts({filterProducts: res.data.data});
          
