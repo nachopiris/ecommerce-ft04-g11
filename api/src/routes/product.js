@@ -1,9 +1,6 @@
 const server = require('express').Router();
-
 const Sequelize = require('sequelize');
-
 const { Product, Category} = require('../db.js');
-
 
 server.get('/', (req, res, next) => {
 	Product.findAll()
@@ -12,7 +9,6 @@ server.get('/', (req, res, next) => {
 		})
 		.catch(next);
 });
-
 
 server.post('/', (req, res) => {
 	Product.create({
@@ -29,6 +25,17 @@ server.post('/', (req, res) => {
 		res.status(401).send('hubo un error')
 	})
 })
+
+server.get('/:id', (req, res, next) => {
+	Product.findByPk(req.params.id)
+		.then(product => {
+			if(!product){
+				return res.send({errors: {messages:['Producto no encontrado'], status:404}}).status(404);
+			}
+			res.send({ data: product });
+		})
+		.catch(next);
+});
 
 server.put('/:id', (req, res) => {
     const id = req.params.id;
@@ -118,7 +125,6 @@ server.delete('/:idProduct/category/:idCategory', (req, res) => {
 	});
 });
 
-
 server.delete('/:id', function(req, res) {
     if (!Number.isInteger(req.params.id * 1)){
 		res.send({errors: {messages:['el id del producto debe ser un numero'], status:422}}).status(422);
@@ -138,8 +144,6 @@ server.delete('/:id', function(req, res) {
         ).catch(err => {
 			return res.sendStatus(500);})
     });
-
-
 
 server.get('/category/:nombreCat', function(req, res, next) {
     Category.findOne({
@@ -177,8 +181,4 @@ server.get('/category/:nombreCat', function(req, res, next) {
 		})
 	});
 
-
-
 module.exports = server;
-
-
