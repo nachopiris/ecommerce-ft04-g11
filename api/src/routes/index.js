@@ -16,29 +16,7 @@ const router = Router();
 router.use('/products', productRouter);
 router.use('/categories', categoriesRouter);
 
-router.get('/search', (req,res)=>{
 
-    const query = req.query.query;
-    
-    Product.findAll({
-        where: {
-                [Op.or]: [
-                    {
-                        name: {
-                            [Op.substring]: query
-                        }
-                    },
-                    {
-                        description: {
-                            [Op.substring]: query
-                        }
-                    }
-                ]
-            }  
-        })  .then((product)=>{
-            res.send(product)
-            })  
-    })
 
 
 module.exports = router;

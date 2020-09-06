@@ -3,8 +3,10 @@ import s from './productCard.module.scss';
 import {Card, Col, Button, Badge} from 'react-bootstrap';
 import { CgShoppingCart } from 'react-icons/cg';
 import NumberFormat from 'react-number-format';
+import { Link } from 'react-router-dom';
 
-export default function ProductCard({name,price,img}) {
+export default function ProductCard({product: {id, name,price,images}}) {
+    var img = JSON.parse(images)[0];
     const MAX_NAME_LENGTH = 40
     if(name.length > MAX_NAME_LENGTH){
         name = name.substring(0,MAX_NAME_LENGTH - 3) + '...';
@@ -16,7 +18,7 @@ export default function ProductCard({name,price,img}) {
                     
                     
                     <Card.Body className={s['card-bootstrap-body'] + ' p-0'}>
-                        <a href="#" className={s['cover-image']}>
+                        <Link to={'/productos/'+id} className={s['cover-image']}>
                             <img
                                 src={img} alt=""
                                 title=""
@@ -25,7 +27,7 @@ export default function ProductCard({name,price,img}) {
                             <div className={s['product-title'] + ' position-absolute p-2'}>
                                 <p className={'mb-0 text-uppercase ' + s['card-title']}>{name}</p>
                             </div>
-                        </a>
+                        </Link>
                     </Card.Body>
                     <Card.Footer className="border-0 d-flex align-items-center py-1 bg-dark2 px-1 justify-content-between">
                             <span className={s.price + ' ml-2'}>
