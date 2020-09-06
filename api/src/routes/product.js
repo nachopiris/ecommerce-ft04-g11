@@ -181,4 +181,31 @@ server.get('/category/:nombreCat', function(req, res, next) {
 		})
 	});
 
+
+server.get('/search', (req,res)=>{
+
+	const query = req.query.query;
+
+	console.log(query)
+	
+	Product.findAll({
+		where: {
+				[Op.or]: [
+					{
+						name: {
+							[Op.substring]: query
+						}
+					},
+					{
+						description: {
+							[Op.substring]: query
+						}
+					}
+				]
+			}  
+		})  .then((product)=>{
+			res.send({data: product})
+			})  
+	})
+
 module.exports = server;

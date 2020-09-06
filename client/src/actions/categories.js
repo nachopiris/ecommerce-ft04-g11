@@ -7,7 +7,7 @@ const CREATE_CATEGORY = 'CREATE_CATEGORY';
 const UPDATE_CATEGORY = 'UPDATE_CATEGORY';
 const DELETE_CATEGORY = 'DELETE_CATEGORY';
 
-const BASE_URI = config.api.base_uri + '/categores';
+const BASE_URI = config.api.base_uri + '/categories';
 
 export function getCategories()
 {
@@ -26,7 +26,7 @@ export function getCategory(id)
         return Axios.get(BASE_URI + '/' + id)
         .then(res => res.data)
         .then(res => {
-            dispatch({type: CREATE_CATEGORY, payload: res});
+            dispatch({type: GET_CATEGORY, payload: res});
         });
     }
 }

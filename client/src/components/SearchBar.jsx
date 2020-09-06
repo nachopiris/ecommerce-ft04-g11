@@ -2,7 +2,6 @@ import React from 'react';
 import { useEffect } from 'react';
 import {Form, Button, Col, Row, FormControl, InputGroup} from 'react-bootstrap';
 import  {BsSearch} from 'react-icons/bs';
-import s from '../styles/searchBar.module.scss'
 
 export function SearchBar({searchProducts}) {
 
@@ -20,6 +19,7 @@ export function SearchBar({searchProducts}) {
 
     const handleSearch = function(e){
         e.preventDefault();
+        console.log(searchProducts);
         searchProducts(input.search);
     }
 
@@ -29,13 +29,12 @@ export function SearchBar({searchProducts}) {
     return (
         <Form onSubmit={handleSearch}>
             <InputGroup className="mb-3">
-                <input
+                <FormControl
                     placeholder="Buscar..."
                     autoFocus={true}
                     name="search"
                     value={input.search}
                     autoComplete='off'
-                    className={s['input-search'] + ' form-control'}
                     onChange={handleInputChange}
                 />
                 <InputGroup.Append>
