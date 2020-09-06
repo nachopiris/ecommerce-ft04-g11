@@ -13,47 +13,64 @@ class FormCRUD extends Component{
 
 
 getItems(){
-     fetch('http://localhost:3001/ruta')    // modificar cuando tengamos las rutas creadas
+  console.log('aqui');
+     fetch('http://localhost:3001/products')    // modificar cuando tengamos las rutas creadas
       .then(response => response.json())
       .then((recurso) => {
+        console.log('recurso', recurso);
+
         if(recurso !== undefined){
             const prod = recurso.map( function(e) {
- 
-                return  { "id": e.title,
-                          "name": e.title,
+                return  { "id": e.id,
+                          "name": e.name,
                           "description": e.description,
-                          "prize": e.prize,
+                          "price": e.price,
+                          "stock": e.stock,
                           "imagen": e.imagen,
                           "isEditing":false
                             }
            });
+           console.log('prod', prod);
 
-          this.setState({
-            prod
-        });
-        } 
+           this.setState({
+            product: prod
+          });
+        console.log('state', this.state);
+      } 
       })
       .catch(err => console.log(err))
       }
+    //   // ----------
+    //   const requestOptions = {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ title: 'React POST Request Example' })
+    // };
+    // fetch('https://jsonplaceholder.typicode.com/posts', requestOptions)
+    //     .then(response => response.json())
+    //     .then(data => this.setState({ postId: data.id }));
 
 addProduct = e => {
-    e.preventDefault()
-        fetch('http://localhost:3000/crud', {
-          method: 'post',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+        console.log('add product', e);
+        fetch('http://localhost:3001/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name : this.state.product.name,
-            description : this.state.product.description,
-            prize : this.state.product.prize
+            name : e.name,
+            description : e.description,
+            stock: 12,
+            price : 10,
+            images: ["https://url.com/example.jpg", "https://url.com/example.jpg"]
           })
         })
-          .then(response => response.json())
+          .then(response => {
+            console.log(response);
+            response.json()})
           .then(item => {
+            console.log('item----',item);
             if(Array.isArray(item)) {
-              this.props.addItemToState(item[0])
-              this.props.toggle()
+              this.addItemToState(e);
+              
             } else {
               console.log('failure')
             }
@@ -70,7 +87,6 @@ addItemToState = (newProduct) => {
 }
 
 uploadEdit = e => {
-    e.preventDefault()
     fetch('http://localhost:3000/crud', {
       method: 'put',
       headers: {
@@ -79,15 +95,15 @@ uploadEdit = e => {
       body: JSON.stringify({
         name : this.state.product.name,
         description : this.state.product.description,
-        prize : this.state.product.prize
+        price : this.state.product.price
       })
     })
       .then(response => response.json())
       .then(item => {
         if(Array.isArray(item)) {
           // console.log(item[0])
-          this.props.updateState(item[0])
-          this.props.toggle()
+          this.updateState(item[0])
+         
         } else {
           console.log('failure')
         }
@@ -99,20 +115,22 @@ pressEditBtn = (i) => {
     let product = this.state.product;
     product[i].isEditing = true;
     this.setState({
-        product
+      product: product
     });
 }
 
-updateState = (i, name, description, prize) => {
+updateState = (i, name, description, stock, price) => {
     let product = this.state.product;
-    product[i].title = title;
+    product[i].id = i;
+    product[i].name = name;
     product[i].description = description;
-    product[i].prize = prize;
+    product[i].stock = stock;
+    product[i].price = price;
     product[i].isEditing = false;
 
-    this.setState ({
-        product
-    })
+    this.setState({
+      product: product
+    });
 }
 
 deleteItemFromState = (i) => {
@@ -121,8 +139,8 @@ deleteItemFromState = (i) => {
         return index !==i
     });
     this.setState({
-        product
-    })
+      product: product
+    });
     
 }
 
@@ -149,6 +167,7 @@ pressDelete = (i) => {
 
 
 handleCLick = () => {
+    this.getItems();
     this.setState({
         visible: true
     })
@@ -159,7 +178,7 @@ listarProductos(){
     if (this.state.visible){
         return (
         <div>
-        <Products allProduct = {this.state.product} pressEditBtn={this.pressEditBtn} updateProduct={this.updateProduct} pressDelete={this.pressDelete} />
+        <Products allProduct = {this.state.product} pressEditBtn={this.pressEditBtn} uploadEdit={this.uploadEdit} pressDelete={this.pressDelete} />
         <AddProduct addProduct={this.addProduct}/>
         </div>
         )}
@@ -167,6 +186,7 @@ listarProductos(){
 }
 
 render(){
+  console.log(this.state.product);
     return(
         <div>
         <h2>Product List</h2>

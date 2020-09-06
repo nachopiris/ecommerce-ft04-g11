@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 class Products extends Component{
 
     handleUpdate = () => {
-        this.props.updateProduct(this.indexNum, this.name.value, this.description.value, this.prize.value);
+         console.log('props--------',this.props);
+        this.props.uploadEdit(this.indexNum, this.name.value, this.description.value, this.stock.value, this.price.value);
     }
 
 render() {
@@ -13,7 +14,8 @@ render() {
             <tr key = {index}>
                 <td><input type="text" ref={(val) => {this.name=val}} required defaultValue={product.name}/></td>
                 <td><input type="text" ref={(val) => {this.description=val}} required defaultValue={product.description}/></td>
-                <td><input type="text" ref={(val) => {this.prize=val}} required defaultValue={product.prize}/></td>
+                <td><input type="text" ref={(val) => {this.stock=val}} required defaultValue={product.stock}/></td>
+                <td><input type="text" ref={(val) => {this.price=val}} required defaultValue={product.price}/></td>
                 <td>
                 <input type="button" value="Update" onClick={this.handleUpdate} ref={() => {this.indexNum = index}} />
                 </td>
@@ -22,7 +24,8 @@ render() {
             <tr  key={index}>
                     <td>{product.name}</td>
                     <td>{product.description}</td>
-                    <td>{product.prize}</td>
+                    <td>{product.stock}</td>
+                    <td>{product.price}</td>
                     
                     <td><button onClick={() => pressEditBtn(index)}>Edit</button>  |  <button onClick={()=>pressDelete(index)}>Delete</button></td>
             </tr>
@@ -38,7 +41,8 @@ render() {
             <tr>
                     <th>Title</th>
                     <th>Description</th>
-                    <th>Prize</th>
+                    <th>Price</th>
+                    <th>Stock</th>
                     <th>Action</th>
                     </tr>
             </thead>
