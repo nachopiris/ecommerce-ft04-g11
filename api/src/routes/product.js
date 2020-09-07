@@ -209,6 +209,23 @@ server.get('/category/:nombreCat', function(req, res, next) {
 		})
 	});
 
+	
+server.get('/categories/:idProduct', function(req, res, next) {
+		
+		Category.findAll({
+					
+			include: [{model: Product,
+				where:{
+					id: req.params.idProduct
+				}
+			}]
+		}).then((data)=>{
+			res.send(data)
+		})
+		.catch((error)=>{
+			res.send(error)
+		})
+	});
 
 
 
