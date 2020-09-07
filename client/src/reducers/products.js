@@ -5,6 +5,13 @@ const initialState = {
 
 export default function productsReducer(state = initialState, action){
     switch (action.type) {
+        case 'FILTER_BY_CATEGORY':
+            let products = action.payload;
+            if(!products) products = [];
+            return {
+                ...state,
+                products
+            }
         case 'GET_PRODUCTS':
             return {
                 ...state,

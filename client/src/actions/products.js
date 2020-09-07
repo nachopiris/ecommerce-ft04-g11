@@ -1,22 +1,36 @@
 import Axios from 'axios';
+import config from '../config';
 
 const GET_PRODUCTS = 'GET_PRODUCTS';
 const GET_PRODUCT = 'GET_PRODUCT';
 const CREATE_PRODUCT = 'CREATE_PRODUCT';
 const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 const DELETE_PRODUCT = 'DELETE_PRODUCT';
+const FILTER_BY_CATEGORY = 'FILTER_BY_CATEGORY';
 
 const BASE_URI = config.api.base_uri + '/products';
+
+export function filterByCategory(nombreCat)
+{
+    return dispatch => {
+        return Axios.get(BASE_URI + '/category/'+nombreCat)        
+        .then((res) =>{
+            dispatch({type: FILTER_BY_CATEGORY,payload: res.data.data})
+        });
+    }
+}
 
 export function getProducts(keyword)
 {
     return dispatch => {
         // si keyword NO es undefined, entonces buscará por keyword, de lo contrario, mostrará el listado completo.
-        let url = keyword ? BASE_URI + '/search?query=' + keyword : BASE_URI;
+        let url = keyword ? BASE_URI + '/search/' + keyword : BASE_URI;
         return Axios.get(url)
-        .then(res => res.body)
+        .then(res => res.data)
         .then(res => {
-            dispatch({type:GET_PRODUCTS, payload: res});
+
+            console.log(res)
+            dispatch({type:GET_PRODUCTS, payload: res.data});
         });
     }
 }
