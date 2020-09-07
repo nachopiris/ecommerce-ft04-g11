@@ -4,7 +4,7 @@ import style from '../styles/catalogue.module.scss';
 import axios from 'axios'; 
 import { getProducts, filterByCategory } from '../actions/products';
 import {connect} from 'react-redux';
-import { Container, Row, Col, Form } from 'react-bootstrap';
+import { Container, Row, Col, Form, Alert } from 'react-bootstrap';
 import SearchBar from './SearchBar';
 
 
@@ -32,6 +32,10 @@ export function Catalogue({ products, getProducts, filterByCategory}) {
     
     function getFilterCategories(e){
         let nombreCat = e.target.value;
+        console.log(nombreCat)
+        if(!nombreCat){
+            return getProducts();
+        }
         filterByCategory(nombreCat)
     }
 
@@ -54,9 +58,10 @@ export function Catalogue({ products, getProducts, filterByCategory}) {
                                 id="inlineFormCustomSelectPref"
                                 custom
                             >
+                                <option key={0} value=""> Cualquier categoría </option>
                                 {categories.map((e, i) => {
                                             return (
-                                                <option key={e.id} > {e.name} </option>
+                                                <option key={e.id}> {e.name} </option>
                                             
                                             )
                                         }
@@ -71,11 +76,19 @@ export function Catalogue({ products, getProducts, filterByCategory}) {
             </Row>
             <Row className={style.catalogue}>
                 {
-                    products.map( product => {
+                    products.map( (product, index) => {
                         return (
-                            <ProductCard product={product}/>
+                            <ProductCard key={index} product={product}/>
                         )
                     })
+                }
+
+                {
+                    !products.length && (
+                        <Col>
+                            <Alert variant="info"> Lo sentimos, no encontramos productos que coincidan con la busqueda. </Alert>
+                        </Col>
+                    )
                 }
                 
                 {filterProducts && (

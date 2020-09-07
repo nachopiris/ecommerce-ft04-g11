@@ -24,7 +24,7 @@ export function getProducts(keyword)
 {
     return dispatch => {
         // si keyword NO es undefined, entonces buscará por keyword, de lo contrario, mostrará el listado completo.
-        let url = keyword ? BASE_URI + '/search?query=' + keyword : BASE_URI;
+        let url = keyword ? BASE_URI + '/search/' + keyword : BASE_URI;
         return Axios.get(url)
         .then(res => res.data)
         .then(res => {

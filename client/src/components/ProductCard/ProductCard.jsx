@@ -31,7 +31,7 @@ export default function ProductCard({product: {id, name,price,images}}) {
                     </Card.Body>
                     <Card.Footer className="border-0 d-flex align-items-center py-1 bg-dark2 px-1 justify-content-between">
                             <span className={s.price + ' ml-2'}>
-                                <NumberFormat prefix="$" value={price} decimalScale={2} fixedDecimalScale={true} displayType={'text'} decimalSeparator={','} thousandSeparator={'.'} />
+                                <NumberFormat prefix="$" value={price} decimalScale={2} fixedDecimalScale={true} displayType={'text'}  />
                             </span>
                             <Button variant="outline-light border-0" size="sm"><CgShoppingCart /></Button>
                     </Card.Footer>

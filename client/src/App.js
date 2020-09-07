@@ -1,8 +1,9 @@
 import React from 'react';
 import './styles/ecommerce.scss';
-import {Router, BrowserRouter, Route} from 'react-router-dom'
+import {BrowserRouter, Route} from 'react-router-dom'
 import Product from './components/Product/Product';
 import Catalogue from './components/Catalogue';
+import ProductsCRUD from './components/CRUD/formCRUD';
 
 function App() {
   return (
@@ -10,6 +11,9 @@ function App() {
         <BrowserRouter>
           <Route path="/productos/:id" component={Product} />
           <Route path="/catalogo" component={Catalogue} />
+        </BrowserRouter>
+        <BrowserRouter basename="/admin">
+          <Route path="/productos" component={ProductsCRUD} />
         </BrowserRouter>
     </React.Fragment>
   );

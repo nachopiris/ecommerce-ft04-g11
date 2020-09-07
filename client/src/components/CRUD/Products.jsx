@@ -26,35 +26,42 @@ render() {
         ) : (
             <tr  key={index}>
                     <td>{product.name}</td>
-                    <td>{product.description}</td>
+                    <td><small>{product.description}</small></td>
                     <td>{product.stock}</td>
                     <td>{product.price}</td>
                  
                     {product.image && (
                         <td> <img  src={product.image[0]} alt="" title=""  width="60" height="80"/> </td>
                     )} 
-                    <td><button onClick={() => pressEditBtn(index)}>Edit</button>  |  <button onClick={()=>pressDelete(product.id, index)}>Delete</button></td>
+                    <td>
+                        <div className="btn-group">
+                            <button className="btn btn-warning btn-sm" onClick={() => pressEditBtn(index)}>Edit</button>
+                            <button className="btn btn-danger btn-sm" onClick={()=>pressDelete(product.id, index)}>Delete</button>
+                        </div>
+                    </td>
             </tr>
             )
     }
     );
 
     return(
-        <table >
-            <thead>
-            <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Stock</th>
-                    <th>Price</th>
-                    <th>Image</th>
-                    <th>Action</th>
+        <div className="table-responsive">
+            <table className="table table-hover table-striped table-sm table-dark">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Stock</th>
+                        <th>Price</th>
+                        <th>Image</th>
+                        <th>Action</th>
                     </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                     {productList}
                 </tbody>
-        </table>
+            </table>
+        </div>
     )
 
 }
