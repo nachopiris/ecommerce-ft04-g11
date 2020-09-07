@@ -32,6 +32,7 @@ getItems(){
                         "price": e.price,
                         "stock": e.stock,
                         "image": image,
+                        "categories": e.categories,
                         "isEditing":false
                           }
               });
@@ -77,14 +78,15 @@ addItemToState = (newProduct) => {
     this.handleCLick();
 }
 
-uploadEdit = (i, name, description, stock, price, images) => {
+uploadEdit = (i, name, description, stock, price, images, categories) => {
   const imagen = images.split(',');
   const modif = {
     name : name,
     description : description,
     stock: JSON.parse(stock),
     price : JSON.parse(price),
-    images: imagen
+    images: imagen,
+    categories: categories
   }
   
     fetch('http://localhost:3001/products/'+i, {
