@@ -32,9 +32,15 @@ getItems(){
                         "price": e.price,
                         "stock": e.stock,
                         "image": image,
+                        "categories": e.categories,
                         "isEditing":false
                           }
               });
+
+              prod.sort(function (a, b){
+                return  a.name.localeCompare(b.name);
+            })
+           
            this.setState({
             product: prod
           });
@@ -77,14 +83,16 @@ addItemToState = (newProduct) => {
     this.handleCLick();
 }
 
-uploadEdit = (i, name, description, stock, price, images) => {
+uploadEdit = (i, name, description, stock, price, images, categories) => {
+  console.log(categories);
   const imagen = images.split(',');
   const modif = {
     name : name,
     description : description,
     stock: JSON.parse(stock),
     price : JSON.parse(price),
-    images: imagen
+    images: imagen,
+    categories: JSON.parse(categories)
   }
   
     fetch('http://localhost:3001/products/'+i, {
@@ -112,6 +120,16 @@ pressEditBtn = (i) => {
       product: product
     });
 }
+
+pressCancelBtn = (i) => {
+  let product = this.state.product;
+  product[i].isEditing = false;
+
+  this.setState({
+      product: product
+    });
+}
+
 
 updateState = (i, name, description, stock, price) => {
     let product = this.state.product;
@@ -265,7 +283,8 @@ render(){
               </div>
               <div className="card bg-dark border-0 overflow-auto">
                 <div className="card-body p-0" style={{maxHeight: '400px'}}>
-                  {this.state.product.length && <Products allProduct = {this.state.product} allcategories = {this.state.categories} pressEditBtn={this.pressEditBtn} uploadEdit={this.uploadEdit} pressDelete={this.pressDelete} 
+
+                  {this.state.product.length && <Products allProduct = {this.state.product} allcategories = {this.state.categories} pressEditBtn={this.pressEditBtn} uploadEdit={this.uploadEdit} pressCancelBtn={this.pressCancelBtn} pressDelete={this.pressDelete} 
                           pressAddCatBtn={this.pressAddCatBtn} pressDelCatBtn={this.pressDelCatBtn} 
                           categoriesByProduct = {this.state.categoriesByProduct} getCategoriesByProduct={this.getCategoriesByProduct}
                   />}
