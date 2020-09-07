@@ -45,14 +45,14 @@ render(){
 
     
     return(
-        <form onSubmit={this.handleSubmit}>
+        <form className="card-header bg-dark2"onSubmit={this.handleSubmit}>
             <div>
                 <input name="name" autoComplete="off" placeholder="Enter a title" onChange={ this.updateState} />
                 <input name="description" autoComplete="off" placeholder="Enter Description" onChange={ this.updateState} />
                 <input name="stock" autoComplete="off" placeholder="Enter Stock" onChange={ this.updateState} />
                 <input name="price" autoComplete="off" placeholder="Enter a price" onChange={ this.updateState} />
                 <input name="image" autoComplete="off" placeholder="Enter URL image" onChange={ this.updateState} />
-                <input type="submit" value="Add +" />
+                <input className="btn btn-warning btn-sm" type="submit" value="Add +" />
             </div>
         </form>
     )

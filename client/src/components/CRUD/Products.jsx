@@ -16,9 +16,17 @@ class Products extends Component{
         IdCat = e.target.value;
     }
 
+    handleCancel = () => {
+        this.props.allProduct.map(e => e.isEditing = false);
+    }
+    
+
+    componentDidUpdate(){
+        this.handleCancel();
+    }
 
 render() {
-    const {allProduct, allcategories, pressEditBtn, pressDelete, pressAddCatBtn, pressDelCatBtn, getCategoriesByProduct, categoriesByProduct } = this.props;
+    const {allProduct, allcategories, pressEditBtn, pressDelete, pressAddCatBtn, pressDelCatBtn, getCategoriesByProduct, categoriesByProduct , pressCancelBtn} = this.props;
     
     const categorieslistexistin = allcategories.map(cat => {
         return  (
@@ -34,6 +42,7 @@ render() {
 
     const productList = allProduct.map((product, index) =>{
 
+
         return product.isEditing === true ? (
             <tr key = {index}>
                 <td><input type="text" ref={(val) => {this.name=val}} required defaultValue={product.name}/></td>
@@ -42,7 +51,10 @@ render() {
                 <td><input type="text" ref={(val) => {this.price=val}} required defaultValue={product.price}/></td>
                 <td><input type="text" ref={(val) => {this.image=val}} required defaultValue={product.image}/></td>
                 <td>
-                <input type="button" value="Update" onClick={this.handleUpdate} ref={() => {this.indexNum = product.id}} />
+                <div className="btn-group">
+                    <input className="btn btn-warning btn-sm" type="button" value="Update" onClick={this.handleUpdate} ref={() => {this.indexNum = product.id}} />
+                    <button className="btn btn-danger btn-sm" onClick={()=>pressCancelBtn(index)}>Cancel</button>
+                </div>
                 </td>
             </tr>
         ) : (
