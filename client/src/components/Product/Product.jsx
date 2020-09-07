@@ -31,8 +31,8 @@ const Product = () => {
           <Row>
             <Col md={7} className="mb-4">
               <Carousel className={s['bootstrap-carousel'] + ' m-auto'}>
-                {product.data.images.map(image => (
-                  <Carousel.Item>
+                {product.data.images.map((image, index) => (
+                  <Carousel.Item key={index}>
                     <div className={s['cover-image'] + ' rounded bg-dark'}>
                       <img src={image} />
                     </div>
@@ -56,7 +56,7 @@ const Product = () => {
                     <Card.Footer className="border-0 bg-dark2">
                       <div className="mb-4 mt-2 text-center">
                         <span className={s.price}>
-                            <NumberFormat prefix="$" value={product.data.price} decimalScale={2} fixedDecimalScale={true} displayType={'text'} decimalSeparator={','} thousandSeparator={'.'} />
+                            <NumberFormat prefix="$" value={product.data.price} decimalScale={2} fixedDecimalScale={true} displayType={'text'} />
                         </span>
                         <br />
                         <span className={s['text-muted'] + ' text-uppercase'}>

@@ -9,7 +9,9 @@ class FormCRUD extends Component{
         product : [],
         visible: false
     }
-
+componentDidMount() {
+  this.getItems();
+}
 
 getItems(){
 
@@ -165,25 +167,32 @@ handleCLick = () => {
 
 }
 
-listarProductos(){
-    if (this.state.visible){
-        return (
-        <div>
-        <AddProduct addProduct={this.addProduct}/>
-        <Products allProduct = {this.state.product} pressEditBtn={this.pressEditBtn} uploadEdit={this.uploadEdit} pressDelete={this.pressDelete} />
-         
-        </div>
-        )}
-
-}
-
 render(){
 
     return(
-        <div>
-        <h2>Product List</h2>
-        <button onClick={this.handleCLick} visible = {true}>List</button>
-        {this.listarProductos()}
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col">
+              <h2>Productos</h2>
+            </div>
+          </div>
+          <div className="row mb-4">
+            <div className="col">
+              <AddProduct addProduct={this.addProduct}/>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <div className="card-header bg-dark2">
+                Lista
+              </div>
+              <div className="card bg-dark border-0 overflow-auto">
+                <div className="card-body p-0" style={{maxHeight: '400px'}}>
+                  {this.state.product.length && <Products allProduct = {this.state.product} pressEditBtn={this.pressEditBtn} uploadEdit={this.uploadEdit} pressDelete={this.pressDelete} />}
+                </div>
+              </div>
+            </div>
+          </div>
 
         </div>
     )
