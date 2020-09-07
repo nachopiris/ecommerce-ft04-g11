@@ -4,7 +4,12 @@ const { Product, Category} = require('../db.js');
 const Op = Sequelize.Op;
 
 server.get('/', (req, res, next) => {
-	Product.findAll()
+	Product.findAll({
+		include: {
+			model: Category,
+			through: { attributes: [] } // this will remove the rows from the join table (i.e. 'UserPubCrawl table') in the result set
+		  }
+	})
 		.then(products => {
 			res.send({ data: products });
 		})
@@ -209,6 +214,23 @@ server.get('/category/:nombreCat', function(req, res, next) {
 		})
 	});
 
+	
+server.get('/categories/:idProduct', function(req, res, next) {
+		
+		Category.findAll({
+					
+			include: [{model: Product,
+				where:{
+					id: req.params.idProduct
+				}
+			}]
+		}).then((data)=>{
+			res.send(data)
+		})
+		.catch((error)=>{
+			res.send(error)
+		})
+	});
 
 
 
