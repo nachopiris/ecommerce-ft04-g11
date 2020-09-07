@@ -84,6 +84,7 @@ addItemToState = (newProduct) => {
 }
 
 uploadEdit = (i, name, description, stock, price, images, categories) => {
+  console.log(categories);
   const imagen = images.split(',');
   const modif = {
     name : name,
@@ -91,7 +92,7 @@ uploadEdit = (i, name, description, stock, price, images, categories) => {
     stock: JSON.parse(stock),
     price : JSON.parse(price),
     images: imagen,
-    categories: categories
+    categories: JSON.parse(categories)
   }
   
     fetch('http://localhost:3001/products/'+i, {

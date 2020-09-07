@@ -5,11 +5,10 @@ var IdCat;
 class Products extends Component{
 
     handleUpdate = () => {
-        this.props.uploadEdit(this.indexNum, this.name.value, this.description.value, this.stock.value, this.price.value, this.image.value, this.categories);
+        this.props.uploadEdit(this.indexNum, this.name.value, this.description.value, this.stock.value, this.price.value, this.image.value, this.categories.value);
     }
 
     componentDidMount(){
-        console.log(this.props.allProduct);
     }
 
     sendCatId = (e) =>{
@@ -42,7 +41,6 @@ render() {
 
     const productList = allProduct.map((product, index) =>{
 
-
         return product.isEditing === true ? (
             <tr key = {index}>
                 <td><input type="text" ref={(val) => {this.name=val}} required defaultValue={product.name}/></td>
@@ -50,6 +48,7 @@ render() {
                 <td><input type="text" ref={(val) => {this.stock=val}} required defaultValue={product.stock}/></td>
                 <td><input type="text" ref={(val) => {this.price=val}} required defaultValue={product.price}/></td>
                 <td><input type="text" ref={(val) => {this.image=val}} required defaultValue={product.image}/></td>
+                <input type="hidden" ref={(val) => {this.categories = val}} defaultValue={JSON.stringify(product.categories)} />
                 <td>
                 <div className="btn-group">
                     <input className="btn btn-warning btn-sm" type="button" value="Update" onClick={this.handleUpdate} ref={() => {this.indexNum = product.id}} />
