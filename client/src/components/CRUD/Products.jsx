@@ -6,11 +6,20 @@ class Products extends Component{
         this.props.uploadEdit(this.indexNum, this.name.value, this.description.value, this.stock.value, this.price.value, this.image.value);
     }
 
+    handleCancel = () => {
+        this.props.allProduct.map(e => e.isEditing = false);
+    }
+    
+
+    componentDidUpdate(){
+        this.handleCancel();
+    }
 
 render() {
-    const {allProduct, pressEditBtn, pressDelete} = this.props;
+    const {allProduct, pressEditBtn, pressDelete, pressCancelBtn} = this.props;
     
     const productList = allProduct.map((product, index) =>{
+
 
         return product.isEditing === true ? (
             <tr key = {index}>
@@ -20,7 +29,10 @@ render() {
                 <td><input type="text" ref={(val) => {this.price=val}} required defaultValue={product.price}/></td>
                 <td><input type="text" ref={(val) => {this.image=val}} required defaultValue={product.image}/></td>
                 <td>
-                <input type="button" value="Update" onClick={this.handleUpdate} ref={() => {this.indexNum = product.id}} />
+                <div className="btn-group">
+                    <input className="btn btn-warning btn-sm" type="button" value="Update" onClick={this.handleUpdate} ref={() => {this.indexNum = product.id}} />
+                    <button className="btn btn-danger btn-sm" onClick={()=>pressCancelBtn(index)}>Cancel</button>
+                </div>
                 </td>
             </tr>
         ) : (
