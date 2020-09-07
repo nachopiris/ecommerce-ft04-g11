@@ -1,4 +1,4 @@
-const { Product, Category } = require('./db.js');
+const { Product, Category, User} = require('./db.js');
 
 function productsSeeder()
 {
@@ -22,7 +22,34 @@ function categoriesSeeder()
     }
 }
 
+
+function usersSeeder()
+{
+    User.create({
+        fullname: 'Usuario Cliente',
+        email: 'client@test.com',
+        password: '12345678',
+        role: 'client',
+        address: 'Direccion del Cliente 123',
+        doc_number: '11111111',
+        phone: '1510121314'
+    }).then(()=>{
+        User.create({
+            fullname: 'Usuario Admin',
+            email: 'admin@test.com',
+            password: '12345678',
+            role: 'admin',
+            address: 'Av. Del Administrador 321',
+            doc_number: '22222222',
+            phone: '1510121314'
+        });
+    });
+
+   
+}
+
 module.exports = {
     productsSeeder,
-    categoriesSeeder
+    categoriesSeeder,
+    usersSeeder
 }
