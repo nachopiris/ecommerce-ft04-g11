@@ -27,11 +27,6 @@ class Products extends Component{
 render() {
     const {allProduct, allcategories, pressEditBtn, pressDelete, pressAddCatBtn, pressDelCatBtn, getCategoriesByProduct, categoriesByProduct , pressCancelBtn} = this.props;
     
-    const categorieslistexistin = allcategories.map(cat => {
-        return  (
-            <option key={cat.id} value={cat.id}> {cat.name} </option> 
-            )
-    })
 
     const categorieslistbyproduct = categoriesByProduct.map(cat => {
         return (
@@ -73,7 +68,12 @@ render() {
                         </div>
                     </td>
                     <td className="text-center">
-                            <select className="form-control form-control-sm mb-1" onChange={this.sendCatId} > <option>Seleccionar</option> {categorieslistexistin} </select> 
+                            <select className="form-control form-control-sm mb-1" onChange={this.sendCatId} > <option>Seleccionar</option> {
+                                allcategories.map(cat => {
+                                        if(!product.categories.find(item => item.name === cat.name)) return (<option key={cat.id} value={cat.id}> {cat.name} </option> )
+                                    
+                                })
+                            } </select> 
                             <button className="btn btn-outline-light btn-block btn-sm mb-1" onClick={() => pressAddCatBtn(IdCat, product.id) }>Añadir</button>                         
                            
                             {(product.categories.length && product.categories.map((cat, index) => (
