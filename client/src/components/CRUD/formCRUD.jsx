@@ -284,7 +284,7 @@ render(){
               <div className="card bg-dark border-0 overflow-auto">
                 <div className="card-body p-0" style={{maxHeight: '400px'}}>
 
-                  {this.state.product.length && <Products allProduct = {this.state.product} allcategories = {this.state.categories} pressEditBtn={this.pressEditBtn} uploadEdit={this.uploadEdit} pressCancelBtn={this.pressCancelBtn} pressDelete={this.pressDelete} 
+                  {this.state.product && <Products allProduct = {this.state.product} allcategories = {this.state.categories} pressEditBtn={this.pressEditBtn} uploadEdit={this.uploadEdit} pressCancelBtn={this.pressCancelBtn} pressDelete={this.pressDelete} 
                           pressAddCatBtn={this.pressAddCatBtn} pressDelCatBtn={this.pressDelCatBtn} 
                           categoriesByProduct = {this.state.categoriesByProduct} getCategoriesByProduct={this.getCategoriesByProduct}
                   />}

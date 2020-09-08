@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Axios from 'axios';
 import { Container, Row, Col, Card, Carousel, Button} from 'react-bootstrap';
 import s from './product.module.scss';
@@ -50,6 +50,10 @@ const Product = () => {
                       <h1>{product.data.name}</h1>
 
                       <span className={'text-uppercase ' + s['text-muted']}>Categorías: </span>
+                      <br />
+                      {product.data.categories.map(item => (
+                        <Link to="#" className="text-muted2 m-1 badge badge-dark2 badge-pill">{item.name}</Link>
+                      ))}
 
                     </Card.Body>
 
