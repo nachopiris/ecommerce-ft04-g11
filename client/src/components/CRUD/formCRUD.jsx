@@ -219,8 +219,7 @@ pressAddCatBtn = (idCat, idProduct) => {
         'Content-Type': 'application/json'
       }
     })   
-    .then(()=>{ window.confirm('Added Category') })
-    .then(()=>{  window.location.reload(true) })
+    .then(()=>{  this.componentDidMount(); })
     .catch(()=>{
         return Error;
     })
@@ -253,8 +252,7 @@ pressDelCatBtn = (idCat, idProduct) => {
         'Content-Type': 'application/json'
       }
     })   
-    .then(()=>{ window.confirm('Category Deleted') })
-    .then(()=>{window.location.reload(true)})
+    .then(()=>{ this.componentDidMount(); })
     .catch(()=>{
         return Error;
     })
