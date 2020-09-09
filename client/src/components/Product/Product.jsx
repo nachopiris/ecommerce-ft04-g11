@@ -17,15 +17,20 @@ const Product = () => {
       Axios.get('http://localhost:3001/products/'+id)
       .then(res => res.data)
       .then(res => {
+        if (res.data) {
         res.data.images = JSON.parse(res.data.images);
         setProduct({product: res})
+        }
+        else {
+          return res.errors;
+        }
       })
     }
   },[]);
 
   return(
     <Container>
-      {product && (
+      {product ? (
         <React.Fragment>
 
           <Row>
@@ -102,7 +107,9 @@ const Product = () => {
           </Row>
 
         </React.Fragment>
-      )}
+      ) : (<React.Fragment>
+        <h2>No existe el producto</h2>
+      </React.Fragment>)}
     </Container>
   );
 }
