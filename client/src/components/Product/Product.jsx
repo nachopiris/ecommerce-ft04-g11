@@ -5,22 +5,16 @@ import { Container, Row, Col, Card, Carousel, Button} from 'react-bootstrap';
 import s from './product.module.scss';
 import { CgShoppingCart } from 'react-icons/cg';
 import NumberFormat from 'react-number-format';
+import {connect} from 'react-redux';
+import { getProduct } from '../../actions/products';
 
-
-const Product = () => {
+//***************CONECTADO AL STORE DE REDUX ********************/
+export function Product ({product, getProduct}) {
   const { id } = useParams();
 
-  const [{product},setProduct] = useState({});
-
   useEffect(() => {
-    if(!product){
-      Axios.get('http://localhost:3001/products/'+id)
-      .then(res => res.data)
-      .then(res => {
-        res.data.images = JSON.parse(res.data.images);
-        setProduct({product: res})
-      })
-    }
+
+    getProduct(id);
   },[]);
 
   return(
@@ -31,7 +25,7 @@ const Product = () => {
           <Row>
             <Col md={7} className="mb-4">
               <Carousel className={s['bootstrap-carousel'] + ' m-auto'}>
-                {product.data.images.map((image, index) => (
+              {product.images &&  JSON.parse(product.images).map((image, index) => (
                   <Carousel.Item key={index}>
                     <div className={s['cover-image'] + ' rounded bg-dark'}>
                       <img src={image} />
@@ -47,7 +41,7 @@ const Product = () => {
                     <Card.Body>
 
 
-                      <h1>{product.data.name}</h1>
+                      <h1>{product.name}</h1>
 
                       <span className={'text-uppercase ' + s['text-muted']}>Categorías: </span>
 
@@ -56,16 +50,16 @@ const Product = () => {
                     <Card.Footer className="border-0 bg-dark2">
                       <div className="mb-4 mt-2 text-center">
                         <span className={s.price}>
-                            <NumberFormat prefix="$" value={product.data.price} decimalScale={2} fixedDecimalScale={true} displayType={'text'} />
+                            <NumberFormat prefix="$" value={product.price} decimalScale={2} fixedDecimalScale={true} displayType={'text'} />
                         </span>
                         <br />
                         <span className={s['text-muted'] + ' text-uppercase'}>
-                          Stock: {product.data.stock}
+                          Stock: {product.stock}
                         </span>
                       </div>
                       <Row>
                         <Col className="col-3">
-                          <input value="1" min="1" max={product.data.stock} type="number" className={'bg-dark form-control ' + s['input-quantity']} />
+                          <input value="1" min="1" max={product.stock} type="number" className={'bg-dark form-control ' + s['input-quantity']} />
                         </Col>
                         <Col>
                           <Button size="lg" block variant="success">
@@ -89,7 +83,7 @@ const Product = () => {
                     </Card.Header>
                     <Card.Body>
                       <p className="lead">
-                        {product.data.description}
+                        {product.description}
                       </p>
                     </Card.Body>
                   </Card>
@@ -103,4 +97,20 @@ const Product = () => {
   );
 }
 
-export default Product;
+function mapStateToProps(state){
+  return {
+    product: state.productsReducer.product
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+    getProduct: (value) => dispatch(getProduct(value)),
+    
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Product);

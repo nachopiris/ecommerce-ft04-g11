@@ -2,29 +2,23 @@ import React from 'react';
 import { useEffect } from 'react';
 import {Form, Button, Col, Row, FormControl, InputGroup} from 'react-bootstrap';
 import  {BsSearch} from 'react-icons/bs';
+import {connect} from 'react-redux';
+import { getProducts, searchProducts } from '../actions/products';
 
-export function SearchBar({searchProducts}) {
+
+//*******************CONECTADO AL STORE DE REDUX *********************/
+export function SearchBar({search, getProducts, searchProducts}) {
+
 
     const handleInputChange = function(e) {
-        setInput({
-            ...input,
-            [e.target.name]: e.target.value
-        });
+        let searchWord = e.target.value;
+        searchProducts(searchWord);
     }
-
-   
-    const [input, setInput] = React.useState({
-        search: ''
-    });
 
     const handleSearch = function(e){
         e.preventDefault();
-        console.log(searchProducts);
-        searchProducts(input.search);
+        getProducts(search);
     }
-
-    useEffect(() => {
-    },[])
 
     return (
         <Form onSubmit={handleSearch}>
@@ -33,7 +27,6 @@ export function SearchBar({searchProducts}) {
                     placeholder="Buscar..."
                     autoFocus={true}
                     name="search"
-                    value={input.search}
                     autoComplete='off'
                     onChange={handleInputChange}
                 />
@@ -46,4 +39,21 @@ export function SearchBar({searchProducts}) {
     );
 }
 
-export default SearchBar;
+function mapStateToProps(state){
+    return {
+        search: state.productsReducer.search
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        getProducts: (value) => dispatch(getProducts(value)),
+        searchProducts: (value)=> dispatch(searchProducts(value))
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SearchBar);
+

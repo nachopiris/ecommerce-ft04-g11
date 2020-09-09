@@ -13,9 +13,9 @@ export function getCategories()
 {
     return dispatch => {
         return Axios.get(BASE_URI)
-        .then(res => res.body)
+        .then(res => res.data)
         .then(res => {
-            dispatch({type:GET_CATEGORES, payload: res});
+            dispatch({type:GET_CATEGORES, payload: res.data});
         });
     }
 }
