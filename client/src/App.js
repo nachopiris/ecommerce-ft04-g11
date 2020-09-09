@@ -6,10 +6,12 @@ import Catalogue from './components/Catalogue';
 import ProductsCRUD from './components/CRUD/formCRUD';
 import AddCategories from './components/AddCategory';
 import HomePage from './components/HomePage';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
     <React.Fragment>
+        <Route path="/" component={Navbar} />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/productos/:id" component={Product} />
