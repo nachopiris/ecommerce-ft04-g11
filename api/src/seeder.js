@@ -1,4 +1,21 @@
-const { Product, Category, User} = require('./db.js');
+const { Product, Category, User, Order } = require("./db.js");
+
+function ordersSeeder() {
+  const status = [
+    "shopping_cart",
+    "created",
+    "processing",
+    "canceled",
+    "completed",
+  ];
+
+  for (let i = 0; i < 5; i++) {
+    Order.create({
+      price: (Math.floor(Math.random() * 5001) + Math.random()).toFixed(2),
+      quantity: Math.floor(Math.random() * 21),
+      status: status[i],
+    });
+  }
 
 function productsSeeder()
 {
@@ -227,5 +244,6 @@ function usersSeeder()
 module.exports = {
     productsSeeder,
     categoriesSeeder,
-    usersSeeder
+    usersSeeder,
+    ordersSeeder
 }
