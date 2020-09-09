@@ -2,7 +2,6 @@ const { Router } = require('express');
 const { Product } = require('../db.js');
 const Sequelize = require('sequelize');
 
-
 // import all routers;
 const productRouter = require('./product.js');
 const categoriesRouter = require('./categories.js');
