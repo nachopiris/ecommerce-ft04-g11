@@ -13,6 +13,7 @@ server.get('/', (req, res) => {
         if (err.name === 'SequelizeValidationError') status = 422;
         return res.send({errors: err.errors, status}).status(status);
     });
+    
 })
 
 server.post('/', (req, res) => {
