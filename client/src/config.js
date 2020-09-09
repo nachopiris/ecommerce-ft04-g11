@@ -3,6 +3,6 @@ export default {
         base_uri: 'http://localhost:3001'
     },
     app: {
-        name: 'GameStore'
+        name: 'OriginMaster'
     }
 }

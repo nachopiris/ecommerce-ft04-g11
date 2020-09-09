@@ -1,22 +1,40 @@
 import React from 'react';
 import './styles/ecommerce.scss';
-import {BrowserRouter, Route} from 'react-router-dom'
+import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import Product from './components/Product/Product';
 import Catalogue from './components/Catalogue';
 import ProductsCRUD from './components/CRUD/formCRUD';
 import AddCategories from './components/AddCategory';
+import HomePage from './components/HomePage';
 
 function App() {
   return (
     <React.Fragment>
-        <BrowserRouter>
+        <Switch>
+          <Route exact path="/" component={HomePage} />
           <Route exact path="/productos/:id" component={Product} />
           <Route exact path="/catalogo" component={Catalogue} />    
-        </BrowserRouter>
-        <BrowserRouter basename="/admin">
-          <Route exact path="/productos" component={ProductsCRUD} />
-          <Route exact path="/categorias" component={AddCategories} />
-        </BrowserRouter>
+
+          <Route path="/admin">
+            <BrowserRouter basename="/admin">
+              <Switch>
+                <Route exact path="/productos" component={ProductsCRUD} />
+                <Route exact path="/categorias" component={AddCategories} />
+                <Route path="*">
+                  <div>
+                    <h1>404</h1>
+                    <p>Recursos administrativos no encontrados</p>
+                  </div>
+                </Route>
+              </Switch>
+            </BrowserRouter>
+          </Route>
+
+          <Route path="*">
+              <h1>404</h1>
+              <p>Página no encontrada</p>
+          </Route>
+        </Switch>
     </React.Fragment>
   );
 }
