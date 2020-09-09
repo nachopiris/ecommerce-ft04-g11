@@ -8,6 +8,8 @@ import anime from 'animejs/lib/anime.es.js';
 import {useSpring, animated} from 'react-spring';
 import AliceCarousel from 'react-alice-carousel';
 import { CgShoppingCart } from 'react-icons/cg';
+import {connect} from 'react-redux';
+import { getLatests } from '../actions/products';
 
 const APP_NAME = config.app.name;
 
@@ -78,7 +80,12 @@ function ExploreButton() {
     );
 }
 
-function HomePage({}) {
+function HomePage({products, getLatests}) {
+
+    useEffect(() => {
+        getLatests();
+    },[]);
+
     return (
         <Container fluid>
             <Row className={s['main-section'] + ' ' + s['section']}>
@@ -92,14 +99,14 @@ function HomePage({}) {
                 </div>
             </Row>
 
-            <Gallery />
+            <Gallery products={products} />
             
         </Container>
     );
 }
 
 
-function Gallery()
+function Gallery({products})
 {
     const handleOnDragStart = (e) => e.preventDefault();
 
@@ -107,89 +114,22 @@ function Gallery()
 
     },[])
 
-    return(
-        <Row className={s['section2']}>
-            <AliceCarousel
-                mouseTrackingEnabled
-                mouseDragEnabled
-                infinite={false}
-                responsive={{0: {items: 2},500:{items: 3},1024:{tems: 6}}}
-                dotsDisabled
-                buttonsDisabled
-                > 
-                <div onDragStart={handleOnDragStart} className={'text-decoration-none text-light ' + s['carousel-item']}>
-                    <div className={s['cover-carousel']} >
-                        <img src="https://wallpaperaccess.com/full/7445.jpg" className={s['perspective']} />
-                    </div>
-                    <span className="mb-4 mt-auto">
-                        Titulo del game quesey
-                    </span>
-                    <span className="mt-auto mb-4"><Button variant="light"><CgShoppingCart /></Button> <Button variant="outline-light">Detalles</Button></span>
+    var items = products.map( (item, index) => (                    
+            <div key={index} className={'text-decoration-none text-light ' + s['carousel-item']}>
+                {console.log(item)}
+                <div className={s['cover-carousel']} >
+                    <img src={JSON.parse(item.images)[1] || JSON.parse(item.images)[0]} className={s['perspective']} />
                 </div>
-                <div onDragStart={handleOnDragStart} className={'text-decoration-none text-light ' + s['carousel-item']}>
-                    <div className={s['cover-carousel']} >
-                        <img src="https://i.pinimg.com/originals/ba/4d/80/ba4d801db37ad7ba4d455d742d46e680.jpg" className={s['perspective']} />
-                    </div>
-                    <span className="mb-4 mt-auto">
-                        Titulo del game quesey
+                <span className="mb-4 mt-auto">
+                    {item.name}
+                </span>
+                <span className="mt-auto mb-4">
+                    <Button variant="light"><CgShoppingCart /></Button>
+                    <Link to={"/productos/" + item.id} className="ml-1 btn btn-outline-light">Detalles</Link>
                     </span>
-                    <span className="mt-auto mb-4"><Button variant="light"><CgShoppingCart /></Button> <Button variant="outline-light">Detalles</Button></span>
-                </div>
-                <div onDragStart={handleOnDragStart} className={'text-decoration-none text-light ' + s['carousel-item']}>
-                    <div className={s['cover-carousel']} >
-                        <img src="https://images.wallpapersden.com/image/download/teppen-game_67864_3841x2161.jpg" className={s['perspective']} />
-                    </div>
-                    <span className="mb-4 mt-auto">
-                        Titulo del game quesey
-                    </span>
-                    <span className="mt-auto mb-4"><Button variant="light"><CgShoppingCart /></Button> <Button variant="outline-light">Detalles</Button></span>
-                </div>
-                <div onDragStart={handleOnDragStart} className={'text-decoration-none text-light ' + s['carousel-item']}>
-                    <div className={s['cover-carousel']} >
-                        <img src="https://www.10wallpaper.com/wallpaper/1440x900/1204/God_of_war_HD_Game_Wallpaper_11_1440x900.jpg" className={s['perspective']} />
-                    </div>
-                    <span className="mb-4 mt-auto">
-                        Titulo del game quesey
-                    </span>
-                    <span className="mt-auto mb-4"><Button variant="light"><CgShoppingCart /></Button> <Button variant="outline-light">Detalles</Button></span>
-                </div>
-                <div onDragStart={handleOnDragStart} className={'text-decoration-none text-light ' + s['carousel-item']}>
-                    <div className={s['cover-carousel']} >
-                        <img src="https://www.fondoshd.mx/descargar.php?id=2576&resolucion=1440x900" className={s['perspective']} />
-                    </div>
-                    <span className="mb-4 mt-auto">
-                        Titulo del game quesey
-                    </span>
-                    <span className="mt-auto mb-4"><Button variant="light"><CgShoppingCart /></Button> <Button variant="outline-light">Detalles</Button></span>
-                </div>
-                <div onDragStart={handleOnDragStart} className={'text-decoration-none text-light ' + s['carousel-item']}>
-                    <div className={s['cover-carousel']} >
-                        <img src="https://wallpaperstock.net/wallpapers/thumbs1/20924wide.jpg" className={s['perspective']} />
-                    </div>
-                    <span className="mb-4 mt-auto">
-                        Titulo del game quesey
-                    </span>
-                    <span className="mt-auto mb-4"><Button variant="light"><CgShoppingCart /></Button> <Button variant="outline-light">Detalles</Button></span>
-                </div>
-                <div onDragStart={handleOnDragStart} className={'text-decoration-none text-light ' + s['carousel-item']}>
-                    <div className={s['cover-carousel']} >
-                        <img src="https://www.freegreatpicture.com/files/photo102/50881-game-wallpaper.jpg" className={s['perspective']} />
-                    </div>
-                    <span className="mb-4 mt-auto">
-                        Titulo del game quesey
-                    </span>
-                    <span className="mt-auto mb-4"><Button variant="light"><CgShoppingCart /></Button> <Button variant="outline-light">Detalles</Button></span>
-                </div>
-                <div onDragStart={handleOnDragStart} className={'text-decoration-none text-light ' + s['carousel-item']}>
-                    <div className={s['cover-carousel']} >
-                        <img src="https://cdn.guidingtech.com/imager/assets/2020/05/898612/Best-Assassins-Creed-Valhalla-HD-and-4K-Wallpapers-8_4d470f76dc99e18ad75087b1b8410ea9.jpg?1588512644" className={s['perspective']} />
-                    </div>
-                    <span className="mb-4 mt-auto">
-                        Titulo del game quesey
-                    </span>
-                    <span className="mt-auto mb-4"><Button variant="light"><CgShoppingCart /></Button> <Button variant="outline-light">Detalles</Button></span>
-                </div>
-                <div className={s['carousel-item']}>
+            </div>
+        )).concat(
+            <div className={s['carousel-item']}>
 
                     <p className="mb-0">
                         <h2 className={s['kewx']}>Explorá</h2>
@@ -199,10 +139,36 @@ function Gallery()
                     </p>
                     <Link to="/catalogo" className={s['kewx']+" px-5 btn btn-outline-danger mb-4 btn-lg"}>Ver todos</Link>
                 </div>
-            </AliceCarousel>
+        )
+
+    return(
+        <Row className={s['section2']}>
+            <AliceCarousel
+                mouseTrackingEnabled
+                mouseDragEnabled
+                items={items}
+                infinite={false}
+                responsive={{0: {items: 2},500:{items: 3},1024:{tems: 6}}}
+                dotsDisabled
+                buttonsDisabled
+                />
         </Row>
     );
 }
 
+function mapStateToProps(state) {
+    return {
+        products: state.productsReducer.products
+    }
+}
 
-export default HomePage;
+function mapDispatchToProps(dispatch) {
+    return {
+        getLatests: () => dispatch(getLatests())
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(HomePage);
