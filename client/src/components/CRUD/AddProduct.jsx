@@ -32,7 +32,8 @@ handleSubmit = (e) => {
     }
 
     this.props.addProduct(this.state);
-    e.target.reset();
+    return window.location.reload();
+    //e.target.reset();
 }
 
 updateState = (e) => {
