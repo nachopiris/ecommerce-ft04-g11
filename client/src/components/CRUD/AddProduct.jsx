@@ -30,6 +30,7 @@ export function AddProduct({createProduct}) {
     }
     //***************************************************************************************************/
 
+
     //********************* LLAMADO A LA ACCION QUE CREA EL PRODUCTO ***************************/
     createProduct({
         "name": e.target.name.value,

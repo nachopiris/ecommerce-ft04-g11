@@ -1,7 +1,6 @@
 import React, { useEffect, useState, Component  } from 'react';
 import Products from './Products';
 import AddProduct from './AddProduct';
-import EdditProduct from './EditProduct';
 import EditProduct from './EditProduct';
 
 
@@ -19,7 +18,6 @@ const FormCRUD = () => {
                   categories:'',
                 
                   }
-
   
   const [currentProduct, setCurrentProduct] = useState(initialFormState);
 
@@ -52,6 +50,7 @@ const FormCRUD = () => {
               </div>
               <div className="card bg-dark border-0 overflow-auto">
                 <div className="card-body p-0" style={{maxHeight: '400px'}}>
+
                    <Products  editRow={editRow}/>
                 </div>
               </div>

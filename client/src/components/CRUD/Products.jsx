@@ -7,6 +7,7 @@ var idCat;
 //********************* CONECTADO AL STORE DE REDUX ***************************/
 const  Products = ({allProduct, allcategories, getCategories, getProducts, deleteProduct, addCategoryToProduct, deleteCategoryToProduct, updateProduct, editRow}) => {
 
+
     function selectIdCat (e) {
         idCat = e.target.value;
     }
@@ -16,6 +17,7 @@ const  Products = ({allProduct, allcategories, getCategories, getProducts, delet
         getCategories();
     },[]);
     
+
 
     const categorieslistexistin = allcategories.map(cat => {
         return  (
@@ -44,10 +46,9 @@ const  Products = ({allProduct, allcategories, getCategories, getProducts, delet
                         </div>                              
                     </td>
                     <td className="text-center">
+
                             <select className="form-control form-control-sm mb-1" onChange={selectIdCat}> <option>Seleccionar</option> {categorieslistexistin} </select> 
-                            <button className="btn btn-outline-light btn-block btn-sm mb-1" onClick={() => { addCategoryToProduct(idCat, product.id); window.location.reload(true);} }>Añadir</button>   
-                                                                                                         
-                           
+                            <button className="btn btn-outline-light btn-block btn-sm mb-1" onClick={() => { addCategoryToProduct(idCat, product.id); window.location.reload(true);} }>Añadir</button>    
                             {(product.categories.length && product.categories.map((cat, index) => (
                             <span key = {index} className="pl-3 badge m-1 badge-dark2 badge-sm badge-pill">    {cat.name}                    
                                 <button  className="btn btn-outline-light btn-sm border-0" onClick={()=>{ deleteCategoryToProduct(cat.id, product.id); window.location.reload(true);}}  >&times;</button>
