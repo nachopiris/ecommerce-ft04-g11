@@ -6,7 +6,7 @@ export default function Navbar() {
     return(
         <nav className={style.navbar}>
             <div className={style.logo}>
-                <NavLink exact to='/'>
+                <NavLink activeClassName={style.active} style={{background: "none"}} exact to='/'>
                     <img src='/images/logo.svg' alt=""/>
                 </NavLink>
             </div>
