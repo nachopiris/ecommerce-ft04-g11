@@ -5,18 +5,17 @@ import Product from './components/Product/Product';
 import Catalogue from './components/Catalogue';
 import ProductsCRUD from './components/CRUD/formCRUD';
 import AddCategories from './components/AddCategory';
-import Navbar from './components/Navbar';
 
 function App() {
   return (
     <React.Fragment>
         <BrowserRouter>
-          <Route path="/" component={Navbar} />
-          <Route exact path="/" />
           <Route exact path="/productos/:id" component={Product} />
-          <Route exact path="/catalogo" component={Catalogue} />
-          <Route exact path="/admin/productos" component={ProductsCRUD} />
-          <Route exact path="/admin/categorias" component={AddCategories} />
+          <Route exact path="/catalogo" component={Catalogue} />    
+        </BrowserRouter>
+        <BrowserRouter basename="/admin">
+          <Route exact path="/productos" component={ProductsCRUD} />
+          <Route exact path="/categorias" component={AddCategories} />
         </BrowserRouter>
     </React.Fragment>
   );
