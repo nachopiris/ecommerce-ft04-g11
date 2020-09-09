@@ -6,7 +6,7 @@ function ordersSeeder() {
     "created",
     "processing",
     "canceled",
-    "completed",
+    "completed"
   ];
 
   for (let i = 0; i < 5; i++) {
@@ -16,7 +16,7 @@ function ordersSeeder() {
       status: status[i],
     });
   }
-
+}
 function productsSeeder()
 {
     Product.bulkCreate([{
