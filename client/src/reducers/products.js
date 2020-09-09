@@ -6,6 +6,11 @@ const initialState = {
 
 export default function productsReducer(state = initialState, action){
     switch (action.type) {
+        case 'GET_LATESTS':
+            return {
+                ...state,
+                products: action.payload
+            }
         case 'DELETE_CATEGORY_TO_PRODUCT':
             return {
                 ...state
