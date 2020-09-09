@@ -1,10 +1,24 @@
 const initialState = {
     products: [],
-    product: {}
+    product: {},
+    search:"",
 }
 
 export default function productsReducer(state = initialState, action){
     switch (action.type) {
+        case 'DELETE_CATEGORY_TO_PRODUCT':
+            return {
+                ...state
+            }
+        case 'ADD_CATEGORY_TO_PRODUCT':
+            return {
+                ...state
+            }
+        case 'SEARCH_PRODUCT':
+            return {
+                ...state,
+                search: action.payload
+            }
         case 'FILTER_BY_CATEGORY':
             let products = action.payload;
             if(!products) products = [];
@@ -25,26 +39,19 @@ export default function productsReducer(state = initialState, action){
         case 'CREATE_PRODUCT':
             return {
                 ...state,
-                product: action.payload,
-                products: [...state.products, action.payload]
             }
 
         case 'UPDATE_PRODUCT':
-            state.products.forEach((item, index) => {
-                if(item.data.id === action.payload.data.id){
-                    state.products[index] = action.payload
-                }
-            })
             return {
                 ...state,
-                product: action.payload
             }
         
         case 'DELETE_PRODUCT':
-            if(state.product.data && state.product.data.id === action.payload) state.product = {};
+            
+            if(state.product && state.product.id === action.payload) state.product = {};
             return {
                 ...state,
-                products: state.products.filter(item => item.data.id !== action.payload)
+                products: state.products.filter(item => item.id !== action.payload)
             }
         default:
             return state;

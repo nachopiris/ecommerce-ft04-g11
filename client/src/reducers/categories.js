@@ -7,7 +7,7 @@ export default function categoriesReducer(state = initialState, action){
     switch (action.type) {
         case 'GET_CATEGORIES':
             return {
-                ...state,
+                ...state, 
                 categories: action.payload
             }
         case 'GET_CATEGORY':

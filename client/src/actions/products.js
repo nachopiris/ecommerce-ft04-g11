@@ -7,8 +7,18 @@ const CREATE_PRODUCT = 'CREATE_PRODUCT';
 const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 const DELETE_PRODUCT = 'DELETE_PRODUCT';
 const FILTER_BY_CATEGORY = 'FILTER_BY_CATEGORY';
+const SEARCH_PRODUCT = 'SEARCH_PRODUCT';
+const ADD_CATEGORY_TO_PRODUCT = "ADD_CATEGORY_TO_PRODUCT";
+const DELETE_CATEGORY_TO_PRODUCT = 'DELETE_CATEGORY_TO_PRODUCT';
 
 const BASE_URI = config.api.base_uri + '/products';
+
+export function searchProducts(searchWord)
+{
+    return dispatch => {
+            dispatch({type: SEARCH_PRODUCT, payload: searchWord})
+    }
+}
 
 export function filterByCategory(nombreCat)
 {
@@ -39,7 +49,7 @@ export function getProduct(id)
         return Axios.get(BASE_URI + '/' + id)
         .then(res => res.data)
         .then(res => {
-            dispatch({type:GET_PRODUCT, payload: res})
+            dispatch({type:GET_PRODUCT, payload: res.data})
         });
     }
 }
@@ -62,11 +72,12 @@ export function createProduct(attributes)
 
 export function updateProduct(id, attributes)
 {
+
     return dispatch => {
         return Axios.put(BASE_URI + '/' + id, attributes)
         .then(res => res.data)
         .then(res => {
-            dispatch({type: UPDATE_PRODUCT, payload: res});
+            dispatch({type: UPDATE_PRODUCT});
         })
     }
 }
@@ -77,6 +88,26 @@ export function deleteProduct(id)
         return Axios.delete(BASE_URI + '/' + id)
         .then(() => {
             dispatch({type: DELETE_PRODUCT, payload: id});
+        })
+    }
+}
+
+export function addCategoryToProduct(idCat, idProduct)
+{
+    return dispatch => {
+        return Axios.post(BASE_URI + '/' + idProduct + '/category/' + idCat)
+        .then(()=>{
+            dispatch({type:ADD_CATEGORY_TO_PRODUCT})
+        })
+    }
+}
+
+export function deleteCategoryToProduct(idCat, idProduct)
+{
+    return dispatch => {
+        return Axios.delete(BASE_URI + '/' + idProduct + '/category/' + idCat)
+        .then(()=>{
+            dispatch({type:DELETE_CATEGORY_TO_PRODUCT})
         })
     }
 }

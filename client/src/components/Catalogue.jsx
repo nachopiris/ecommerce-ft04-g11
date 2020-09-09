@@ -1,47 +1,31 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react';
 import ProductCard from './ProductCard/ProductCard';
 import style from '../styles/catalogue.module.scss';
 import axios from 'axios'; 
 import { getProducts, filterByCategory } from '../actions/products';
+import { getCategories } from '../actions/categories';
 import {connect} from 'react-redux';
 import { Container, Row, Col, Form, Alert } from 'react-bootstrap';
 import SearchBar from './SearchBar';
 
-
-export function Catalogue({ products, getProducts, filterByCategory}) {
-
-    const [{categories},setCategories] = useState([]);
-    const [{filterProducts},setFilterProducts] = useState({});
-
-    function getCategories(){
-        axios.get('http://localhost:3001/categories')
-            .then((res)=>{
-                setCategories({categories: res.data.data});                
-            })
-            .catch(()=>{
-                Error ("Error to recive data");
-            })
-    };
+//*******************CONECTADO AL STORE DE REDUX *********************/
+export function Catalogue({ products, categories, getCategories, getProducts, filterByCategory}) {
 
     useEffect(() => {
-        if(!categories){
-                getCategories();
-        }
+
         getProducts();
+        getCategories();
       },[]);
     
+
     function getFilterCategories(e){
         let nombreCat = e.target.value;
-        console.log(nombreCat)
         if(!nombreCat){
             return getProducts();
         }
         filterByCategory(nombreCat)
+        
     }
-
-    function getProductsByKeyword(){
-        return getProducts;
-    }  
 
     return (
         <Container>
@@ -71,7 +55,7 @@ export function Catalogue({ products, getProducts, filterByCategory}) {
                 )} 
                 </Col>
                 <Col sm={8}>
-                    <SearchBar searchProducts={getProducts} />
+                    <SearchBar  />
                 </Col>
             </Row>
             <Row className={style.catalogue}>
@@ -90,25 +74,6 @@ export function Catalogue({ products, getProducts, filterByCategory}) {
                         </Col>
                     )
                 }
-                
-                {filterProducts && (
-                    <div>                  
-                        {
-                            filterProducts.map((e,i) => {
-                                return (
-                                    <ul key={e.id} >
-                                    <li>     
-                                            <h3> {e.name} </h3>
-                                            <h6> {e.description} </h6>
-                                            <h6> {e.price} </h6>
-                                            <h6> <img src={e.images[0]}   title={e.images} />  </h6>
-                                        </li>
-                                    </ul>
-                                )
-                            })
-                        }
-                    </div>
-                )}
             </Row>
         </Container>
     );
@@ -116,14 +81,16 @@ export function Catalogue({ products, getProducts, filterByCategory}) {
 
 function mapStateToProps(state){
     return {
-        products: state.productsReducer.products
+        products: state.productsReducer.products,
+        categories: state.categoriesReducer.categories
     }
 }
 
 function mapDispatchToProps(dispatch){
     return {
         getProducts: (value) => dispatch(getProducts(value)),
-        filterByCategory: value => dispatch(filterByCategory(value))
+        filterByCategory: value => dispatch(filterByCategory(value)),
+        getCategories: () => dispatch(getCategories()) 
     }
 }
 

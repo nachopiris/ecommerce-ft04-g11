@@ -1,85 +1,57 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+import {connect} from 'react-redux';
+import { getProducts, deleteProduct, updateProduct, addCategoryToProduct, deleteCategoryToProduct } from '../../actions/products';
+import { getCategories } from '../../actions/categories';
 
-var IdCat;
+var idCat;
+//********************* CONECTADO AL STORE DE REDUX ***************************/
+const  Products = ({allProduct, allcategories, getCategories, getProducts, deleteProduct, addCategoryToProduct, deleteCategoryToProduct, updateProduct, editRow}) => {
 
-class Products extends Component{
 
-    handleUpdate = () => {
-        this.props.uploadEdit(this.indexNum, this.name.value, this.description.value, this.stock.value, this.price.value, this.image.value, this.categories.value);
+    function selectIdCat (e) {
+        idCat = e.target.value;
     }
 
-    componentDidMount(){
-    }
-
-    sendCatId = (e) =>{
-        IdCat = e.target.value;
-    }
-
-    handleCancel = () => {
-        this.props.allProduct.map(e => e.isEditing = false);
-    }
+    useEffect(() => {
+        getProducts();
+        getCategories();
+    },[]);
     
 
-    componentDidUpdate(){
-        this.handleCancel();
-    }
 
-render() {
-    const {allProduct, allcategories, pressEditBtn, pressDelete, pressAddCatBtn, pressDelCatBtn, getCategoriesByProduct, categoriesByProduct , pressCancelBtn} = this.props;
-    
-
-    const categorieslistbyproduct = categoriesByProduct.map(cat => {
-        return (
-            <option key={cat.id} value={cat.id}> {cat.name} </option>
-        )
+    const categorieslistexistin = allcategories.map(cat => {
+        return  (
+            <option key={cat.id} value={cat.id}> {cat.name} </option> 
+            )
     })
 
-    const productList = allProduct.map((product, index) =>{
-
-        return product.isEditing === true ? (
-            <tr key = {index}>
-                <td><input type="text" ref={(val) => {this.name=val}} required defaultValue={product.name}/></td>
-                <td><input type="text" ref={(val) => {this.description=val}} required defaultValue={product.description}/></td>
-                <td><input type="text" ref={(val) => {this.stock=val}} required defaultValue={product.stock}/></td>
-                <td><input type="text" ref={(val) => {this.price=val}} required defaultValue={product.price}/></td>
-                <td><input type="text" ref={(val) => {this.image=val}} required defaultValue={product.image}/></td>
-                <input type="hidden" ref={(val) => {this.categories = val}} defaultValue={JSON.stringify(product.categories)} />
-                <td>
-                <div className="btn-group">
-                    <input className="btn btn-warning btn-sm" type="button" value="Update" onClick={this.handleUpdate} ref={() => {this.indexNum = product.id}} />
-                    <button className="btn btn-danger btn-sm" onClick={()=>pressCancelBtn(index)}>Cancel</button>
-                </div>
-                </td>
-            </tr>
-        ) : (
+       const productList = allProduct.map((product, index) =>{
+           
+        return  (
             <tr  key={index}>
                     <td>{product.name}</td>
                     <td><small>{product.description}</small></td>
                     <td>{product.stock}</td>
                     <td>{product.price}</td>
-                 
-                    {product.image && (
-                    <td> <img  src={product.image[0]} alt="" title=""  width="60" height="80"/> </td>
+                    
+                    {product.images && ( 
+                    <td> <img  src={JSON.parse(product.images)[0]} alt="" title=""  width="60" height="80"/> </td>
                     )}
                     <td>
                         <div className="btn-group">
-                            <button className="btn btn-warning btn-sm" onClick={() => pressEditBtn(index)}>Edit</button>
-                            <button className="btn btn-danger btn-sm" onClick={()=>pressDelete(product.id, index)}>Delete</button>
-                        </div>
+                            <button className="btn btn-warning btn-sm"   onClick={() => {editRow(product)}}>Edit</button>
+                                                                
+                            <button className="btn btn-danger btn-sm" onClick={()=> deleteProduct(product.id)}>Delete</button>
+                                                                     
+                        </div>                              
                     </td>
                     <td className="text-center">
-                            <select className="form-control form-control-sm mb-1" onChange={this.sendCatId} > <option>Seleccionar</option> {
-                                allcategories.map(cat => {
-                                        if(!product.categories.find(item => item.name === cat.name)) return (<option key={cat.id} value={cat.id}> {cat.name} </option> )
-                                    
-                                })
-                            } </select> 
-                            <button className="btn btn-outline-light btn-block btn-sm mb-1" onClick={() => pressAddCatBtn(IdCat, product.id) }>Añadir</button>                         
-                           
+
+                            <select className="form-control form-control-sm mb-1" onChange={selectIdCat}> <option>Seleccionar</option> {categorieslistexistin} </select> 
+                            <button className="btn btn-outline-light btn-block btn-sm mb-1" onClick={() => { addCategoryToProduct(idCat, product.id); window.location.reload(true);} }>Añadir</button>    
                             {(product.categories.length && product.categories.map((cat, index) => (
-                            <span className="pl-3 badge m-1 badge-dark2 badge-sm badge-pill">
-                                {cat.name}
-                                <button onClick={() => pressDelCatBtn(cat.id, product.id)} className="btn btn-outline-light btn-sm border-0">&times;</button>
+                            <span key = {index} className="pl-3 badge m-1 badge-dark2 badge-sm badge-pill">    {cat.name}                    
+                                <button  className="btn btn-outline-light btn-sm border-0" onClick={()=>{ deleteCategoryToProduct(cat.id, product.id); window.location.reload(true);}}  >&times;</button>
                             </span>
                         ))) || (<small><em>Sin categorías</em></small>)}
                     </td> 
@@ -88,8 +60,8 @@ render() {
             )
     }
     );
-
-    return(
+   
+return  (
         <div className="table-responsive" >
             <table className="table table-hover table-striped table-sm table-dark">
                 <thead>
@@ -109,9 +81,33 @@ render() {
                 </tbody>
             </table>
         </div>
-    )
+        )
+
 
 }
+
+
+function mapStateToProps(state){
+    return {
+        allProduct: state.productsReducer.products,
+        allcategories: state.categoriesReducer.categories,
+    }
 }
 
-export default Products;
+function mapDispatchToProps(dispatch){
+    return {
+        getProducts: (value) => dispatch(getProducts(value)),
+        getCategories: () => dispatch(getCategories()),
+        deleteProduct: (value) => dispatch(deleteProduct(value)),
+        addCategoryToProduct: (idCat, idProduct) => dispatch(addCategoryToProduct(idCat, idProduct)),
+        deleteCategoryToProduct: (idCat, idProduct) => dispatch(deleteCategoryToProduct(idCat, idProduct)),
+        updateProduct: (idProduct, attributes) => dispatch(updateProduct(idProduct, attributes))
+        
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Products);
+
