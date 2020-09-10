@@ -19,12 +19,6 @@ const  Products = ({allProduct, allcategories, getCategories, getProducts, delet
     
 
 
-    const categorieslistexistin = allcategories.map(cat => {
-        return  (
-            <option key={cat.id} value={cat.id}> {cat.name} </option> 
-            )
-    })
-
        const productList = allProduct.map((product, index) =>{
            
         return  (
@@ -45,16 +39,22 @@ const  Products = ({allProduct, allcategories, getCategories, getProducts, delet
                                                                      
                         </div>                              
                     </td>
-                    <td className="text-center">
+                    {product.categories && <td className="text-center">
 
-                            <select className="form-control form-control-sm mb-1" onChange={selectIdCat}> <option>Seleccionar</option> {categorieslistexistin} </select> 
+                            <select className="form-control form-control-sm mb-1" onChange={selectIdCat}> <option>Seleccionar</option> {
+                                allcategories.map((item, index) => {
+                                    if(!product.categories.find(cat => item.id === cat.id)){
+                                        return <option key={item.id} value={item.id}> {item.name} </option> 
+                                    }
+                                })
+                            } </select> 
                             <button className="btn btn-outline-light btn-block btn-sm mb-1" onClick={() => { addCategoryToProduct(idCat, product.id); window.location.reload(true);} }>Añadir</button>    
                             {(product.categories.length && product.categories.map((cat, index) => (
                             <span key = {index} className="pl-3 badge m-1 badge-dark2 badge-sm badge-pill">    {cat.name}                    
                                 <button  className="btn btn-outline-light btn-sm border-0" onClick={()=>{ deleteCategoryToProduct(cat.id, product.id); window.location.reload(true);}}  >&times;</button>
                             </span>
                         ))) || (<small><em>Sin categorías</em></small>)}
-                    </td> 
+                    </td> }
                    
             </tr>
             )

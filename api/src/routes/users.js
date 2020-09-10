@@ -1,6 +1,6 @@
 const server = require('express').Router();	
 const Sequelize = require('sequelize');	
-const { User } = require('../db.js');	
+const { User, Order} = require('../db.js');	
 
 server.get('/', (req, res) => {	
     User.findAll({	
@@ -10,7 +10,6 @@ server.get('/', (req, res) => {
         return res.send({data:users}).status(201);	
     }).catch(err => {	
         var status = 500;	
-        if (err.name === 'SequelizeValidationError') status = 422;	
         return res.send({errors: err.errors, status}).status(status);	
     });	
 })	
@@ -25,7 +24,33 @@ server.post('/', (req, res) => {
         if (err.name === 'SequelizeValidationError') status = 422;	
         return res.send({errors: err.errors, status}).status(status);	
     });	
-})	
+})
+
+server.get('/:id/orders', (req, res) => {
+    const id = req.params.id;
+    
+    if(!Number.isInteger(id * 1)){//multiplicar * 1 es muy IMPORTANTE (cositas de javascript xd)!	
+		return res.send({errors: [{message:'La id del usuario no es valida.'}], status:422}).status(422);	
+    }
+
+    
+    User.findByPk(id, {
+        include: {
+            model: Order,
+            through: { attributes: ['price','quantity'] }
+        }
+    })
+    .then(user => {
+        return res.send({data: user.orders}).status(200);
+    })
+    .catch(err => {	
+        var status = 500;
+        if(err.name === 'SequelizeEagerLoadingError'){
+            return res.send({data: []}).status(204);
+        }
+        return res.send({errors: err, status}).status(status);	
+    });	
+})
 
 server.put('/:id', (req, res) => {	
     const id = req.params.id;	

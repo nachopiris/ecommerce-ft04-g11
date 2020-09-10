@@ -61,6 +61,7 @@ export function getProduct(id)
         return Axios.get(BASE_URI + '/' + id)
         .then(res => res.data)
         .then(res => {
+            console.log(res);
             dispatch({type:GET_PRODUCT, payload: res.data})
         });
     }
