@@ -16,27 +16,24 @@ function App() {
           <Route exact path="/" component={HomePage} />
           <Route exact path="/productos/:id" component={Product} />
           <Route exact path="/catalogo" component={Catalogue} />    
-
-          <Route path="/admin">
-            <BrowserRouter basename="/admin">
-              <Switch>
-                <Route exact path="/productos" component={ProductsCRUD} />
-                <Route exact path="/categorias" component={AddCategories} />
-                <Route path="*">
-                  <div>
-                    <h1>404</h1>
-                    <p>Recursos administrativos no encontrados</p>
-                  </div>
-                </Route>
-              </Switch>
-            </BrowserRouter>
+          
+          <Route exact path="/admin/productos" component={ProductsCRUD} />
+          <Route exact path="/admin/categorias" component={AddCategories} />
+          
+          <Route path="/admin/*">
+            <div>
+              <h1>404</h1>
+              <p>Recursos administrativos no encontrados</p>
+            </div>
           </Route>
 
           <Route path="*">
-              <h1>404</h1>
-              <p>Página no encontrada</p>
+            <h1>404</h1>
+            <p>Página no encontrada</p>
           </Route>
-        </Switch>
+
+        
+      </Switch>
     </React.Fragment>
   );
 }

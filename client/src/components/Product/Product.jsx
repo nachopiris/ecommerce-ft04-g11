@@ -45,7 +45,7 @@ export function Product ({product, getProduct}) {
 
                       <span className={'text-uppercase ' + s['text-muted']}>Categorías: </span>
                       <br />
-                      {product.data.categories.map(item => (
+                      {product.categories && product.categories.map(item => (
                         <Link to="#" className="text-muted2 m-1 badge badge-dark2 badge-pill">{item.name}</Link>
                       ))}
 
