@@ -17,6 +17,20 @@ server.get('/', (req, res, next) => {
 });
 
 
+server.get('/custom/latests', (req, res, next) => {
+	Product.findAll({
+		order: [
+			['createdAt','DESC']
+		],
+		limit: 6
+	})
+		.then(products => {
+			res.send({ data: products });
+		})
+		.catch(next);
+});
+
+
 
 server.get('/search/:value', (req,res)=>{
 

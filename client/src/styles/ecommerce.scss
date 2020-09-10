@@ -1,3 +1,10 @@
+@font-face{
+    font-family: 'TextDefault';
+    src: url('/fonts/Quicksand-VariableFont_wght.ttf')    
+}
+
+$font-family-sans-serif: 'TextDefault';
+
 $body-bg: #1F2747; //161E57;
 $body-color: #fff;
 
@@ -31,3 +38,6 @@ $input-placeholder-color: rgba(255,255,255,.6);
 .form-control:focus{
     background-color: theme-color("dark");
 }
+
+
+@import "react-alice-carousel/lib/scss/alice-carousel.scss";

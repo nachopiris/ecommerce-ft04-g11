@@ -10,8 +10,20 @@ const FILTER_BY_CATEGORY = 'FILTER_BY_CATEGORY';
 const SEARCH_PRODUCT = 'SEARCH_PRODUCT';
 const ADD_CATEGORY_TO_PRODUCT = "ADD_CATEGORY_TO_PRODUCT";
 const DELETE_CATEGORY_TO_PRODUCT = 'DELETE_CATEGORY_TO_PRODUCT';
+const GET_LATESTS = 'GET_LATESTS';
 
 const BASE_URI = config.api.base_uri + '/products';
+
+export function getLatests()
+{
+    return dispatch => {
+        return Axios.get(BASE_URI + '/custom/latests')
+        .then(res => res.data)
+        .then(res => {
+            dispatch({type: GET_LATESTS, payload: res.data})
+        })
+    }
+}
 
 export function searchProducts(searchWord)
 {

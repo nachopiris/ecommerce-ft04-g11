@@ -2,12 +2,13 @@ const { Router } = require('express');
 const { Product } = require('../db.js');
 const Sequelize = require('sequelize');
 
-
 // import all routers;
 
 const productRouter = require('./product.js');
 const categoriesRouter = require('./categories.js');
 const ordersRouter = require('./orders.js');
+const usersRouter = require('./users.js');
+const { route } = require('./product.js');
 
 const router = Router();
 
@@ -17,6 +18,7 @@ const router = Router();
 router.use('/products', productRouter);
 router.use('/categories', categoriesRouter);
 router.use('/orders', ordersRouter);
+router.use('/users', usersRouter);
 
 
 
