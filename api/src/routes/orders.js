@@ -1,5 +1,5 @@
 const server = require('express').Router();
-const { Order } = require('../db.js');
+const { Order, User } = require('../db.js');
 
 
 server.get('/:id', (req, res, next) => {
@@ -73,5 +73,90 @@ server.put('/:id', (req, res) => {
         return res.sendStatus(500);
     });
 });
+
+
+/////****************** CREA ORDEN VACIA NUEVA PARA EL USUARIO SI NO EXISTE Y EL STATUS ES COMPLETADO O CANCELADO ************/
+server.post('/:idUser', (req, res) => {
+
+    const idUser = req.params.idUser;
+    Order.findOne({
+          where: { 
+            userId: idUser,
+            status: "shopping_cart",
+            }
+    }).then((e)=>{      
+      
+        if(e && ((e.dataValues.status == "completed") || (e.dataValues.status == "created"))){
+              console.log('este es el primer if');
+        
+            Order.create({
+            }).then((order)=>{
+                
+                User.findByPk(idUser).then((user) =>{
+                    if(!user){
+                        return res.send({errors: {messages:['Usuario no encontrada'], status:404}}).status(404);
+                    }
+                    user.addOrder(order).then(()=>{
+                        return res.sendStatus(201);
+                    }); 
+                }).catch(err => {
+                    return res.sendStatus(500);
+                });
+            }).catch(err => {
+                return res.sendStatus(500);
+            });
+            return;
+        }else {
+                    if (e && (e.dataValues.status == "shopping_cart")) {
+                        console.log('este es el segunndo if');   
+                        res.send("ok"); 
+                            return;
+                    }
+        }
+
+            Order.create({
+                }).then((order)=>{
+                    
+                    User.findByPk(idUser).then((user) =>{
+                        if(!user){
+                            return res.send({errors: {messages:['Usuario no encontrada'], status:404}}).status(404);
+                        }
+                        user.addOrder(order).then(()=>{
+                            return res.sendStatus(201);
+                        }); 
+                    }).catch(err => {
+                        return res.sendStatus(500);
+                    });
+                }).catch(err => {
+                    return res.sendStatus(500);
+                });
+    })
+
+});
+
+
+///**************************** RUTA PARA SETEAR STATUS EN EL ORDER *********************/
+server.put('/setstatus/:idUser', (req, res) => {
+
+    const idUser = req.params.idUser;
+
+    Order.findOne({
+        where: {
+            userId: idUser,
+            status: "shopping_cart"
+        }
+    }).then(e => {
+        e.status = "completed";
+        e.save().then((e)=>{
+            res.send(e);
+        })
+     
+    })
+
+  
+});
+
+
+
 
 module.exports = server;
