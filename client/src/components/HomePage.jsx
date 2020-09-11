@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import React, { useEffect, useRef } from "react";
+import { Container, Row, Button } from "react-bootstrap";
 import config from "../config";
 import s from "../styles/homePage.module.scss";
-import TextyAnim from "rc-texty";
 import { Link } from "react-router-dom";
-import anime from "animejs/lib/anime.es.js";
 import { useSpring, animated } from "react-spring";
 import AliceCarousel from "react-alice-carousel";
 import { CgShoppingCart } from "react-icons/cg";
@@ -48,7 +46,38 @@ function ShowAppName() {
       duration: 800,
     },
   });
-  return <animated.h1 style={props}>{APP_NAME}</animated.h1>;
+  const propsWhite = useSpring({
+    from: {
+      textShadow: "0px 0px 0px transparent",
+    },
+    to: {
+      textShadow: "0px 0px 10px white",
+    },
+    delay: 300,
+    config: {
+      duration: 1500,
+    },
+  });
+  const propsRed = useSpring({
+    from: {
+      textShadow: "0px 0px 0px transparent",
+    },
+    to: {
+      textShadow: "0px 0px 10px red",
+    },
+    delay: 300,
+    config: {
+      duration: 1500,
+    },
+  });
+  return (
+    <animated.h1 className="lg" style={props}>
+      <animated.span style={propsWhite}>Origin</animated.span>
+      <animated.span style={propsRed} className="text-redGamer">
+        Master
+      </animated.span>
+    </animated.h1>
+  );
 }
 
 function ExploreButton() {
@@ -71,7 +100,7 @@ function ExploreButton() {
     <animated.div style={props}>
       <Link
         to="/catalogo"
-        className={s["kewx"] + " btn btn-danger shadow btn-lg"}
+        className={s["kewx"] + " btn btn-primary shadow btn-lg"}
       >
         Catálogo completo
       </Link>
@@ -80,6 +109,21 @@ function ExploreButton() {
 }
 
 function HomePage({ products, getLatests }) {
+  const props = useSpring({
+    from: {
+      filter: "brightness(1.5)",
+    },
+    to: {
+      filter: "brightness(0.65)",
+    },
+
+    config: {
+      duration: 1200,
+    },
+  });
+
+  var parallax = useRef();
+
   useEffect(() => {
     getLatests();
   }, []);
@@ -87,9 +131,12 @@ function HomePage({ products, getLatests }) {
   return (
     <Container fluid>
       <Row className={s["main-section"] + " " + s["section"]}>
-        <div className={s["cover-main"]}>
+        <animated.div
+          style={props}
+          className={"overflow-hidden " + s["cover-main"]}
+        >
           <img src="https://images.hdqwalls.com/wallpapers/thanos-vs-kratos-jt.jpg" />
-        </div>
+        </animated.div>
         <div className={s["main-inside"]}>
           <ShowAppName />
           <TextIntro />
@@ -142,7 +189,7 @@ function Gallery({ products }) {
         <p className={s.kewx}>Mirá nuestro catálogo completo!</p>
         <Link
           to="/catalogo"
-          className={s["kewx"] + " px-5 btn btn-outline-danger mb-4 btn-lg"}
+          className={s["kewx"] + " px-5 btn btn-outline-primary mb-4 btn-lg"}
         >
           Ver todos
         </Link>

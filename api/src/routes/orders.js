@@ -146,6 +146,7 @@ server.put('/setstatus/:idUser', (req, res) => {
         e.status = "completed";
         e.save().then((e)=>{
             res.send("estatus cambiado a completed");
+
         })
      
     })
