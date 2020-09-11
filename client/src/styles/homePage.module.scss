@@ -1,82 +1,64 @@
-@font-face {
-    font-family: 'HeaderFont';
-    src: url('/fonts/Gruppo-Regular.ttf');
-}
-
 .section {
-    height: 80vh;
+  height: 80vh;
 }
 
-.cover-main{
-    height: 80vh;
-    background-color: #000;
+.cover-main {
+  height: 80vh;
+  background-color: #000;
+  width: 100%;
 }
 
-.cover-main, .cover-carousel{
-    overflow: hidden;
-    display: flex;
-    position: absolute;
-    filter: brightness(0.4) sepia(60%);
+.cover-main,
+.cover-carousel {
+  overflow: hidden;
+  display: flex;
+  position: absolute;
+  filter: brightness(0.4) sepia(60%);
 }
 
-.cover-main img{
-    margin: auto;
-    height: 150%;
+.cover-main img {
+  margin: auto;
+  height: 150%;
 }
 
-.main-inside{
-    padding-left: 10%;
-    position: relative;
-    align-self: center;
-    justify-self: center;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-h1{
-    font-size: 70pt;
-}
-@media(max-width: 500px){
-    h1{
-        font-size: 30pt;
-    }
-}
-h1,h2,h3,h4{
-    color:white;
-    opacity: 1;
-    font-family: 'HeaderFont';
+.main-inside {
+  padding-left: 10%;
+  position: relative;
+  align-self: center;
+  justify-self: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.cover-carousel{
-    height: 300px;
-    width: 100%;
-    z-index: -1;
-    transform: skewX(-7deg);
+.cover-carousel {
+  height: 300px;
+  width: 100%;
+  z-index: -1;
+  transform: skewX(-7deg);
 }
 
 .cover-carousel img {
-    height: 120%;
-    margin: auto;
+  height: 120%;
 }
 
-.carousel-item{
-    height: 300px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+.carousel-item {
+  height: 300px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 
-    &:hover .cover-carousel{
-        filter: brightness(0.5) sepia(0%);
-    }
+  &:hover .cover-carousel {
+    filter: brightness(0.5) sepia(0%);
+  }
 }
 
-.section2{
-
-    background-color: rgba(0,0,0,.8);
+.section2 {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-.kewx{
-    transform: skewX(-7deg);
+.kewx {
+  transform: skewX(-7deg);
 }
