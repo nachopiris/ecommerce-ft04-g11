@@ -87,6 +87,7 @@ server.put('/:id', (req, res) => {
 
 
 //******************* RUTA PARA AGREGAR ITEMS AL CARRITO ***************************/
+//*********** ademas controla el stock existente del producto **********************/
 server.post('/:idUser/cart', (req, res) => {
 
     const idUser = req.params.idUser;
@@ -104,25 +105,45 @@ server.post('/:idUser/cart', (req, res) => {
                 return;
             }
             let orderId = order.id;
-                Orderline.create({
-                    price: priceProduct,
-                    quantity: quantityProduct,
-                    productId: idProduct,
-                    orderId: orderId
-                 
-                }).then((orderCreated)=>{
-                    return res.send(orderCreated).sendStatus(200); 
-                }).catch(err => {	
-                    var status = 500;		
-                    return res.send("Este producto ya fue agregado a la orden").status(status);
-                }); 
+
+            Product.findOne({
+                where: {
+                    id: idProduct
+                }
+            }).then((product)=>{
+                let stock = product.stock;
+
+                if(quantityProduct > stock){
+                    res.send("La cantidad pedida supera el stock existente");
+                    return
+                }
+                product.stock = stock - quantityProduct;
+
+                    Orderline.create({
+                        price: priceProduct,
+                        quantity: quantityProduct,
+                        productId: idProduct,
+                        orderId: orderId
+                
+                    }).then((orderCreated)=>{
+                        product.save();
+                        return res.send(orderCreated).sendStatus(200); 
+                    }).catch(err => {	
+                        var status = 500;		
+                        return res.send("Este producto ya fue agregado a la orden").status(status);
+                    }); 
+               
+            })
+
+
+                
         });
 })
 
 //**************************************************************************************************/
 
 
-//**********************RUTA QUE RETORNA LOS ITEMS DEL CARRITO  ***********************************/
+//********************** RUTA QUE RETORNA LOS ITEMS DEL CARRITO ***********************************/
 
 server.get('/:idUser/cart', (req, res) => {
 
@@ -154,9 +175,10 @@ server.get('/:idUser/cart', (req, res) => {
         })
     })
 });
-//**************************************************************************************************/
+//***********************************************************************************************/
 
-//**********************RUTA QUE VACIA LOS ITEMS DEL CARRITO  ***********************************/
+//********************** RUTA QUE VACIA TODOS LOS ITEMS DEL CARRITO  ****************************/
+//****************** ademas controla el stock existente del producto ****************************/
 
 server.delete('/:idUser/cart', (req, res) => {
 
@@ -175,23 +197,49 @@ server.delete('/:idUser/cart', (req, res) => {
         }
 
         let orderId = order.id;
-        Orderline.destroy({
-            where: {
-                orderId: orderId
-            }
-        }).then(()=>{
-                return res.send("Se a vaciado la orden");
-        }).catch(error =>{
-            return res.send(error).status(500);
-        })    
+        let idsproducts = [];
+        let cantidades = [];
 
+        Orderline.findAll({
+                where:{
+                    orderId: orderId
+                }
+        }).then((products)=>{
+           
+          products.map(product =>{
+              idsproducts.push(product.dataValues.productId);
+              cantidades.push(product.dataValues.quantity);
+           })
+           
+           idsproducts.map((idproduct, index) =>{
+                Product.findOne({
+                    where:{
+                        id: idproduct
+                    }
+                }).then((producto)=>{
+
+                    producto.stock += cantidades[index];
+                    producto.save();
+                })
+           })
+                Orderline.destroy({
+                    where: {
+                        orderId: orderId
+                    }
+                }).then(()=>{
+                        return res.send("Se ha vaciado la orden");
+                }).catch(error =>{
+                    return res.send(error).status(500);
+                })
+        })
     })
 
 });
 
 //**************************************************************************************************/
 
-//**********************RUTA QUE EDITA LAS CANTIDADES DEL CARRITO  ***********************************/
+//********************** RUTA QUE EDITA LAS CANTIDADES DEL CARRITO  *********************************/
+//****************** ademas controla el stock existente del producto ********************************/
 
 server.put('/:idUser/cart', (req, res) => {
 
@@ -211,22 +259,46 @@ server.put('/:idUser/cart', (req, res) => {
         }
 
         let orderId = order.id;
-        Orderline.findOne({
-            where: {
-                productId: idProduct,
-                orderId: orderId
-            }
-        }).then((product) =>{
-            product.quantity = quantityProduct;
-            product.save().then((productEdited)=>{
-            res.send(productEdited);
-            }).catch(error =>{
-                return res.send(error).status(500);
-            })    
+        
+        Orderline.findOne({  where: {
+            productId: idProduct,
+            orderId: orderId
+             }
+       }).then((orderline) =>{
+
+            Product.findOne({
+                where: {
+                    id: idProduct
+                }
+            }).then((product)=>{
+                
+                let stock = product.stock;
+                let cantidad = orderline.quantity;
+                let dif; 
+                if(cantidad > quantityProduct){
+                    dif = cantidad - quantityProduct;
+                    product.stock = stock + dif;
+                }else{
+                    dif = quantityProduct - cantidad;
+                    if(dif > stock){
+                        res.send("La cantidad pedida supera el stock existente");
+                        return;
+                    }
+                    product.stock = stock - dif;
+                }
                
-        }).catch(error =>{
-            return res.send(error).status(500);
-        })    
+                product.save()
+
+                orderline.quantity = quantityProduct;
+                orderline.save().then((productEdited)=>{
+                        res.send(productEdited); 
+                }).catch(error =>{
+                    return res.send(error).status(500);
+                })   
+
+           })
+
+        })   
     })
 });
 
