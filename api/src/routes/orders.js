@@ -87,8 +87,6 @@ server.post('/:idUser', (req, res) => {
     }).then((e)=>{      
       
         if(e && ((e.dataValues.status == "completed") || (e.dataValues.status == "created"))){
-              console.log('este es el primer if');
-        
             Order.create({
             }).then((order)=>{
                 
@@ -108,9 +106,8 @@ server.post('/:idUser', (req, res) => {
             return;
         }else {
                     if (e && (e.dataValues.status == "shopping_cart")) {
-                        console.log('este es el segunndo if');   
-                        res.send("ok"); 
-                            return;
+                        res.send("este usuario ya tiene un status shopping_cart"); 
+                        return;
                     }
         }
 
@@ -148,7 +145,7 @@ server.put('/setstatus/:idUser', (req, res) => {
     }).then(e => {
         e.status = "completed";
         e.save().then((e)=>{
-            res.send(e);
+            res.send("estatus cambiado a completed");
         })
      
     })

@@ -1,6 +1,7 @@
 const server = require('express').Router();	
 const Sequelize = require('sequelize');	
-const { User, Order} = require('../db.js');	
+const { User, Order, Product, Orderline} = require('../db.js');	
+const OrderLine = require('../models/OrderLine.js');
 
 server.get('/', (req, res) => {	
     User.findAll({	
@@ -82,5 +83,151 @@ server.put('/:id', (req, res) => {
         return res.sendStatus(500);	
     });	
 });	
+
+
+
+//******************* RUTA PARA AGREGAR ITEMS AL CARRITO ***************************/
+server.post('/:idUser/cart', (req, res) => {
+
+    const idUser = req.params.idUser;
+    const {idProduct, priceProduct, quantityProduct} = req.body; 
+    
+    Order.findOne({
+        where: {
+            userId: idUser,
+            status: "shopping_cart"
+        }
+    }).then(order => {
+            
+            if (!order){
+                res.send("La orden para el usuario  " + idUser + ",no fue encontrada") 
+                return;
+            }
+            let orderId = order.id;
+                Orderline.create({
+                    price: priceProduct,
+                    quantity: quantityProduct,
+                    productId: idProduct,
+                    orderId: orderId
+                 
+                }).then((orderCreated)=>{
+                    return res.send(orderCreated).sendStatus(200); 
+                }).catch(err => {	
+                    var status = 500;		
+                    return res.send("Este producto ya fue agregado a la orden").status(status);
+                }); 
+        });
+})
+
+//**************************************************************************************************/
+
+
+//**********************RUTA QUE RETORNA LOS ITEMS DEL CARRITO  ***********************************/
+
+server.get('/:idUser/cart', (req, res) => {
+
+    const idUser = req.params.idUser;
+        
+    Order.findOne({
+        where: {
+            userId: idUser,
+            status: "shopping_cart"
+        }
+    }).then ((order) =>{
+
+        if (!order){
+            res.send("La orden para el usuario  " + idUser + ",no fue encontrada") 
+            return;
+        }
+        let orderId = order.id;
+        Orderline.findAll({
+            where:{
+                orderId: orderId
+            }
+        }).then((orders)=>{
+            if(orders[0] == null){
+                return res.send("Ningun producto agregado a la orden");
+            }
+            return res.send(orders);
+        }).cath(error =>{
+            return res.sendStatus(500).send(error);
+        })
+    })
+});
+//**************************************************************************************************/
+
+//**********************RUTA QUE VACIA LOS ITEMS DEL CARRITO  ***********************************/
+
+server.delete('/:idUser/cart', (req, res) => {
+
+    const idUser = req.params.idUser;
+        
+    Order.findOne({
+        where: {
+            userId: idUser,
+            status: "shopping_cart"
+        }
+    }).then((order)=>{
+
+        if (!order){
+            res.send("La orden para el usuario  " + idUser + ",no fue encontrada") 
+            return;
+        }
+
+        let orderId = order.id;
+        Orderline.destroy({
+            where: {
+                orderId: orderId
+            }
+        }).then(()=>{
+                return res.send("Se a vaciado la orden");
+        }).catch(error =>{
+            return res.send(error).status(500);
+        })    
+
+    })
+
+});
+
+//**************************************************************************************************/
+
+//**********************RUTA QUE EDITA LAS CANTIDADES DEL CARRITO  ***********************************/
+
+server.put('/:idUser/cart', (req, res) => {
+
+    const idUser = req.params.idUser;
+    const {idProduct, quantityProduct} = req.body; 
+        
+    Order.findOne({
+        where: {
+            userId: idUser,
+            status: "shopping_cart"
+        }
+    }).then((order)=>{
+
+        if (!order){
+            res.send("La orden para el usuario  " + idUser + ",no fue encontrada") 
+            return;
+        }
+
+        let orderId = order.id;
+        Orderline.findOne({
+            where: {
+                productId: idProduct,
+                orderId: orderId
+            }
+        }).then((product) =>{
+            product.quantity = quantityProduct;
+            product.save().then((productEdited)=>{
+            res.send(productEdited);
+            }).catch(error =>{
+                return res.send(error).status(500);
+            })    
+               
+        }).catch(error =>{
+            return res.send(error).status(500);
+        })    
+    })
+});
 
 module.exports = server; 
