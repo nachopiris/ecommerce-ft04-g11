@@ -6,8 +6,8 @@ import { Link } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import AliceCarousel from "react-alice-carousel";
 import { CgShoppingCart } from "react-icons/cg";
-import { connect } from "react-redux";
 import { getLatests } from "../actions/products";
+import { connect } from "react-redux";
 
 const APP_NAME = config.app.name;
 

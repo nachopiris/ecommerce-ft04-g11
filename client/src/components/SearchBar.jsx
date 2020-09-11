@@ -12,7 +12,7 @@ import { BsSearch } from "react-icons/bs";
 import { connect } from "react-redux";
 import { getProducts, searchProducts } from "../actions/products";
 
-//*******************CONECTADO AL STORE DE REDUX *********************/
+//******************CONECTADO AL STORE DE REDUX ********************/
 export function SearchBar({ search, getProducts, searchProducts }) {
   const handleInputChange = function (e) {
     let searchWord = e.target.value;

@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { Container, Row, Col, Form, Alert, Card } from "react-bootstrap";
 import SearchBar from "./SearchBar";
 
-//*******************CONECTADO AL STORE DE REDUX *********************/
+//******************CONECTADO AL STORE DE REDUX ********************/
 export function Catalogue({
   products,
   categories,

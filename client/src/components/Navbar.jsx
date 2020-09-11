@@ -3,7 +3,6 @@ import { NavLink, useLocation } from "react-router-dom";
 import s from "../styles/navbar.module.scss";
 import { Navbar as Navb, Nav, Container } from "react-bootstrap";
 import config from "../config";
-import { useSpring, animated } from "react-spring";
 
 const APP_NAME = config.app.name;
 
