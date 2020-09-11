@@ -1,43 +1,74 @@
-@font-face{
-    font-family: 'TextDefault';
-    src: url('/fonts/Quicksand-VariableFont_wght.ttf')    
+@font-face {
+  font-family: "TextDefault";
+  src: url("/fonts/Quicksand-VariableFont_wght.ttf");
 }
 
-$font-family-sans-serif: 'TextDefault';
+@font-face {
+  font-family: "HeaderFont";
+  src: url("/fonts/Gruppo-Regular.ttf");
+}
 
-$body-bg: #1F2747; //161E57;
+$font-family-sans-serif: "TextDefault";
+
+$body-bg: #363645; //#06080e; //#1f2747; //161E57;
 $body-color: #fff;
 
 //$enable-gradients: true;
 //$enable-shadows: true;
 
 $dark: #303557;
-$dark2:#343a61;
+$dark2: #262630; //#343a61;
 
 $theme-colors: (
-    "success": #309257,
-    "dark": $dark,
-    "primary": #293AA3,
-    "info": #7A87DE,
-    "dark2": $dark2,
-    "muted2": rgba(255,255,255, .5)
+  "success": #309257,
+  "dark": $dark,
+  "primary": #077cf6,
+  "info": #7a87de,
+  "dark2": $dark2,
+  "muted2": rgba(255, 255, 255, 0.5),
+  "redGamer": #ef4437,
 );
 
-
 $input-color: white;
-$input-bg: $dark;
-$input-border-color: $dark2;
-$input-placeholder-color: rgba(255,255,255,.6);
-
-
+$input-bg: #3a3a56;
+$input-border-color: rgba(255, 255, 255, 0.5);
+$input-placeholder-color: rgba(255, 255, 255, 0.6);
+$custom-select-indicator-color: rgba(255, 255, 255, 0.6);
 
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap/scss/variables";
 
-
-.form-control:focus{
-    background-color: theme-color("dark");
+.form-control:focus {
+  background-color: theme-color("dark");
 }
 
+h1.lg {
+  font-size: 70pt;
+}
+
+@media (max-width: 900px) {
+  h1.lg {
+    font-size: 60pt;
+  }
+}
+@media (max-width: 750px) {
+  h1.lg {
+    font-size: 40pt;
+  }
+}
+
+@media (max-width: 450px) {
+  h1.lg {
+    font-size: 30pt;
+  }
+}
+h1,
+h2,
+h3,
+h4 {
+  color: white;
+  opacity: 1;
+  font-family: "HeaderFont";
+}
 
 @import "react-alice-carousel/lib/scss/alice-carousel.scss";

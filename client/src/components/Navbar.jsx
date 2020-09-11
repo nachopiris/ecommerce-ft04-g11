@@ -70,18 +70,19 @@ export default function Navbar() {
     <Navb
       expand="md"
       variant="dark"
-      fixed="top"
       bg=""
       className={
         "mb-4 " +
-        (location.pathname === "/" ? s.navbar : s["navbar-nohome"]) +
+        (location.pathname === "/"
+          ? s.navbar + " fixed-top"
+          : "sticky-top " + s["navbar-nohome"]) +
         " " +
         s[state.navbarBg]
       }
     >
       <Container>
         {console.log(document.documentElement.scrollTop)}
-        <Navb.Brand href="#home">{APP_NAME}</Navb.Brand>
+        <Navb.Brand href="/">{APP_NAME}</Navb.Brand>
         <Navb.Toggle onClick={handleToggle} aria-controls="basic-navbar-nav" />
         <Navb.Collapse id="basic-navbar-nav">
           <Nav className="ml-auto">
