@@ -20,7 +20,6 @@ server.get('/:id', (req, res, next) => {
 // GET /orders?status=tipo_status  Esta ruta puede recibir el query string status y deberá devolver sólo las ordenes con ese status."
 
 server.get('/', (req,res)=>{
-
     if (!req.query.status) {
         Order.findAll()
 		.then(function(orders)  {
