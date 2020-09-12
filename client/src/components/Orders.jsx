@@ -21,8 +21,7 @@ function Orders({ getOrders, allOrders }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {allOrders.map((order, index) => {
-                        console.log(order.status)
+                    {allOrders && allOrders.map((order, index) => {
                         return (
                             <tr key={index}>
                                 <td>{order.id}</td>
@@ -42,6 +41,7 @@ function Orders({ getOrders, allOrders }) {
                     )}
                 </tbody>
             </table>
+            {!allOrders && (<div className="alert alert-info">No hay órdenes creadas.</div>)}
         </div>
     )
 }
