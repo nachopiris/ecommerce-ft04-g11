@@ -302,4 +302,50 @@ server.put('/:idUser/cart', (req, res) => {
     })
 });
 
+
+//***********************************************************************************************/
+
+//********************** RUTA QUE VACIA UN ITEM DEL CARRITO  **********************************/
+//****************** Y DEVUELVE EL STOCK AL ESTADO DEL PRODUCTO ****************************/
+
+server.delete('/:idUser/cart/:idOrderLine', (req, res) => {
+
+    const idUser = req.params.idUser;
+    const idOrderLine = req.params.idOrderLine
+
+        
+    Orderline.findOne({
+        where: {
+            id: idOrderLine,
+        }
+    }).then((orderline)=>{
+
+        if (!orderline){
+            res.send("La orden para el usuario " + idUser + ", no fue encontrada") 
+            return;
+        }
+
+        let cantidad = orderline.quantity;
+        let idProd = orderline.productId;
+
+        Product.findOne({
+            where:{
+                id: idProd
+            }
+        }).then((producto)=>{
+            producto.stock += cantidad;
+            producto.save();
+        })
+                Orderline.destroy({
+                    where: {
+                        id: idOrderLine
+                    }
+                }).then(()=>{
+                        return res.send("El item fue borrado");
+                }).catch(error =>{
+                    return res.send(error).status(500);
+                })
+        }) 
+    });
+
 module.exports = server; 
