@@ -8,6 +8,7 @@ import AddCategories from './components/AddCategory';
 import HomePage from './components/HomePage';
 import Navbar from './components/Navbar';
 import Orders from './components/Orders'
+import Cart from './components/Cart/Cart'
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                 <Route exact path="/" component={HomePage} />
                 <Route exact path="/productos/:id" component={Product} />
                 <Route exact path="/catalogo" component={Catalogue} />
+                <Route exact path="/carrito" component={Cart} />
 
                 <Route exact path="/admin/productos" component={ProductsCRUD} />
                 <Route exact path="/admin/categorias" component={AddCategories} />
