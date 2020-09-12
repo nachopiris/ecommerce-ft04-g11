@@ -68,6 +68,14 @@ class Cart extends React.Component {
     });
   }
 
+  deleteAll() {
+    this.props.emptyCart(1).then(() => {
+      this.setState({
+        cartProducts: [],
+      });
+    });
+  }
+
   render() {
     return (
       <Container>
@@ -135,7 +143,7 @@ class Cart extends React.Component {
             <Col className="text-right">
               <Button
                 className="btn btn-danger"
-                onClick={() => this.props.emptyCart(1)}
+                onClick={() => this.deleteAll()}
               >
                 Vaciar Carrito
               </Button>
