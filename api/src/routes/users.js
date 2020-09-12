@@ -313,6 +313,7 @@ server.delete('/:idUser/cart/:idProduct', (req, res) => {
     const idUser = req.params.idUser;
     const idProduct = req.params.idProduct
 
+    
     Order.findOne({
         where: {
             userId: idUser,
