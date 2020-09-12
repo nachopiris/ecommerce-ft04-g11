@@ -20,7 +20,6 @@ server.get('/:id', (req, res, next) => {
 // GET /orders?status=tipo_status  Esta ruta puede recibir el query string status y deberá devolver sólo las ordenes con ese status."
 
 server.get('/', (req,res)=>{
-
     if (!req.query.status) {
         Order.findAll()
 		.then(function(orders)  {
@@ -81,84 +80,123 @@ server.put('/:id', (req, res) => {
 server.post('/:idUser', (req, res) => {
 
     const idUser = req.params.idUser;
-    Order.findOne({
-          where: { 
-            userId: idUser,
-            status: "shopping_cart",
-            }
-    }).then((e)=>{      
-      
-        if(e && ((e.dataValues.status == "completed") || (e.dataValues.status == "created"))){
-              console.log('este es el primer if');
-        
-            Order.create({
-            }).then((order)=>{
-                
-                User.findByPk(idUser).then((user) =>{
-                    if(!user){
-                        return res.send({errors: {messages:['Usuario no encontrada'], status:404}}).status(404);
-                    }
-                    user.addOrder(order).then(()=>{
-                        return res.sendStatus(201);
-                    }); 
-                }).catch(err => {
-                    return res.sendStatus(500);
-                });
-            }).catch(err => {
-                return res.sendStatus(500);
-            });
-            return;
-        }else {
-                    if (e && (e.dataValues.status == "shopping_cart")) {
-                        console.log('este es el segunndo if');   
-                        res.send("ok"); 
-                            return;
-                    }
-        }
+    const status = req.body.status;
 
-            Order.create({
-                }).then((order)=>{
+
+    if(status == "shopping_cart"){
+       
+        Order.findOne({
+            where: { 
+              userId: idUser,
+              status: "shopping_cart",
+              }
+            }).then((e)=>{
+                
+                if (e && (e.dataValues.status == "shopping_cart")) {
+                    res.send("este usuario ya tiene un status shopping_cart"); 
+                    return;
+                }    
                     
-                    User.findByPk(idUser).then((user) =>{
-                        if(!user){
-                            return res.send({errors: {messages:['Usuario no encontrada'], status:404}}).status(404);
-                        }
-                        user.addOrder(order).then(()=>{
-                            return res.sendStatus(201);
-                        }); 
+                User.findByPk(idUser).then((user) =>{
+                            if(!user){
+                                res.send({errors: {messages:['Usuario no encontrado'], status:404}}).status(404);
+                                return;
+                            }
+                            Order.create(()=>{
+                            }).then((order)=>{
+                                        user.addOrder(order).then(()=>{
+                                            return res.sendStatus(201);
+                                        }); 
+                                })
+                    }).catch(err => {
+                                    return res.sendStatus(500);
+                                    });
+                 
                     }).catch(err => {
                         return res.sendStatus(500);
-                    });
-                }).catch(err => {
-                    return res.sendStatus(500);
-                });
-    })
+                        });
+    }
+       
+        else if(status == "created"){
 
-});
+                Order.findOne({
+                    where: { 
+                      userId: idUser,
+                      status: "shopping_cart",
+                      }
+                })      .then((order)=>{
 
-
-///**************************** RUTA PARA SETEAR STATUS EN EL ORDER *********************/
-server.put('/setstatus/:idUser', (req, res) => {
-
-    const idUser = req.params.idUser;
-
-    Order.findOne({
-        where: {
-            userId: idUser,
-            status: "shopping_cart"
+                                if(order){
+                                    order.status = "created"
+                                    order.save().then((order)=>{
+                                            res.send(order);
+                                            return;
+                                    }).catch(err => {
+                                        return res.sendStatus(500);
+                                        })
+                                }else {
+                                    res.send("Error orden no encontrada");
+                                    return;
+                                }
+                                
+                        }).catch(err => {
+                            return res.sendStatus(500);
+                            });
         }
-    }).then(e => {
-        e.status = "completed";
-        e.save().then((e)=>{
-            res.send(e);
-        })
-     
-    })
+        
+        else if(status == "processing"){
 
-  
+                Order.findOne({
+                    where: { 
+                      userId: idUser,
+                      status: "created",
+                      }
+                })      .then((order)=>{
+
+                                if(order){
+                                    order.status = "processing"
+                                    order.save().then((order)=>{
+                                            res.send(order); 
+                                            return;
+                                    }).catch(err => {
+                                        return res.sendStatus(500);
+                                        })
+                                }else {
+                                    res.send("Error orden no encontrada");
+                                    return;
+                                }
+                        }).catch(err => {
+                            return res.sendStatus(500);
+                            });  
+            }
+        
+        else if(status == "completed"){
+
+                Order.findOne({
+                    where: { 
+                      userId: idUser,
+                      status: "processing",
+                      }
+                })      .then((order)=>{
+
+                                if(order){
+                                    order.status = "completed"
+                                    order.save().then((order)=>{
+                                            res.send(order); 
+                                            return;
+                                    }).catch(err => {
+                                        return res.sendStatus(500);
+                                        })
+                                }else {
+                                    res.send("Error orden no encontrada");
+                                    return;
+                                }
+                        }).catch(err => {
+                            return res.sendStatus(500);
+                            });  
+            }
+
 });
-
-
 
 
 module.exports = server;
