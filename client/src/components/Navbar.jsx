@@ -103,11 +103,14 @@ export default function Navbar() {
                             <Nav className="ml-auto">
                                 <NavLink className="nav-link" activeClassName="active" exact to="/">
                                     Inicio
-                            </NavLink>
+                                </NavLink>
                                 <NavLink className="nav-link" activeClassName="active" to="/catalogo">
                                     Catálogo
-                            </NavLink>
-                                <NavLink className="btn btn-danger" to="/admin">
+                                </NavLink>
+                                <NavLink className="nav-link" activeClassName="active" exact to="/carrito">
+                                    Carrito
+                                </NavLink>
+                                <NavLink className="btn btn-dark" to="/admin">
                                     Administración
                             </NavLink>
                             </Nav>

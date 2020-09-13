@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Button,
@@ -9,23 +8,37 @@ import {
   InputGroup,
 } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
-import { connect } from "react-redux";
-import { getProducts, searchProducts } from "../actions/products";
 
 //*******************CONECTADO AL STORE DE REDUX *********************/
-export function SearchBar({ search, getProducts, searchProducts }) {
+export function SearchBar({ searchProducts }) {
+
+  const [search, setSearch] = useState('')
+  const [canSearch, setCanSearch] = useState(false)
+
   const handleInputChange = function (e) {
-    let searchWord = e.target.value;
-    searchProducts(searchWord);
+    let val = e.target.value;
+    setSearch(val);
+    setCanSearch(false);
   };
 
-  const handleSearch = function (e) {
+  useEffect(() => {
+    if (canSearch) {
+      searchProducts(search)
+    }
+  }, [canSearch])
+
+  useEffect(() => {
+    window.setTimeout(() => {
+      setCanSearch(true);
+    }, 800)
+  }, [search])
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    getProducts(search);
-  };
+  }
 
   return (
-    <Form onSubmit={handleSearch}>
+    <Form onSubmit={(e) => handleSubmit(e)}>
       <InputGroup>
         <FormControl
           placeholder="Buscar..."
@@ -35,26 +48,13 @@ export function SearchBar({ search, getProducts, searchProducts }) {
           onChange={handleInputChange}
         />
         <InputGroup.Append>
-          <Button type="submit" variant="primary">
+          <span class="btn btn-primary">
             <BsSearch />
-          </Button>
+          </span>
         </InputGroup.Append>
       </InputGroup>
     </Form>
   );
 }
 
-function mapStateToProps(state) {
-  return {
-    search: state.productsReducer.search,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    getProducts: (value) => dispatch(getProducts(value)),
-    searchProducts: (value) => dispatch(searchProducts(value)),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);
+export default SearchBar;
