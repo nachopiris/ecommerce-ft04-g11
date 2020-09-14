@@ -9,7 +9,8 @@ const SET_PRODUCT_TO_CART = 'SET_PRODUCT_TO_CART';
 
 const BASE_URI = config.api.base_uri + "/users";
 
-export function getUserCart(userId = 1) {
+export function getUserCart() {
+  const userId = 1
   return (dispatch) => {
     return axios.get(`${BASE_URI}/${userId}/cart`).then((response) => {
       dispatch({
