@@ -4,14 +4,13 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ConfirmDelete from './ConfirmDelete';
 import { Table, Button } from 'react-bootstrap';
-import { FiTrash2, FiEdit3, FiExternalLink } from 'react-icons/fi';
-import { deleteProduct, updateProduct, getProducts } from '../../actions/products';
 import { switchLoading } from '../../actions/global';
-// import { getCategories } from '../../actions/categories';
+import { FiTrash2, FiEdit3, FiExternalLink } from 'react-icons/fi';
+import { deleteProduct, updateProduct, getProducts, addCategoryToProduct, deleteCategoryToProduct } from '../../actions/products';
 // import { getProducts, deleteProduct, updateProduct, addCategoryToProduct, deleteCategoryToProduct } from '../../actions/products';
 
 
-function ItemList({ product, deleteProduct, updateProduct, switchLoading, getProducts }) {
+function ItemList({ product, deleteProduct, updateProduct, switchLoading, getProducts, page, allCategories, addCategoryToProduct, deleteCategoryToProduct }) {
         const { id, name, description, stock, price, images } = product;
         const image = JSON.parse(images)[0];
 
@@ -27,12 +26,6 @@ function ItemList({ product, deleteProduct, updateProduct, switchLoading, getPro
                 })
         }
 
-        const handleCreating = () => {
-                setState({
-                        ...state,
-                        creating: !state.creating
-                })
-        }
 
         const handleDeleting = () => {
                 setState({
@@ -45,28 +38,34 @@ function ItemList({ product, deleteProduct, updateProduct, switchLoading, getPro
 
                 handleDeleting();
                 return id => {
-                        switchLoading(true);
+                        // switchLoading(true);
                         deleteProduct(id).then(() => {
-                                getProducts();
+                                document.location.reload();
                         });
                 };
         }
 
         const handleUpdate = () => {
                 handleEditing();
-                switchLoading(true);
+                // switchLoading(true);
                 return (id, attributes) => {
-                        updateProduct(id, attributes)
-                                .then(() => {
-                                        getProducts();
-                                });
+                        for (let item of attributes.categories) {
+                                addCategoryToProduct(item, id);
+                        }
+                        for (let item of attributes.categoriesToDelete) {
+                                deleteCategoryToProduct(item, id);
+                        }
+                        updateProduct(id, attributes).then(() => {
+                                document.location.reload();
+                        });
+
                 }
         }
 
         return (
                 <tr className="text-center">
                         <ConfirmDelete deleteProduct={handleDelete} product={{ id, name, image }} show={state.deleting} handleClose={handleDeleting} />
-                        <Edit updateProduct={handleUpdate} show={state.editing} product={product} handleClose={handleEditing} />
+                        <Edit allCategories={allCategories} updateProduct={handleUpdate} show={state.editing} product={product} handleClose={handleEditing} />
                         <td className="align-middle" width="70">
                                 <img width="64" className="img-thumbnail" src={image} />
                         </td>
@@ -84,17 +83,17 @@ function ItemList({ product, deleteProduct, updateProduct, switchLoading, getPro
 
 function mapStateToProps(state) {
         return {
-                // allcategories: state.categoriesReducer.categories,
+                allCategories: state.categoriesReducer.categories,
         }
 }
 
 
 function mapDispatchToProps(dispatch) {
         return {
-                // getCategories: () => dispatch(getCategories()),
+                //getCategories: () => dispatch(getCategories()),
                 deleteProduct: (id) => dispatch(deleteProduct(id)),
-                // addCategoryToProduct: (idCat, idProduct) => dispatch(addCategoryToProduct(idCat, idProduct)),
-                // deleteCategoryToProduct: (idCat, idProduct) => dispatch(deleteCategoryToProduct(idCat, idProduct)),
+                addCategoryToProduct: (idCat, idProduct) => dispatch(addCategoryToProduct(idCat, idProduct)),
+                deleteCategoryToProduct: (idCat, idProduct) => dispatch(deleteCategoryToProduct(idCat, idProduct)),
                 updateProduct: (idProduct, attributes) => dispatch(updateProduct(idProduct, attributes)),
                 switchLoading: (isLoading) => dispatch(switchLoading(isLoading)),
                 getProducts: () => dispatch(getProducts())

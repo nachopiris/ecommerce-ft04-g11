@@ -8,6 +8,8 @@ import AliceCarousel from "react-alice-carousel";
 import { CgShoppingCart } from "react-icons/cg";
 import { connect } from "react-redux";
 import { getLatests } from "../actions/products";
+import { setProductToCart, getUserCart } from "../actions/users";
+import { FiCheck } from 'react-icons/fi';
 
 const APP_NAME = config.app.name;
 
@@ -108,7 +110,7 @@ function ExploreButton() {
   );
 }
 
-function HomePage({ products, getLatests }) {
+function HomePage({ products, getLatests, setProductToCart, getUserCart, userCart }) {
   const props = useSpring({
     from: {
       filter: "brightness(1.5)",
@@ -124,6 +126,7 @@ function HomePage({ products, getLatests }) {
 
   useEffect(() => {
     getLatests();
+    getUserCart();
   }, []);
 
   return (
@@ -142,16 +145,18 @@ function HomePage({ products, getLatests }) {
         </div>
       </Row>
 
-      {products.rows && <Gallery products={products.rows} />}
+      {products.rows && <Gallery setToCart={setProductToCart} userCart={userCart} products={products.rows} />}
     </Container>
   );
 }
 
-function Gallery({ products }) {
+function Gallery({ products, userCart, setToCart }) {
   const handleOnDragStart = (e) => e.preventDefault();
-
   useEffect(() => { }, []);
 
+  const isAdded = (id) => {
+    return userCart.find(item => item.productId === id) ? true : false;
+  }
   var items = products
     .map((item, index) => (
       <div
@@ -167,9 +172,14 @@ function Gallery({ products }) {
         </div>
         <span className="mb-4 mt-auto">{item.name}</span>
         <span className="mt-auto mb-4">
-          <Button variant="light">
+          {!isAdded(item.id) && <Button onClick={() => setToCart(item.id, 1)} variant="light">
             <CgShoppingCart />
-          </Button>
+          </Button>}
+
+          {isAdded(item.id) && <Link to="/carrito" className="btn btn-light border-0">
+            <span className="text-primary"><FiCheck /></span>
+            <CgShoppingCart />
+          </Link>}
           <Link
             to={"/productos/" + item.id}
             className="ml-1 btn btn-outline-light"
@@ -212,12 +222,15 @@ function Gallery({ products }) {
 function mapStateToProps(state) {
   return {
     products: state.productsReducer.products,
+    userCart: state.usersReducer.userCart
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     getLatests: () => dispatch(getLatests()),
+    setProductToCart: (productId, quantity) => dispatch(setProductToCart(productId, quantity)),
+    getUserCart: () => dispatch(getUserCart())
   };
 }
 

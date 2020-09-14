@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import ItemList from './ItemList';
 import { Table } from 'react-bootstrap';
 
-function List({ products }) {
+function List({ products, page }) {
 
         return (
                 <Table striped bordered hover responsive size="sm" variant="dark">
@@ -17,7 +17,7 @@ function List({ products }) {
                         </thead>
                         <tbody>
                                 {products.map((item, index) => (
-                                        <ItemList product={item} />
+                                        <ItemList key={index} page={page} product={item} />
                                 ))}
                         </tbody>
                 </Table>

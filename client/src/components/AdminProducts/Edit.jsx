@@ -1,22 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { FiMaximize2, FiRotateCcw, FiTrash2, FiPlus } from 'react-icons/fi';
 
 
-function Edit({ show, handleClose, product, updateProduct }) {
-        const { id, images, name, description, stock, price } = product;
+function Edit({ show, handleClose, product, updateProduct, allCategories }) {
+        const { id, images, name, description, stock, price, categories } = product;
         const [state, setState] = useState({
                 images: JSON.parse(images),
                 name,
                 description,
                 stock,
-                price
+                price,
+                categories: categories.map(item => item.id),
+                categoriesToDelete: []
         });
+
+        useEffect(() => {
+                setState({
+                        images: JSON.parse(images),
+                        name,
+                        description,
+                        stock,
+                        price,
+                        categories: categories.map(item => item.id),
+                        categoriesToDelete: []
+                });
+        }, [product, product.categories]);
 
         const handleInput = (e) => {
                 setState({
                         ...state,
                         [e.target.name]: e.target.value
+                })
+        }
+
+        const handleCategories = (e) => {
+                let options = e.target.options;
+                let value = [];
+                let toDelete = [];
+                for (var i = 0, l = options.length; i < l; i++) {
+                        if (options[i].selected) {
+                                value.push(options[i].value * 1);
+                        } else {
+                                toDelete.push(options[i].value * 1);
+                        }
+                }
+                setState({
+                        ...state,
+                        [e.target.name]: value,
+                        categoriesToDelete: toDelete
                 })
         }
 
@@ -51,7 +83,7 @@ function Edit({ show, handleClose, product, updateProduct }) {
                 }
         }
         return (
-                <Modal show={show} onHide={handleClose}>
+                <Modal size="lg" show={show} onHide={handleClose}>
                         <Modal.Header className="border-0 bg-dark2" closeButton>
                                 <Modal.Title>Modificar producto</Modal.Title>
                         </Modal.Header>
@@ -85,8 +117,16 @@ function Edit({ show, handleClose, product, updateProduct }) {
                                                 </Col>
                                         </Row>
                                         <Form.Group>
+                                                <Form.Label>Categorías</Form.Label>
+                                                <Form.Control as="select" multiple custom onChange={handleCategories} value={state.categories} name="categories" placeholder="Nombre">
+                                                        {allCategories && allCategories.map((item, index) => (
+                                                                <option key={index} value={item.id}>{item.name}</option>
+                                                        ))}
+                                                </Form.Control>
+                                        </Form.Group>
+                                        <Form.Group>
                                                 <Form.Label>Descripción</Form.Label>
-                                                <Form.Control as="textarea" onChange={handleInput} value={state.description} name="description" rows="5" placeholder="Nombre" />
+                                                <Form.Control as="textarea" onChange={handleInput} value={state.description} name="description" rows="5" placeholder="Descripción" />
                                         </Form.Group>
                                         <Form.Group>
                                                 <Form.Label>Imágenes {state.images.length}/10</Form.Label>
