@@ -1,9 +1,15 @@
 const initialState = {
-  userCart: []
+  userCart: [],
+  user: {}
 };
 
 export default function usersReducer(state = initialState, action) {
   switch (action.type) {
+    case "REGISTER":
+      return {
+        ...state,
+        user: action.payload
+      }
     case "SET_PRODUCT_TO_CART":
       return {
         ...state,
