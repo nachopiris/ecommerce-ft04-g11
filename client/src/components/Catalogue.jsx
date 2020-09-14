@@ -7,6 +7,7 @@ import { getCategories } from "../actions/categories";
 import { connect } from "react-redux";
 import { Container, Row, Col, Form, Alert, Card, Button, ButtonGroup } from "react-bootstrap";
 import SearchBar from "./SearchBar";
+import { setProductToCart, getUserCart } from "../actions/users";
 
 //*******************CONECTADO AL STORE DE REDUX *********************/
 export function Catalogue({
@@ -15,6 +16,9 @@ export function Catalogue({
   getCategories,
   getProducts,
   filterByCategory,
+  setProductToCart,
+  getUserCart,
+  userCart
 }) {
   const perPage = 12;
   const [state, setState] = useState({
@@ -36,6 +40,7 @@ export function Catalogue({
   useEffect(() => {
     getProducts();
     getCategories();
+    getUserCart();
   }, []);
 
   useEffect(() => {
@@ -89,7 +94,7 @@ export function Catalogue({
       </Row>
       <Row className={style.catalogue}>
         {state.products.map((product, index) => {
-          return <ProductCard key={index} product={product} />;
+          return <ProductCard userCart={userCart} setToCart={setProductToCart} key={index} product={product} />;
         })}
 
         {!state.products.length && (
@@ -140,6 +145,7 @@ function mapStateToProps(state) {
   return {
     products: state.productsReducer.products,
     categories: state.categoriesReducer.categories,
+    userCart: state.usersReducer.userCart
   };
 }
 
@@ -148,6 +154,8 @@ function mapDispatchToProps(dispatch) {
     getProducts: (keyword, page) => dispatch(getProducts(keyword, page)),
     filterByCategory: (value) => dispatch(filterByCategory(value)),
     getCategories: () => dispatch(getCategories()),
+    setProductToCart: (productId, quantity) => dispatch(setProductToCart(productId, quantity)),
+    getUserCart: () => dispatch(getUserCart())
   };
 }
 

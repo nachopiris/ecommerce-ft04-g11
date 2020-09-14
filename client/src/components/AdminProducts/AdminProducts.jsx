@@ -9,10 +9,11 @@ import Loading from '../Loading';
 
 //actions
 import { createProduct, getProducts } from '../../actions/products';
+import { getCategories } from '../../actions/categories';
 import { switchLoading } from '../../actions/global';
 import { connect } from 'react-redux';
 
-function AdminProducts({ switchLoading, loading, products, getProducts, createProduct }) {
+function AdminProducts({ switchLoading, products, getProducts, createProduct, getCategories }) {
         const perPage = 12;
         const [state, setState] = useState({
                 creating: false,
@@ -23,7 +24,7 @@ function AdminProducts({ switchLoading, loading, products, getProducts, createPr
         });
 
         const onPaginate = (page) => {
-                switchLoading(true);
+                // switchLoading(true);
                 getProducts(null, page);
                 console.log(page)
                 setState({
@@ -39,36 +40,38 @@ function AdminProducts({ switchLoading, loading, products, getProducts, createPr
         }
 
         const handleCreate = () => {
-                switchLoading(true);
+                // switchLoading(true);
                 handleCreating();
                 return attributes => {
                         createProduct(attributes)
                                 .then(() => {
-                                        getProducts();
+                                        getProducts(null, state.currentPage);
                                 });
                 };
         }
 
         useEffect(() => {
                 switchLoading(true);
-                getProducts().then(() => {
-                        switchLoading(false);
+                getProducts(null, state.currentPage).then(() => {
+                        // switchLoading(false);
                 });
+                getCategories();
         }, []);
 
         useEffect(() => {
-                switchLoading(false);
+                // switchLoading(false);
                 setState({
                         ...state,
                         products: products.rows,
                         totalProducts: products.count,
-                        pages: Math.ceil(products.count / perPage)
+                        pages: Math.ceil(products.count / perPage),
                 })
         }, [products]);
 
+
         return (
                 <Container fluid>
-                        <Loading />
+                        {/* <Loading /> */}
                         <Create show={state.creating} createProduct={handleCreate} handleClose={handleCreating} />
                         <Row>
                                 <Col>
@@ -80,7 +83,7 @@ function AdminProducts({ switchLoading, loading, products, getProducts, createPr
                         </Row>
                         <Row>
                                 <Col>
-                                        {state.products.length > 0 && <List products={state.products} />}
+                                        {state.products.length > 0 && <List page={state.currentPage} products={state.products} />}
                                 </Col>
                         </Row>
 
@@ -126,7 +129,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
         return {
                 createProduct: (attributes) => dispatch(createProduct(attributes)),
-                // getCategories: () => dispatch(getCategories()),
+                getCategories: () => dispatch(getCategories()),
                 getProducts: (keyword, page) => dispatch(getProducts(keyword, page)),
                 switchLoading: (isLoading) => dispatch(switchLoading(isLoading))
                 // addCategoryToProduct: (idCat, idProduct) => dispatch(addCategoryToProduct(idCat, idProduct)),
