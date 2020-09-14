@@ -10,6 +10,7 @@ import HomePage from './components/HomePage';
 import Navbar from './components/Navbar';
 import Orders from './components/Orders'
 import Cart from './components/Cart/Cart'
+import Error404 from './components/Error404'
 
 function App() {
     return (
@@ -25,17 +26,9 @@ function App() {
                 <Route exact path="/admin/productos" component={AdminProducts} />
                 <Route exact path="/admin/categorias" component={AddCategories} />
                 <Route exact path="/admin/ordenes" component={Orders} />
-                <Route path="/admin/*">
-                    <div>
-                        <h1>404</h1>
-                        <p>Recursos administrativos no encontrados</p>
-                    </div>
-                </Route>
 
-                <Route path="*">
-                    <h1>404</h1>
-                    <p>Página no encontrada</p>
-                </Route>
+
+                <Route path="*" component={Error404} />
 
 
             </Switch>
