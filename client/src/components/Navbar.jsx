@@ -87,14 +87,17 @@ export default function Navbar() {
                 <Navb.Collapse id="basic-navbar-nav">
                     {location.pathname.split('/')[1] === "admin" ? (
                         <Nav className="ml-auto">
+                            <NavLink className="nav-link" activeClassName="active" to="/admin/usuarios">
+                                Usuarios
+                                </NavLink>
+                            <NavLink className="nav-link" activeClassName="active" to="/admin/ordenes">
+                                Órdenes
+                            </NavLink>
                             <NavLink className="nav-link" activeClassName="active" to="/admin/productos">
                                 Productos
                             </NavLink>
                             <NavLink className="nav-link" activeClassName="active" to="/admin/categorias">
                                 Categorías
-                            </NavLink>
-                            <NavLink className="nav-link" activeClassName="active" to="/admin/ordenes">
-                                Órdenes
                             </NavLink>
                             <NavLink className="nav-link" exact to="/">
                                 Volver al sitio
@@ -103,6 +106,9 @@ export default function Navbar() {
                             <Nav className="ml-auto">
                                 <NavLink className="nav-link" activeClassName="active" exact to="/">
                                     Inicio
+                                </NavLink>
+                                <NavLink className="nav-link" activeClassName="active" exact to="/registrarse">
+                                    Registrarse
                                 </NavLink>
                                 <NavLink className="nav-link" activeClassName="active" to="/catalogo">
                                     Catálogo

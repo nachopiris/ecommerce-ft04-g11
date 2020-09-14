@@ -7,7 +7,7 @@ function List({ products, page }) {
     return (
         <Table striped bordered hover responsive size="sm" variant="dark">
             <thead>
-                <tr>
+                <tr className="text-center">
                     <th>Imagen</th>
                     <th>Título</th>
                     <th>Categorías</th>
