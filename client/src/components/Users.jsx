@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getUsers } from '../actions/users';
+import moment from 'moment';
 import { Container, Row, Col } from 'react-bootstrap'
 
 function Users({ getUsers, allUsers }) {
+
+    const DATE_FORMAT = "DD/MM/YYYY - HH:mm:ss"
 
     useEffect(() => {
         getUsers();
     }, []);
 
-    console.log(allUsers)
     return (
         <Container fluid>
             <Row>
@@ -44,8 +46,8 @@ function Users({ getUsers, allUsers }) {
                                             <td>{user.role === "client" && ("Usuario") ||
                                                 user.role === "admin" && ("Administrador")}</td>
                                             {/* Las siguientes dos líneas formatean la fecha recibida de la base de datos para hacerla más amigable */}
-                                            <td>{user.createdAt.substr(11, 8) + " - " + user.createdAt.substr(8, 2) + "/" + user.createdAt.substr(5, 2) + "/" + user.createdAt.substr(0, 4)}</td>
-                                            <td>{user.updatedAt.substr(11, 8) + " - " + user.updatedAt.substr(8, 2) + "/" + user.updatedAt.substr(5, 2) + "/" + user.updatedAt.substr(0, 4)}</td>
+                                            <td>{moment(user.createdAt).format(DATE_FORMAT)}</td>
+                                            <td>{moment(user.updatedAt).format(DATE_FORMAT)}</td>
                                         </tr>
                                     )
                                 }
