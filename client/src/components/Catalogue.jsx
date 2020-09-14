@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard/ProductCard";
 import style from "../styles/catalogue.module.scss";
 import axios from "axios";
 import { getProducts, filterByCategory } from "../actions/products";
 import { getCategories } from "../actions/categories";
 import { connect } from "react-redux";
-import { Container, Row, Col, Form, Alert, Card } from "react-bootstrap";
+import { Container, Row, Col, Form, Alert, Card, Button, ButtonGroup } from "react-bootstrap";
 import SearchBar from "./SearchBar";
 
 //*******************CONECTADO AL STORE DE REDUX *********************/
@@ -16,10 +16,36 @@ export function Catalogue({
   getProducts,
   filterByCategory,
 }) {
+  const perPage = 12;
+  const [state, setState] = useState({
+    products: products.rows,
+    totalProducts: products.count,
+    currentPage: 1,
+    pages: 1,
+  });
+
+  const onPaginate = (page) => {
+    getProducts(null, page);
+    setState({
+      ...state,
+      currentPage: page
+    })
+  }
+
+
   useEffect(() => {
     getProducts();
     getCategories();
   }, []);
+
+  useEffect(() => {
+    setState({
+      ...state,
+      products: products.rows,
+      totalProducts: products.count,
+      pages: Math.ceil(products.count / perPage)
+    })
+  }, [products]);
 
   function getFilterCategories(e) {
     let nombreCat = e.target.value;
@@ -54,7 +80,7 @@ export function Catalogue({
                   )}
                 </Col>
                 <Col sm={8} className="my-1">
-                  <SearchBar />
+                  <SearchBar searchProducts={getProducts} />
                 </Col>
               </Row>
             </Card.Body>
@@ -62,11 +88,11 @@ export function Catalogue({
         </Col>
       </Row>
       <Row className={style.catalogue}>
-        {products.map((product, index) => {
+        {state.products.map((product, index) => {
           return <ProductCard key={index} product={product} />;
         })}
 
-        {!products.length && (
+        {!state.products.length && (
           <Col>
             <Alert variant="info">
               {" "}
@@ -76,6 +102,36 @@ export function Catalogue({
           </Col>
         )}
       </Row>
+
+
+      {state.pages > 1 && <Row className="justify-content-center mb-4">
+        {state.pages > 0 && (
+          <ButtonGroup>
+            {state.currentPage > 1 ? <Button onClick={() => onPaginate(state.currentPage - 1)} variant="primary border-dark2" size="sm">«</Button> : <Button variant="primary border-dark2" disabled size="sm">«</Button>}
+            {state.currentPage > 1 && <Button onClick={() => onPaginate(1)} variant="primary border-dark2" size="sm">1</Button>}
+            {state.currentPage > 2 && (
+              <React.Fragment>
+                {state.currentPage - 2 > 1 && <Button variant="primary border-dark2" disabled>...</Button>}
+                <Button variant="primary border-dark2" onClick={() => onPaginate(state.currentPage - 1)} >{state.currentPage - 1}</Button>
+              </React.Fragment>
+            )}
+            <Button variant="dark2" disabled>{state.currentPage}</Button>
+            {state.pages - state.currentPage > 1 && (
+              <React.Fragment>
+                <Button variant="primary border-dark2" onClick={() => onPaginate(state.currentPage + 1)} size="sm">{state.currentPage + 1}</Button>
+              </React.Fragment>
+            )}
+            {state.currentPage + 2 < state.pages - 1 && (
+              <Button variant="primary border-dark2" disabled>...</Button>
+            )}
+            {state.pages !== state.currentPage && <Button variant="primary border-dark2" onClick={() => onPaginate(state.pages)} size="sm">{state.pages}</Button>}
+            {state.currentPage < state.pages ? <Button onClick={() => onPaginate(state.currentPage + 1)} variant="primary border-dark2" size="sm">»</Button> : <Button disabled variant="primary border-dark2" size="sm">»</Button>}
+
+          </ButtonGroup>
+        )
+        }
+      </Row >}
+      {/* <Pagination onPaginate={handlePaginate()} total={state.totalProducts} perPage={2} state.{state.currentPage} /> */}
     </Container>
   );
 }
@@ -89,7 +145,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getProducts: (value) => dispatch(getProducts(value)),
+    getProducts: (keyword, page) => dispatch(getProducts(keyword, page)),
     filterByCategory: (value) => dispatch(filterByCategory(value)),
     getCategories: () => dispatch(getCategories()),
   };

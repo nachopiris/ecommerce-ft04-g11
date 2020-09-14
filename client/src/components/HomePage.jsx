@@ -122,8 +122,6 @@ function HomePage({ products, getLatests }) {
     },
   });
 
-  var parallax = useRef();
-
   useEffect(() => {
     getLatests();
   }, []);
@@ -144,7 +142,7 @@ function HomePage({ products, getLatests }) {
         </div>
       </Row>
 
-      <Gallery products={products} />
+      {products.rows && <Gallery products={products.rows} />}
     </Container>
   );
 }
@@ -152,7 +150,7 @@ function HomePage({ products, getLatests }) {
 function Gallery({ products }) {
   const handleOnDragStart = (e) => e.preventDefault();
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   var items = products
     .map((item, index) => (

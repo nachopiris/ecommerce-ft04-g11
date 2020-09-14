@@ -1,88 +1,88 @@
-const server = require('express').Router();	
-const Sequelize = require('sequelize');	
-const { User, Order, Product, Orderline} = require('../db.js');	
+const server = require('express').Router();
+const Sequelize = require('sequelize');
+const { User, Order, Product, Orderline } = require('../db.js');
 const OrderLine = require('../models/OrderLine.js');
 
-server.get('/', (req, res) => {	
-    User.findAll({	
-        attributes:['id','fullname','email', 'role', 'address','doc_number','phone','createdAt','updatedAt']	
-    })	
-    .then(users => {	
-        return res.send({data:users}).status(201);	
-    }).catch(err => {	
-        var status = 500;	
-        return res.send({errors: err.errors, status}).status(status);	
-    });	
-})	
+server.get('/', (req, res) => {
+    User.findAll({
+        attributes: ['id', 'fullname', 'email', 'role', 'address', 'doc_number', 'phone', 'createdAt', 'updatedAt']
+    })
+        .then(users => {
+            return res.send({ data: users }).status(201);
+        }).catch(err => {
+            var status = 500;
+            return res.send({ errors: err.errors, status }).status(status);
+        });
+})
 
-server.post('/', (req, res) => {	
-    const {fullname, email, password, role, address, doc_number, phone} = req.body;	
-    User.create({fullname, email, password, role, address, doc_number, phone})	
-    .then(user => {	
-        return res.send({data:{id:user.id, fullname, email, role, address, doc_number, phone, createdAt: user.createdAt, updatedAt: user.updatedAt}}).status(201);	
-    }).catch(err => {	
-        var status = 500;	
-        if (err.name === 'SequelizeValidationError') status = 422;	
-        return res.send({errors: err.errors, status}).status(status);	
-    });	
+server.post('/', (req, res) => {
+    const { fullname, email, password, role, address, doc_number, phone } = req.body;
+    User.create({ fullname, email, password, role, address, doc_number, phone })
+        .then(user => {
+            return res.send({ data: { id: user.id, fullname, email, role, address, doc_number, phone, createdAt: user.createdAt, updatedAt: user.updatedAt } }).status(201);
+        }).catch(err => {
+            var status = 500;
+            if (err.name === 'SequelizeValidationError') status = 422;
+            return res.send({ errors: err.errors, status }).status(status);
+        });
 })
 
 server.get('/:id/orders', (req, res) => {
     const id = req.params.id;
-    
-    if(!Number.isInteger(id * 1)){//multiplicar * 1 es muy IMPORTANTE (cositas de javascript xd)!	
-		return res.send({errors: [{message:'La id del usuario no es valida.'}], status:422}).status(422);	
+
+    if (!Number.isInteger(id * 1)) {//multiplicar * 1 es muy IMPORTANTE (cositas de javascript xd)!	
+        return res.send({ errors: [{ message: 'La id del usuario no es valida.' }], status: 422 }).status(422);
     }
 
-    
+
     User.findByPk(id, {
         include: {
             model: Order,
-            through: { attributes: ['price','quantity'] }
+            through: { attributes: ['price', 'quantity'] }
         }
     })
-    .then(user => {
-        return res.send({data: user.orders}).status(200);
-    })
-    .catch(err => {	
-        var status = 500;
-        if(err.name === 'SequelizeEagerLoadingError'){
-            return res.send({data: []}).status(204);
-        }
-        return res.send({errors: err, status}).status(status);	
-    });	
+        .then(user => {
+            return res.send({ data: user.orders }).status(200);
+        })
+        .catch(err => {
+            var status = 500;
+            if (err.name === 'SequelizeEagerLoadingError') {
+                return res.send({ data: [] }).status(204);
+            }
+            return res.send({ errors: err, status }).status(status);
+        });
 })
 
-server.put('/:id', (req, res) => {	
-    const id = req.params.id;	
-    const {fullname, email, password, role, address, doc_number, phone} = req.body;	
+server.put('/:id', (req, res) => {
+    const id = req.params.id;
+    const { fullname, email, password, role, address, doc_number, phone } = req.body;
 
-    if(!Number.isInteger(id * 1)){//multiplicar * 1 es muy IMPORTANTE (cositas de javascript xd)!	
-		return res.send({errors: [{message:'La id del usuario no es valida.'}], status:422}).status(422);	
-	}	
+    if (!Number.isInteger(id * 1)) {//multiplicar * 1 es muy IMPORTANTE (cositas de javascript xd)!	
+        return res.send({ errors: [{ message: 'La id del usuario no es valida.' }], status: 422 }).status(422);
+    }
 
-    User.findByPk(id).then(user => {	
-        if(!user) {	
-            return res.send({errors: [{message:'Usuario no encontrado'}], status: 404}).status(404);	
-        }	
-        user.fullname = fullname;	
-        user.email = email;	
-        if(password) user.password = password;	
-        user.role = role;	
-        user.address = address;	
-        user.doc_number = doc_number;	
-        user.phone = phone;	
-        user.save().then(()=>{	
-            return res.send({data: {id:user.id, fullname, email, role, address, doc_number, phone, createdAt: user.createdAt, updatedAt: user.updatedAt}}).status(200);	
-        }).catch(err => {	
-            var status = 500;	
-            if (err.name === 'SequelizeValidationError') status = 422;	
-            return res.send({errors: err.errors, status}).status(status);	
-        });	
-    }).catch(err => {	
-        return res.sendStatus(500);	
-    });	
-});	
+    User.findByPk(id).then(user => {
+        if (!user) {
+            return res.send({ errors: [{ message: 'Usuario no encontrado' }], status: 404 }).status(404);
+        }
+        user.fullname = fullname;
+        user.email = email;
+        if (password) user.password = password;
+        user.role = role;
+        user.address = address;
+        user.doc_number = doc_number;
+        user.phone = phone;
+        user.save().then(() => {
+            return res.send({ data: { id: user.id, fullname, email, role, address, doc_number, phone, createdAt: user.createdAt, updatedAt: user.updatedAt } }).status(200);
+        }).catch(err => {
+            var status = 500;
+            if (err.name === 'SequelizeValidationError') status = 422;
+            return res.send({ errors: err.errors, status }).status(status);
+        });
+    }).catch(err => {
+        return res.sendStatus(500);
+    });
+});
 
 
 
@@ -91,53 +91,51 @@ server.put('/:id', (req, res) => {
 server.post('/:idUser/cart', (req, res) => {
 
     const idUser = req.params.idUser;
-    const {idProduct, priceProduct, quantityProduct} = req.body; 
-    
+    const { idProduct, quantityProduct } = req.body;
+
     Order.findOne({
         where: {
             userId: idUser,
             status: "shopping_cart"
         }
     }).then(order => {
-            
-            if (!order){
-                res.send("La orden para el usuario  " + idUser + ",no fue encontrada") 
-                return;
+
+        if (!order) {
+            res.send("La orden para el usuario  " + idUser + ",no fue encontrada")
+            return;
+        }
+        let orderId = order.id;
+
+        Product.findOne({
+            where: {
+                id: idProduct
             }
-            let orderId = order.id;
+        }).then((product) => {
+            let stock = product.stock;
 
-            Product.findOne({
-                where: {
-                    id: idProduct
-                }
-            }).then((product)=>{
-                let stock = product.stock;
+            if (quantityProduct > stock) {
+                res.send("La cantidad pedida supera el stock existente");
+                return
+            }
 
-                if(quantityProduct > stock){
-                    res.send("La cantidad pedida supera el stock existente");
-                    return
-                }
-                product.stock = stock - quantityProduct;
+            Orderline.create({
+                price: product.price,
+                quantity: quantityProduct,
+                productId: idProduct,
+                orderId: orderId
 
-                    Orderline.create({
-                        price: priceProduct,
-                        quantity: quantityProduct,
-                        productId: idProduct,
-                        orderId: orderId
-                
-                    }).then((orderCreated)=>{
-                        product.save();
-                        return res.send(orderCreated).sendStatus(200); 
-                    }).catch(err => {	
-                        var status = 500;		
-                        return res.send("Este producto ya fue agregado a la orden").status(status);
-                    }); 
-               
-            })
+            }).then((orderCreated) => {
+                return res.send(orderCreated).sendStatus(201);
+            }).catch(err => {
+                var status = 500;
+                return res.send("Este producto ya fue agregado a la orden").status(status);
+            });
+
+        })
 
 
-                
-        });
+
+    });
 })
 
 //**************************************************************************************************/
@@ -148,29 +146,29 @@ server.post('/:idUser/cart', (req, res) => {
 server.get('/:idUser/cart', (req, res) => {
 
     const idUser = req.params.idUser;
-        
+
     Order.findOne({
         where: {
             userId: idUser,
             status: "shopping_cart"
         }
-    }).then ((order) =>{
+    }).then((order) => {
 
-        if (!order){
-            res.send("La orden para el usuario  " + idUser + ",no fue encontrada") 
+        if (!order) {
+            res.send("La orden para el usuario  " + idUser + ",no fue encontrada")
             return;
         }
         let orderId = order.id;
         Orderline.findAll({
-            where:{
+            where: {
                 orderId: orderId
             }
-        }).then((orders)=>{
-            if(orders[0] == null){
+        }).then((orders) => {
+            if (orders[0] == null) {
                 return res.send("Ningun producto agregado a la orden");
             }
             return res.send(orders);
-        }).cath(error =>{
+        }).cath(error => {
             return res.sendStatus(500).send(error);
         })
     })
@@ -183,54 +181,35 @@ server.get('/:idUser/cart', (req, res) => {
 server.delete('/:idUser/cart', (req, res) => {
 
     const idUser = req.params.idUser;
-        
+
     Order.findOne({
         where: {
             userId: idUser,
             status: "shopping_cart"
         }
-    }).then((order)=>{
+    }).then((order) => {
 
-        if (!order){
-            res.send("La orden para el usuario  " + idUser + ",no fue encontrada") 
+        if (!order) {
+            res.send("La orden para el usuario  " + idUser + ",no fue encontrada")
             return;
         }
 
         let orderId = order.id;
-        let idsproducts = [];
-        let cantidades = [];
 
         Orderline.findAll({
-                where:{
+            where: {
+                orderId: orderId
+            }
+        }).then(() => {
+            Orderline.destroy({
+                where: {
                     orderId: orderId
                 }
-        }).then((products)=>{
-           
-          products.map(product =>{
-              idsproducts.push(product.dataValues.productId);
-              cantidades.push(product.dataValues.quantity);
-           })
-           
-           idsproducts.map((idproduct, index) =>{
-                Product.findOne({
-                    where:{
-                        id: idproduct
-                    }
-                }).then((producto)=>{
-
-                    producto.stock += cantidades[index];
-                    producto.save();
-                })
-           })
-                Orderline.destroy({
-                    where: {
-                        orderId: orderId
-                    }
-                }).then(()=>{
-                        return res.send("Se ha vaciado la orden");
-                }).catch(error =>{
-                    return res.send(error).status(500);
-                })
+            }).then(() => {
+                return res.send("Se ha vaciado la orden");
+            }).catch(error => {
+                return res.send(error).status(500);
+            })
         })
     })
 
@@ -244,61 +223,58 @@ server.delete('/:idUser/cart', (req, res) => {
 server.put('/:idUser/cart', (req, res) => {
 
     const idUser = req.params.idUser;
-    const {idProduct, quantityProduct} = req.body; 
-        
+    const { idProduct, quantityProduct } = req.body;
+
     Order.findOne({
         where: {
             userId: idUser,
             status: "shopping_cart"
         }
-    }).then((order)=>{
+    }).then((order) => {
 
-        if (!order){
-            res.send("La orden para el usuario  " + idUser + ",no fue encontrada") 
+        if (!order) {
+            res.send("La orden para el usuario  " + idUser + ",no fue encontrada")
             return;
         }
 
         let orderId = order.id;
-        
-        Orderline.findOne({  where: {
-            productId: idProduct,
-            orderId: orderId
-             }
-       }).then((orderline) =>{
+
+        Orderline.findOne({
+            where: {
+                productId: idProduct,
+                orderId: orderId
+            }
+        }).then((orderline) => {
 
             Product.findOne({
                 where: {
                     id: idProduct
                 }
-            }).then((product)=>{
-                
+            }).then((product) => {
+
                 let stock = product.stock;
                 let cantidad = orderline.quantity;
-                let dif; 
-                if(cantidad > quantityProduct){
+                let dif;
+                if (cantidad > quantityProduct) {
                     dif = cantidad - quantityProduct;
-                    product.stock = stock + dif;
-                }else{
+                } else {
                     dif = quantityProduct - cantidad;
-                    if(dif > stock){
+                    if (dif > stock) {
                         res.send("La cantidad pedida supera el stock existente");
                         return;
                     }
-                    product.stock = stock - dif;
                 }
-               
-                product.save()
 
                 orderline.quantity = quantityProduct;
-                orderline.save().then((productEdited)=>{
-                        res.send(productEdited); 
-                }).catch(error =>{
+                orderline.save().then((productEdited) => {
+                    res.send(productEdited);
+                }).catch(error => {
                     return res.send(error).status(500);
-                })   
+                })
 
-           })
+            })
 
-        })   
+        })
     })
 });
 
@@ -313,52 +289,47 @@ server.delete('/:idUser/cart/:idProduct', (req, res) => {
     const idUser = req.params.idUser;
     const idProduct = req.params.idProduct
 
-    
+
     Order.findOne({
         where: {
             userId: idUser,
             status: "shopping_cart"
         }
-    }).then((order)=>{
+    }).then((order) => {
 
-        if (!order){
-            res.send("La orden para el usuario  " + idUser + ",no fue encontrada") 
+        if (!order) {
+            res.send("La orden para el usuario  " + idUser + ",no fue encontrada")
             return;
         }
 
         let orderId = order.id;
-       
-    Orderline.findOne({
-        where: {
-            orderId: orderId,
-        }
-    }).then((orderline)=>{
 
-        if (!orderline){
-            res.send("La orden para el usuario " + idUser + ", no fue encontrada") 
-            return;
-        }
-
-        let cantidad = orderline.quantity;
-
-        Product.findOne({
-            where:{
-                id: idProduct
+        Orderline.findOne({
+            where: {
+                orderId: orderId,
             }
-        }).then((producto)=>{
-            producto.stock += cantidad;
-            producto.save();  
+        }).then((orderline) => {
+
+            if (!orderline) {
+                res.send("La orden para el usuario " + idUser + ", no fue encontrada")
+                return;
+            }
+
+            Product.findOne({
+                where: {
+                    id: idProduct
+                }
+            })
+            Orderline.destroy({
+                where: {
+                    productId: idProduct
+                }
+            }).then(() => {
+                return res.send("El item fue borrado");
+            }).catch(error => {
+                return res.send(error).status(500);
+            })
         })
-                Orderline.destroy({
-                    where: {
-                        productId: idProduct
-                    }
-                }).then(()=>{
-                        return res.send("El item fue borrado");
-                }).catch(error =>{
-                    return res.send(error).status(500);
-                })
-        }) 
     })
 })
 

@@ -1,53 +1,45 @@
 .cover-image {
-    height: 400px;
-    width: 100%;
-    overflow: hidden;
-    display: flex;
+  height: 400px;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
 }
 
-.bootstrap-carousel{
-    max-width: 600px;
+.main-img-cover {
+  height: 400px;
+  overflow: hidden;
+  display: flex;
+}
+.main-img-cover img {
+  margin: auto;
+  max-width: 300px;
+}
+.bootstrap-carousel {
+  height: 400px;
+  max-width: 600px;
 }
 
 .cover-image img {
-    margin: auto;
-    height: 100%;
+  margin: auto;
+  height: 100%;
 }
 
 h1 {
-    opacity: .5;
+  opacity: 0.5;
 }
 
 .price {
-    font-size: 22pt;
-    font-weight: 200;
-    opacity: .9;
+  font-size: 22pt;
+  font-weight: 200;
+  opacity: 0.9;
 }
 
-.card-price{
-    min-height: 400px;
+.card-price {
+  min-height: 400px;
 }
 
-.input-quantity{
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    border: 2px solid rgba(255,255,255, .1);
-    font-weight: 800;
-    color:rgba(255,255,255, .7);
-    -webkit-appearance: textfield;
-    -moz-appearance: textfield;
-    appearance: textfield;
-}
-.input-quantity:focus{
-    color:white;
-    border: 2px solid rgba(255,255,255, .7);
-}
-.input-quantity::-webkit-inner-spin-button,
-.input-quantity::-webkit-outer-spin-button {
-    -webkit-appearance: none; 
-}
 
-.text-muted{
-    opacity: .2;
+
+.text-muted {
+  opacity: 0.2;
 }

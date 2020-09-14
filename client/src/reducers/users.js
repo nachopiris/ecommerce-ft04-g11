@@ -1,9 +1,14 @@
 const initialState = {
-  userCart: [],
+  userCart: []
 };
 
 export default function usersReducer(state = initialState, action) {
   switch (action.type) {
+    case "SET_PRODUCT_TO_CART":
+      return {
+        ...state,
+        userCart: state.userCart.concat(action.payload)
+      };
     case "GET_USER_CART":
       let cart = [];
       if (Array.isArray(action.payload)) {

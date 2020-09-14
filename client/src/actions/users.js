@@ -1,14 +1,15 @@
 import axios from "axios";
 import config from "../config";
 
-const GET_USER_CART = "GET_USER_CART";
 const EMPTY_CART = "EMPTY_CART";
-const CHANGE_QUANTITY = "CHANGE_QUANTITY";
 const DELETE_ITEM = "DELETE_ITEM";
+const GET_USER_CART = "GET_USER_CART";
+const CHANGE_QUANTITY = "CHANGE_QUANTITY";
+const SET_PRODUCT_TO_CART = 'SET_PRODUCT_TO_CART';
 
 const BASE_URI = config.api.base_uri + "/users";
 
-export function getUserCart(userId) {
+export function getUserCart(userId = 1) {
   return (dispatch) => {
     return axios.get(`${BASE_URI}/${userId}/cart`).then((response) => {
       dispatch({
@@ -49,4 +50,29 @@ export function deleteItem(userId, productId) {
       });
     });
   };
+}
+
+
+export function setProductToCart(productId, quantity) {
+  const user_id = 1;
+  return dispatch => {
+    console.log('paso 1')
+    return axios.post(config.api.base_uri + '/orders/' + user_id, {
+      status: "shopping_cart"
+    }).then(() => {
+      console.log('paso 2')
+      axios.post(BASE_URI + '/' + user_id + '/cart', {
+        idProduct: productId,
+        quantityProduct: quantity
+      })
+        .then(res => res.data)
+        .then(res => {
+          dispatch({
+            type: SET_PRODUCT_TO_CART,
+            payload: res,
+          });
+        });
+    })
+
+  }
 }

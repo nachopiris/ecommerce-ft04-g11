@@ -3,7 +3,7 @@ import './styles/ecommerce.scss';
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Product from './components/Product/Product';
 import Catalogue from './components/Catalogue';
-import ProductsCRUD from './components/CRUD/formCRUD';
+import AdminProducts from './components/AdminProducts/AdminProducts';
 import AddCategories from './components/AddCategory';
 import HomePage from './components/HomePage';
 import Navbar from './components/Navbar';
@@ -20,7 +20,7 @@ function App() {
                 <Route exact path="/catalogo" component={Catalogue} />
                 <Route exact path="/carrito" component={Cart} />
 
-                <Route exact path="/admin/productos" component={ProductsCRUD} />
+                <Route exact path="/admin/productos" component={AdminProducts} />
                 <Route exact path="/admin/categorias" component={AddCategories} />
                 <Route exact path="/admin/ordenes" component={Orders} />
                 <Route path="/admin/*">

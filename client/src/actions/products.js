@@ -14,61 +14,57 @@ const GET_LATESTS = 'GET_LATESTS';
 
 const BASE_URI = config.api.base_uri + '/products';
 
-export function getLatests()
-{
+export function getLatests() {
     return dispatch => {
         return Axios.get(BASE_URI + '/custom/latests')
-        .then(res => res.data)
-        .then(res => {
-            dispatch({type: GET_LATESTS, payload: res.data})
-        })
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: GET_LATESTS, payload: res.data })
+            })
     }
 }
 
-export function searchProducts(searchWord)
-{
+export function searchProducts(searchWord) {
     return dispatch => {
-            dispatch({type: SEARCH_PRODUCT, payload: searchWord})
+        dispatch({ type: SEARCH_PRODUCT, payload: searchWord })
     }
 }
 
-export function filterByCategory(nombreCat)
-{
+export function filterByCategory(nombreCat) {
     return dispatch => {
-        return Axios.get(BASE_URI + '/category/'+nombreCat)        
-        .then((res) =>{
-            dispatch({type: FILTER_BY_CATEGORY,payload: res.data.data})
-        });
+        return Axios.get(BASE_URI + '/category/' + nombreCat)
+            .then((res) => {
+                dispatch({ type: FILTER_BY_CATEGORY, payload: res.data.data })
+            });
     }
 }
 
-export function getProducts(keyword)
-{
+export function getProducts(keyword, page = 1) {
     return dispatch => {
         // si keyword NO es undefined, entonces buscará por keyword, de lo contrario, mostrará el listado completo.
         let url = keyword ? BASE_URI + '/search/' + keyword : BASE_URI;
+        url += '?page=' + page;
         return Axios.get(url)
-        .then(res => res.data)
-        .then(res => {
-            dispatch({type:GET_PRODUCTS, payload: res.data});
-        });
+            .then(res => res.data)
+            .then(res => {
+                console.log(res);
+                dispatch({ type: GET_PRODUCTS, payload: res.data });
+            });
     }
 }
 
-export function getProduct(id)
-{
+export function getProduct(id) {
     return dispatch => {
         return Axios.get(BASE_URI + '/' + id)
-        .then(res => res.data)
-        .then(res => {
-            console.log(res);
-            dispatch({type:GET_PRODUCT, payload: res.data})
-        });
+            .then(res => res.data)
+            .then(res => {
+                console.log(res);
+                dispatch({ type: GET_PRODUCT, payload: res.data })
+            });
     }
 }
 
-export function createProduct(attributes)
-{
+export function createProduct(attributes) {
     /*
         'attributes' es un objeto que contiene como propiedades los atributos del producto. En el Back-End,
         este objeto se interpreta como 'body'.
@@ -76,51 +72,47 @@ export function createProduct(attributes)
     */
     return dispatch => {
         return Axios.post(BASE_URI, attributes)
-        .then(res => res.data)
-        .then(res => {
-            dispatch({type: CREATE_PRODUCT, payload: res});
-        })
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: CREATE_PRODUCT, payload: res.data });
+            })
     }
 }
 
-export function updateProduct(id, attributes)
-{
+export function updateProduct(id, attributes) {
 
     return dispatch => {
         return Axios.put(BASE_URI + '/' + id, attributes)
-        .then(res => res.data)
-        .then(res => {
-            dispatch({type: UPDATE_PRODUCT});
-        })
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: UPDATE_PRODUCT });
+            })
     }
 }
 
-export function deleteProduct(id)
-{
+export function deleteProduct(id) {
     return dispatch => {
         return Axios.delete(BASE_URI + '/' + id)
-        .then(() => {
-            dispatch({type: DELETE_PRODUCT, payload: id});
-        })
+            .then(() => {
+                dispatch({ type: DELETE_PRODUCT, payload: id });
+            })
     }
 }
 
-export function addCategoryToProduct(idCat, idProduct)
-{
+export function addCategoryToProduct(idCat, idProduct) {
     return dispatch => {
         return Axios.post(BASE_URI + '/' + idProduct + '/category/' + idCat)
-        .then(()=>{
-            dispatch({type:ADD_CATEGORY_TO_PRODUCT})
-        })
+            .then(() => {
+                dispatch({ type: ADD_CATEGORY_TO_PRODUCT })
+            })
     }
 }
 
-export function deleteCategoryToProduct(idCat, idProduct)
-{
+export function deleteCategoryToProduct(idCat, idProduct) {
     return dispatch => {
         return Axios.delete(BASE_URI + '/' + idProduct + '/category/' + idCat)
-        .then(()=>{
-            dispatch({type:DELETE_CATEGORY_TO_PRODUCT})
-        })
+            .then(() => {
+                dispatch({ type: DELETE_CATEGORY_TO_PRODUCT })
+            })
     }
 }

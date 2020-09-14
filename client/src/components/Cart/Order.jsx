@@ -80,6 +80,7 @@ const Order = ({
                       className="border-dark"
                       onBlur={(e) => verifyQuantity(e)}
                       type="number"
+                      disabled
                       value={quantityInput}
                       onChange={(e) => setQuantityInput(e.target.value)}
                     />

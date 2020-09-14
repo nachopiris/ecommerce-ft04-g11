@@ -2,18 +2,18 @@ const { DataTypes } = require('sequelize');
 // Exportamos una funcion que define el modelo
 // Luego le injectamos la conexion a sequelize.
 
-const validateURl =  function(value){
+const validateURl = function (value) {
   return /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(value);
 }
 
-const validateImage = function(value){
+const validateImage = function (value) {
   return /(.jpg|.jpeg|.png|.webp|.gif)$/i.test(value);
 }
 
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('product', {
-    id:{
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
@@ -21,7 +21,7 @@ module.exports = (sequelize) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate:{
+      validate: {
         notNull: {
           msg: 'Se requiere un nombre'
         },
@@ -49,14 +49,14 @@ module.exports = (sequelize) => {
           args: [0],
           msg: "El stock no puede ser menor a 0"
         },
-        max:{
+        max: {
           args: [99999],
           msg: "El stock no puede ser superior a 5 dígitos"
         }
       }
     },
     price: {
-      type: DataTypes.DECIMAL(9,2),
+      type: DataTypes.DECIMAL(9, 2),
       allowNull: false,
       validate: {
         notNull: {
@@ -77,45 +77,45 @@ module.exports = (sequelize) => {
     },
     images: {
       type: DataTypes.TEXT, // JSON.,
-      allowNull:false,
+      allowNull: false,
       validate: {
         notNull: true,
-        isArray(value){
+        isArray(value) {
           let imgs = JSON.parse(value);
-          if(!Array.isArray(imgs)){
+          if (!Array.isArray(imgs)) {
             throw new Error('El campo "images" debe ser un array.');
           }
         },
-        arrayIsNotEmpty(value){
+        arrayIsNotEmpty(value) {
           let imgs = JSON.parse(value);
-          if(Array.isArray(imgs) && imgs.length < 1){
+          if (Array.isArray(imgs) && imgs.length < 1) {
             throw new Error('Se requiere como mínimo una imagen o foto.');
           }
         },
-        arrayMax(value){
+        arrayMax(value) {
           let imgs = JSON.parse(value);
-          if(Array.isArray(imgs) && imgs.length > 10){
+          if (Array.isArray(imgs) && imgs.length > 10) {
             throw new Error('Se admiten como máximo hasta 10 imágenes o fotos.');
           }
         },
-        allAreImages(value){
+        // allAreImages(value){
+        //   let imgs = JSON.parse(value);
+        //   if(Array.isArray(imgs)){
+        //     imgs.forEach(function(item, index){
+        //       if(!validateImage(item)){
+        //         let n = index + 1;
+        //         throw new Error('Los formatos permitidos para las imagenes o fotos son: .jpg|.jpeg|.png|.webp|.gif');
+        //       }
+        //     })
+        //   }
+        // },
+        allAreURL(value) {
           let imgs = JSON.parse(value);
-          if(Array.isArray(imgs)){
-            imgs.forEach(function(item, index){
-              if(!validateImage(item)){
+          if (Array.isArray(imgs)) {
+            imgs.forEach(function (item, index) {
+              if (!validateURl(item)) {
                 let n = index + 1;
-                throw new Error('Los formatos permitidos para las imagenes o fotos son: .jpg|.jpeg|.png|.webp|.gif');
-              }
-            })
-          }
-        },
-        allAreURL(value){
-          let imgs = JSON.parse(value);
-          if(Array.isArray(imgs)){
-            imgs.forEach(function(item, index){
-              if(!validateURl(item)){
-                let n = index + 1;
-                throw new Error('La imagen o foto #'+ n +' debe ser una URL.');
+                throw new Error('La imagen o foto #' + n + ' debe ser una URL.');
               }
             })
           }
