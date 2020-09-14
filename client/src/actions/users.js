@@ -6,8 +6,20 @@ const DELETE_ITEM = "DELETE_ITEM";
 const GET_USER_CART = "GET_USER_CART";
 const CHANGE_QUANTITY = "CHANGE_QUANTITY";
 const SET_PRODUCT_TO_CART = 'SET_PRODUCT_TO_CART';
+const REGISTER = 'REGISTER';
 
 const BASE_URI = config.api.base_uri + "/users";
+
+export function register(attributes) {
+  return dispatch => {
+    console.log('llegas')
+    return axios.post(BASE_URI, attributes)
+      .then(res => res.data)
+      .then(res => {
+        dispatch({ type: REGISTER, payload: res.data });
+      })
+  }
+}
 
 export function getUserCart() {
   const userId = 1
