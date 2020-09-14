@@ -159,7 +159,7 @@ class Cart extends React.Component {
 function mapStateToProps(state) {
   return {
     orders: state.usersReducer.userCart,
-    products: state.productsReducer.products,
+    products: state.productsReducer.products.rows,
   };
 }
 

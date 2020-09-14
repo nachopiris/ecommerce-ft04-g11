@@ -2,11 +2,13 @@ import React from "react";
 import s from "./productCard.module.scss";
 import { Card, Col, Button, Badge } from "react-bootstrap";
 import { CgShoppingCart } from "react-icons/cg";
+import { FiCheck } from 'react-icons/fi';
 import NumberFormat from "react-number-format";
 import { Link } from "react-router-dom";
 
-export default function ProductCard({ product: { id, name, price, images } }) {
+export default function ProductCard({ product: { id, name, price, images, stock }, setToCart, userCart }) {
   var img = JSON.parse(images)[0];
+  var isAdded = userCart.find(item => item.productId === id) ? true : false;
   const MAX_NAME_LENGTH = 40;
   if (name.length > MAX_NAME_LENGTH) {
     name = name.substring(0, MAX_NAME_LENGTH - 3) + "...";
@@ -38,9 +40,19 @@ export default function ProductCard({ product: { id, name, price, images } }) {
                 displayType={"text"}
               />
             </span>
-            <Button variant="outline-light border-0" size="sm">
+            {stock > 0 && !isAdded && <Button onClick={() => setToCart(id, 1)} variant="outline-light border-0" size="sm">
               <CgShoppingCart />
-            </Button>
+            </Button>}
+
+            {isAdded && <Link to="/carrito" className="btn btn-outline-light btn-sm border-0">
+              <span className="text-primary"><FiCheck /></span>
+              <CgShoppingCart />
+            </Link>}
+
+            {stock < 1 && <Button disabled variant="outline-danger border-0" size="sm">
+              <CgShoppingCart />
+              <small>Agotado</small>
+            </Button>}
           </Card.Footer>
         </Card>
       </div>

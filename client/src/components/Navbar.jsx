@@ -1,5 +1,5 @@
 import React, { useState, useEffect, setState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import s from "../styles/navbar.module.scss";
 import { Navbar as Navb, Nav, Container } from "react-bootstrap";
 import config from "../config";
@@ -82,7 +82,7 @@ export default function Navbar() {
         >
             <Container>
                 {console.log(document.documentElement.scrollTop)}
-                <Navb.Brand href="/">{APP_NAME}</Navb.Brand>
+                <Link to="/" className="navbar-brand">{APP_NAME}</Link>
                 <Navb.Toggle onClick={handleToggle} aria-controls="basic-navbar-nav" />
                 <Navb.Collapse id="basic-navbar-nav">
                     {location.pathname.split('/')[1] === "admin" ? (
