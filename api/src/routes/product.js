@@ -29,7 +29,11 @@ server.get('/custom/latests', (req, res, next) => {
 		order: [
 			['createdAt', 'DESC']
 		],
-		limit: 6
+		limit: 6,
+		include: {
+			model: Category,
+			through: { attributes: [] } // this will remove the rows from the join table (i.e. 'UserPubCrawl table') in the result set
+		}
 	})
 		.then(products => {
 			res.send({ data: { count: 6, rows: products } });
