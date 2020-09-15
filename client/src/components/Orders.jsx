@@ -2,8 +2,11 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getOrders } from '../actions/orders';
 import { Container, Row, Col } from 'react-bootstrap'
+import moment from 'moment';
 
 function Orders({ getOrders, allOrders }) {
+
+    const DATE_FORMAT = "DD/MM/YYYY - HH:mm:ss"
 
     useEffect(() => {
         getOrders();
@@ -38,8 +41,8 @@ function Orders({ getOrders, allOrders }) {
                                             <td>{order.id}</td>
                                             <td>{order.userId ? order.userId : "No disponible"}</td>
                                             {/* Las siguientes dos líneas formatean la fecha recibida de la base de datos para hacerla más amigable */}
-                                            <td>{order.createdAt.substr(11, 8) + " - " + order.createdAt.substr(8, 2) + "/" + order.createdAt.substr(5, 2) + "/" + order.createdAt.substr(0, 4)}</td>
-                                            <td>{order.updatedAt.substr(11, 8) + " - " + order.updatedAt.substr(8, 2) + "/" + order.updatedAt.substr(5, 2) + "/" + order.updatedAt.substr(0, 4)}</td>
+                                            <td>{moment(order.createdAt).format(DATE_FORMAT)}</td>
+                                            <td>{moment(order.updatedAt).format(DATE_FORMAT)}</td>
                                             {/* Acá cambiamos el texto del valor recibido */}
                                             <td>{order.status === "shopping_cart" && ("En carrito") ||
                                                 order.status === "created" && ("Creada") ||
