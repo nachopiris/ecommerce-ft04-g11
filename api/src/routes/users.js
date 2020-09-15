@@ -5,6 +5,7 @@ const OrderLine = require('../models/OrderLine.js');
 
 server.get('/', (req, res) => {
     User.findAll({
+        order: [['id', 'ASC']],
         attributes: ['id', 'fullname', 'email', 'role', 'address', 'doc_number', 'phone', 'createdAt', 'updatedAt']
     })
         .then(users => {

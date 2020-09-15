@@ -16,7 +16,7 @@ server.post('/promote/:id', (req, res) => {
                 .then(() => {
                     res.status(200).send('Se le asignó el rol de Administrador al usuario ' + id);
                 })
-                .catch(() => {
+                .catch((err) => {
                     res.status(500).send({ errors: [{ message: 'Ha ocurrido un error al intentar contactar con el servidor' }], status: 500 });
                 })
         })
