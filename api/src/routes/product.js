@@ -1,7 +1,9 @@
 const server = require('express').Router();
 const Sequelize = require('sequelize');
-const { Product, Category } = require('../db.js');
+const { Product, Category, User, Review } = require('../db.js');
+const Reviews = require('../models/Reviews.js');
 const Op = Sequelize.Op;
+
 
 server.get('/', (req, res, next) => {
 	const perPage = 12;
@@ -265,6 +267,99 @@ server.get('/categories/:idProduct', function (req, res, next) {
 		})
 });
 
+//************************** RUTA PARA AGREGAR CREAR REVIEW ******************************* */
+
+server.post('/:idProduct/:idUser/review', (req, res) =>{
+
+	const productId = req.params.idProduct;
+	const userId = req.params.idUser;
+
+	Review.create({
+		rating: req.body.rating,
+		description: req.body.description,
+		productId: productId,
+		userId: userId
+	}).then((data) =>{
+		res.status(201).send(data);
+	}).catch(error =>{
+		res.send(error)
+	})
+
+
+})
+
+//************************** RUTA PARA MODIFICAR REVIEW ******************************* */
+
+
+server.put('/:idProduct/review/:idReview', (req, res) =>{
+
+	const idProduct = req.params.idProduct;
+	const idReview = req.params.idReview; 
+	const rating  = req.body.rating;
+	const description = req.body.description;
+
+	Review.findOne({
+
+		where:{
+			productId: idProduct,
+			id: idReview
+		}
+	}).then((rev)=>{
+
+		if(!rev) return res.send(404)
+
+		else{
+			rev.rating = rating;
+			rev.description = description;
+		}
+		rev.save().then((rev)=>{
+				res.send(rev)
+		}).catch(error => {
+			res.send(error);
+		})
+	})
+})
+
+//************************** RUTA PARA OBETENER TODAS LAS REVIEW ******************************* */
+
+
+server.get('/:idProduct/review', (req, res) =>{
+
+	const idProduct = req.params.idProduct;
+
+	Review.findAll({
+		where:{
+			productId: idProduct
+		}
+	}).then((reviews) =>{
+		res.send(reviews)
+	}).catch((error)=>{
+		res.send(error);
+	})
+
+})
+
+//************************** RUTA PARA BORRAR TODAS LAS REVIEW ******************************* */
+
+
+server.delete('/:idProduct/review/:idReview', (req, res) =>{
+
+	const idProduct = req.params.idProduct;
+	const idReview = req.params.idReview;
+
+	Review.findOne({
+		where:{
+			productId: idProduct,
+			id : idReview
+		}
+	}).then((reviews) =>{
+		reviews.destroy();
+		res.send(200)
+	}).catch((error)=>{
+		res.send(error);
+	})
+
+})
 
 
 module.exports = server;
