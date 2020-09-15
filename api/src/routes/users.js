@@ -84,7 +84,29 @@ server.put('/:id', (req, res) => {
     });
 });
 
-
+server.delete('/:id', (req, res) => {
+    const ID = req.params.id;
+    if (!Number.isInteger(ID * 1)) {
+        console.log(ID)
+        return res.status(400).send({ errors: [{ message: 'La consulta no es válida' }], status: 400 });
+    }
+    User.destroy({
+        where: {
+            id: ID
+        }
+    })
+        .then(rowsDeleted => {
+            if (rowsDeleted === 1) {
+                res.status(200).send('El usuario fue eliminado exitosamente');
+            }
+            else {
+                res.status(404).send({ errors: [{ message: 'No existe el usuario con la id ' + ID }], status: 404 });
+            }
+        })
+        .catch(() => {
+            res.status(500).send({ errors: [{ message: 'Ha ocurrido un error al intentar contactar con el servidor' }], status: 500 });
+        })
+})
 
 //******************* RUTA PARA AGREGAR ITEMS AL CARRITO ***************************/
 //*********** ademas controla el stock existente del producto **********************/
