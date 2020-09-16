@@ -8,6 +8,7 @@ const productRouter = require('./product.js');
 const categoriesRouter = require('./categories.js');
 const ordersRouter = require('./orders.js');
 const usersRouter = require('./users.js');
+const authRouter = require('./auth.js');
 const { route } = require('./product.js');
 
 const router = Router();
@@ -19,6 +20,7 @@ router.use('/products', productRouter);
 router.use('/categories', categoriesRouter);
 router.use('/orders', ordersRouter);
 router.use('/users', usersRouter);
+router.use('/auth', authRouter);
 
 
 
