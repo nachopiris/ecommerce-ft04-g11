@@ -110,6 +110,9 @@ export default function Navbar() {
                                 <NavLink className="nav-link" activeClassName="active" exact to="/registrarse">
                                     Registrarse
                                 </NavLink>
+                                <NavLink className="nav-link" activeClassName="active" exact to="/ingresar">
+                                    Ingresar
+                                </NavLink>
                                 <NavLink className="nav-link" activeClassName="active" to="/catalogo">
                                     Catálogo
                                 </NavLink>
