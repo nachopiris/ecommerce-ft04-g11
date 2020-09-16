@@ -21,9 +21,18 @@ export function getUsers() {
     }
 }
 
+export function login(attributes) {
+    return dispatch => {
+        return axios.post(BASE_URI + '/login', attributes)
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: REGISTER, payload: res.data });
+            })
+    }
+}
+
 export function register(attributes) {
     return dispatch => {
-        console.log('llegas')
         return axios.post(BASE_URI, attributes)
             .then(res => res.data)
             .then(res => {
