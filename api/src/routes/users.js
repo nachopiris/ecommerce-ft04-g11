@@ -1,25 +1,13 @@
-const server = require("express").Router();
-const Sequelize = require("sequelize");
-const { User, Order, Product, Orderline } = require("../db.js");
-const OrderLine = require("../models/OrderLine.js");
+const server = require('express').Router();
+const Sequelize = require('sequelize');
+const { User, Order, Product, Orderline } = require('../db.js');
+const OrderLine = require('../models/OrderLine.js');
 const bcrypt = require("bcrypt");
 
-server.get("/", (req, res) => {
-  User.findAll({
-    attributes: [
-      "id",
-      "fullname",
-      "email",
-      "role",
-      "address",
-      "doc_number",
-      "phone",
-      "createdAt",
-      "updatedAt",
-    ],
-  })
-    .then((users) => {
-      return res.send({ data: users }).status(201);
+server.get('/', (req, res) => {
+    User.findAll({
+        order: [['id', 'ASC']],
+        attributes: ['id', 'fullname', 'email', 'role', 'address', 'doc_number', 'phone', 'createdAt', 'updatedAt']
     })
     .catch((err) => {
       var status = 500;
