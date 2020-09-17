@@ -17,7 +17,7 @@ const store = createStore(
         globalReducer,
         authReducer,
     }),
-    compose(applyMiddleware(thunk), persistState("productsReducer"))
+    compose(applyMiddleware(thunk), persistState("authReducer"))
 );
 
 //localStorage.clear();
