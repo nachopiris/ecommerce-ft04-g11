@@ -1,6 +1,12 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const morgan = require("morgan");
+const routes = require("./routes/index.js");
+const passport = require("passport");
+
+require("./db.js");
+require("./passport/local-auth.js");
 const cors = require("cors");
 const morgan = require("morgan");
 const routes = require("./routes/index.js");
@@ -16,6 +22,7 @@ const sessionSecret = "SjU%phqz,G3:ykn";
 const server = express();
 
 server.name = "API";
+
 
 server.use(morgan("dev"));
 server.use(bodyParser.json({ limit: "50mb" }));
