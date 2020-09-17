@@ -3,6 +3,9 @@ import { register } from '../actions/users';
 import { useForm } from "react-hook-form";
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { IconContext } from 'react-icons';
+import { BiShowAlt, BiHide } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
 
 function UserRegister({ userRegister }) {
     const { register, handleSubmit, watch, errors } = useForm();
@@ -10,7 +13,7 @@ function UserRegister({ userRegister }) {
     console.log(watch("email"));
 
     const regValidated = {
-        email: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+        email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
         password: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/,
         fullname: /^[a-zA-Z]([-']?[a-zA-Z]+)*( [a-zA-Z]([-']?[a-zA-Z]+)*)+$/
     }
@@ -20,7 +23,9 @@ function UserRegister({ userRegister }) {
         email: '',
         password: '',
         passwordConfirmation: '',
-        passwordShowing: false
+        passwordShowing: false,
+        mailFocus: false,
+        passFocus: false
     });
 
     const switchPassword = () => {
@@ -47,53 +52,57 @@ function UserRegister({ userRegister }) {
             <Row className="justify-content-center">
                 <Col md={8}>
                     <Card className="border-0 bg-dark2">
-                        <Card.Header className="border-0">
-                            Crearse una cuenta
-                                                </Card.Header>
+                        <Card.Header className="border-0 h3">
+                            Registro
+                        </Card.Header>
                         <Card.Body>
                             <Form onSubmit={handleSubmit(onSubmit)}>
                                 <Form.Group>
-                                    <Form.Label>Nombre completo</Form.Label>
-                                    <Form.Control autoComplete="off" className={errors.fullname ? 'is-invalid' : ''} ref={register({ required: true, maxLength: 255, pattern: regValidated.fullname })} name="fullname"></Form.Control>
+                                    <Form.Label>Nombre completo *</Form.Label>
+                                    <Form.Control autoComplete="off" className={errors.fullname ? 'is-invalid' : 'name-input'} ref={register({ required: true, maxLength: 255, pattern: regValidated.fullname })} name="fullname"></Form.Control>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.fullname?.type === "required" &&
-                                            "Necesitamos tu nombre completo"}
+                                            "Debes ingresar tu nombre y apellido"}
                                         {errors.fullname?.type === "maxLength" &&
-                                            "Tu nombre completo no puede ser superior a 255 caracteres"}
+                                            "Tu nombre completo no puede exceder los 255 caracteres"}
                                         {errors.fullname?.type === "pattern" &&
-                                            "El nombre completo no es válido"}
+                                            "El nombre ingresado no es válido"}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group>
-                                    <Form.Label>Correo electrónico</Form.Label>
-                                    <Form.Control autoComplete="off" className={errors.email ? 'is-invalid' : ''} ref={register({ required: true, pattern: regValidated.email, maxLength: 191 })} type="text" name="email" ></Form.Control>
+                                    <Form.Label>Correo electrónico *</Form.Label>
+                                    <Form.Control autoComplete="off" className={errors.email ? 'is-invalid' : 'mail-input'} ref={register({ required: true, pattern: regValidated.email, maxLength: 191 })} type="text" name="email" ></Form.Control>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.email?.type === "required" &&
-                                            "Se requiere un correo electrónico"}
+                                            "Debes ingresar un correo electrónico"}
                                         {errors.email?.type === "pattern" &&
-                                            "El correo electrónico no es válido"}
+                                            "El correo electrónico ingresado no es válido"}
                                         {errors.email?.type === "maxLength" &&
-                                            "El correo electrónico no puede ser superior a 191 caracteres"}
+                                            "El correo electrónico no puede exceder los 191 caracteres"}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group>
-                                    <Form.Label>Clave <Button onClick={() => switchPassword()} variant="link">{state.passwordShowing ? 'Ocultar' : 'Mostrar'}</Button></Form.Label>
-                                    <Form.Control autoComplete="off" className={errors.password ? 'is-invalid' : ''} ref={register({ required: true, minLength: 8, maxLength: 16, pattern: regValidated.password })} name="password" type={state.passwordShowing ? 'text' : 'password'}></Form.Control>
+                                    <IconContext.Provider value={state.passwordShowing ? { className: "icon-change" } : { className: "icon" }}>
+                                        <Form.Label><span style={{ marginRight: "0.125rem" }} >Clave *</span> {state.passwordShowing ? <BiHide type="button" onClick={() => switchPassword()} title="Ocultar clave" />
+                                            : <BiShowAlt type="button" onClick={() => switchPassword()} title="Mostrar clave" />}</Form.Label>
+                                    </IconContext.Provider>
+                                    <Form.Control autoComplete="off" className={errors.password ? 'is-invalid' : 'password-input'} ref={register({ required: true, minLength: 8, maxLength: 16, pattern: regValidated.password })} name="password" type={state.passwordShowing ? 'text' : 'password'}></Form.Control>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.password?.type === "required" &&
-                                            "Se requiere una clave de acceso"}
+                                            "Debes ingresar una clave"}
                                         {errors.password?.type === "pattern" &&
-                                            "La clave debe contener números, letras minúsculas y mayúsculas"}
+                                            "La clave debe contener al menos una mayúscula y un número"}
                                         {errors.password?.type === "maxLength" &&
-                                            "La clave de acceso no debe ser superior a 16 caracteres"}
+                                            "La clave no puede exceder los 16 caracteres"}
                                         {errors.password?.type === "minLength" &&
-                                            "La clave de acceso no debe ser inferior a 8 caracteres"}
+                                            "La clave debe contener al menos 8 caracteres"}
                                     </Form.Control.Feedback>
                                 </Form.Group>
-                                <Form.Group>
+                                <Form.Group className="d-flex justify-content-between">
                                     <Button type="submit">
                                         Crear cuenta
-                                                                        </Button>
+                                    </Button>
+                                    <span>¿Ya estás registrado? <Link className="link" to="/ingresar">Inicia sesión</Link></span>
                                 </Form.Group>
                             </Form>
                         </Card.Body>

@@ -22,12 +22,11 @@ server.get('/:id', (req, res, next) => {
 
 server.get('/', (req, res) => {
     if (!req.query.status) {
-        Order.findAll()
-            .then(function (orders) {
-                console.log({ data: orders });
+        Order.findAll({ include: [{ model: User }] })
+            .then(orders => {
                 return res.send({ data: orders });
             })
-            .catch(e => {
+            .catch(() => {
                 return res.status(500)
             });
     } else {

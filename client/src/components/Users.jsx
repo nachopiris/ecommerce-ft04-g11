@@ -32,7 +32,7 @@ function Users({ getUsers, allUsers }) {
                                     <th>Correo electrónico</th>
                                     <th>Rol</th>
                                     <th>Registrado</th>
-                                    <th>Modificado</th>
+                                    <th>Última modificación</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,7 +47,7 @@ function Users({ getUsers, allUsers }) {
                                                 user.role === "admin" && ("Administrador")}</td>
                                             {/* Las siguientes dos líneas formatean la fecha recibida de la base de datos para hacerla más amigable */}
                                             <td>{moment(user.createdAt).format(DATE_FORMAT)}</td>
-                                            <td>{moment(user.updatedAt).format(DATE_FORMAT)}</td>
+                                            <td>{user.createdAt === user.updatedAt ? "Sin modificaciones" : moment(user.updatedAt).format(DATE_FORMAT)}</td>
                                         </tr>
                                     )
                                 }
