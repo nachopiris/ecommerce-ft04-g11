@@ -5,12 +5,7 @@ const morgan = require("morgan");
 const routes = require("./routes/index.js");
 const passport = require("passport");
 
-require("./db.js");
-require("./passport/local-auth.js");
 const cors = require("cors");
-const morgan = require("morgan");
-const routes = require("./routes/index.js");
-const passport = require("passport");
 const session = require("express-session");
 
 require("./db.js");
@@ -23,18 +18,17 @@ const server = express();
 
 server.name = "API";
 
-
 server.use(morgan("dev"));
 server.use(bodyParser.json({ limit: "50mb" }));
 server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 server.use(
-  cors({
-    origin: "http://localhost:3000", // allow to server to accept request from different origin
-    credentials: true, // allow session cookie from browser to pass through
-  })
+    cors({
+        origin: "http://localhost:3000", // allow to server to accept request from different origin
+        credentials: true, // allow session cookie from browser to pass through
+    })
 );
 server.use(
-  session({ secret: sessionSecret, resave: true, saveUninitialized: true })
+    session({ secret: sessionSecret, resave: true, saveUninitialized: true })
 );
 server.use(cookieParser(sessionSecret));
 server.use(passport.initialize());
@@ -44,11 +38,11 @@ server.use("/", routes);
 
 // Error catching endware.
 server.use((err, req, res, next) => {
-  // eslint-disable-line no-unused-vars
-  const status = err.status || 500;
-  const message = err.message || err;
-  console.error(err);
-  res.status(status).send(message);
+    // eslint-disable-line no-unused-vars
+    const status = err.status || 500;
+    const message = err.message || err;
+    console.error(err);
+    res.status(status).send(message);
 });
 
 module.exports = server;
