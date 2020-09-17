@@ -3,6 +3,9 @@ import { login } from '../actions/users';
 import { useForm } from "react-hook-form";
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { IconContext } from 'react-icons';
+import { BiShowAlt, BiHide } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
 
 function Login({ login }) {
     const { register, handleSubmit, watch, errors } = useForm();
@@ -10,7 +13,7 @@ function Login({ login }) {
     console.log(watch("email"));
 
     const regValidated = {
-        email: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+        email: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
     }
 
     const [state, setState] = useState({
@@ -29,41 +32,46 @@ function Login({ login }) {
             <Row className="justify-content-center">
                 <Col md={8}>
                     <Card className="border-0 bg-dark2">
-                        <Card.Header className="border-0">
-                            Iniciar sesión
-                                                </Card.Header>
+                        <Card.Header className="border-0 h3">
+                            Ingreso
+                        </Card.Header>
                         <Card.Body>
                             <Form onSubmit={handleSubmit(onSubmit)}>
                                 <Form.Group>
                                     <Form.Label>Correo electrónico</Form.Label>
-                                    <Form.Control autoComplete="off" className={errors.email ? 'is-invalid' : ''} ref={register({ required: true, pattern: regValidated.email, maxLength: 191 })} type="text" name="email" ></Form.Control>
+                                    <Form.Control autoComplete="off" className={errors.email ? 'is-invalid' : 'mail-input'} ref={register({ required: true, pattern: regValidated.email, maxLength: 191 })} type="text" name="email" ></Form.Control>
                                     <Form.Control.Feedback type="invalid">
                                         {errors.email?.type === "required" &&
-                                            "Se requiere un correo electrónico"}
+                                            "Debes ingresar tu correo electrónico"}
                                         {errors.email?.type === "pattern" &&
-                                            "El correo electrónico no es válido"}
+                                            "El correo electrónico ingresado no es válido"}
                                         {errors.email?.type === "maxLength" &&
-                                            "El correo electrónico no puede ser superior a 191 caracteres"}
+                                            "El correo electrónico no puede exceder los 191 caracteres"}
                                     </Form.Control.Feedback>
                                 </Form.Group>
                                 <Form.Group>
-                                    <Form.Label>Clave <Button onClick={() => switchPassword()} variant="link">{state.passwordShowing ? 'Ocultar' : 'Mostrar'}</Button></Form.Label>
-                                    <Form.Control autoComplete="off" className={errors.password ? 'is-invalid' : ''} ref={register({ required: true })} name="password" type={state.passwordShowing ? 'text' : 'password'}></Form.Control>
+                                    <IconContext.Provider value={state.passwordShowing ? { className: "icon-change" } : { className: "icon" }}>
+                                        <Form.Label><span >Clave</span> {state.passwordShowing ? <BiHide type="button" onClick={() => switchPassword()} title="Ocultar clave" />
+                                            : <BiShowAlt type="button" onClick={() => switchPassword()} title="Mostrar clave" />}</Form.Label>
+                                    </IconContext.Provider>
+                                    <Form.Control autoComplete="off" className={errors.password ? 'is-invalid' : 'password-input'} ref={register({ required: true })} name="password" type={state.passwordShowing ? 'text' : 'password'}></Form.Control>
                                     <Form.Control.Feedback type="invalid">
-                                        {errors.password && "Se requiere una clave de acceso"}
+                                        {errors.password && "Debes ingresar tu clave"}
                                     </Form.Control.Feedback>
+                                    <Link className="link" to="#"><small>Olvidé mi clave</small></Link>
                                 </Form.Group>
-                                <Form.Group>
+                                <Form.Group className="d-flex justify-content-between">
                                     <Button type="submit">
-                                        Ingresar
-                                                                        </Button>
+                                        Iniciar sesión
+                                    </Button>
+                                    <span>¿No estás registrado? <Link className="link" to="/registrarse">Crea una cuenta</Link></span>
                                 </Form.Group>
                             </Form>
                         </Card.Body>
                     </Card>
                 </Col>
             </Row>
-        </Container>
+        </Container >
     );
 }
 
