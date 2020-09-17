@@ -30,7 +30,7 @@ function Orders({ getOrders, allOrders }) {
                                     <th>Orden N°</th>
                                     <th>Creada por</th>
                                     <th>Fecha de creación</th>
-                                    <th>Último movimiento</th>
+                                    <th>Última modificación</th>
                                     <th>Estado</th>
                                 </tr>
                             </thead>
@@ -38,11 +38,12 @@ function Orders({ getOrders, allOrders }) {
                                 {allOrders && allOrders.map((order, index) => {
                                     return (
                                         <tr key={index} className="text-center">
+                                            {console.log(order)}
                                             <td>{order.id}</td>
-                                            <td>{order.userId ? order.userId : "No disponible"}</td>
+                                            <td>{order.user ? order.user.email : "No disponible"}</td>
                                             {/* Las siguientes dos líneas formatean la fecha recibida de la base de datos para hacerla más amigable */}
                                             <td>{moment(order.createdAt).format(DATE_FORMAT)}</td>
-                                            <td>{moment(order.updatedAt).format(DATE_FORMAT)}</td>
+                                            <td>{order.createdAt === order.updatedAt ? "Sin modificaciones" : moment(order.updatedAt).format(DATE_FORMAT)}</td>
                                             {/* Acá cambiamos el texto del valor recibido */}
                                             <td>{order.status === "shopping_cart" && ("En carrito") ||
                                                 order.status === "created" && ("Creada") ||

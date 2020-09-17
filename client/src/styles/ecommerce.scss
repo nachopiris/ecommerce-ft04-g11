@@ -8,6 +8,51 @@
   src: url("/fonts/Gruppo-Regular.ttf");
 }
 
+.icon {
+    color: white;
+    vertical-align: middle;
+    margin-top: -0.125rem;
+}
+
+.icon-change {
+    color: #51516b;
+    vertical-align: middle;
+    margin-top: -0.125rem;
+}
+
+.link {
+    color: hsl(211, 94%, 50%) !important;
+    text-decoration: none !important;
+}
+
+.btn {
+    box-shadow: none !important;
+}
+
+.is-invalid {
+    background-position: left calc(0.375em + 0.1875rem) center !important;
+    padding-left: 2.15rem !important;
+}
+
+.name-input, .mail-input, .password-input {
+    background-repeat: no-repeat;
+    background-position: left calc(0.375em + 0.1875rem) center !important;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    padding-left: 2.15rem !important;
+}
+
+.name-input {
+    background-image: url("/icons/name.svg");
+}
+
+.mail-input {
+    background-image: url("/icons/email.svg");
+}
+
+.password-input {
+    background-image: url("/icons/password.svg");
+}
+
 $font-family-sans-serif: "TextDefault";
 
 $body-bg: #363645; //#06080e; //#1f2747; //161E57;
@@ -41,6 +86,7 @@ $custom-select-indicator-color: rgba(255, 255, 255, 0.6);
 
 .form-control:focus {
   background-color: theme-color("dark");
+  box-shadow: none !important;
 }
 
 h1.lg {
