@@ -1,6 +1,6 @@
 const initialState = {
     userCart: [],
-    user: {}
+    user: {},
 };
 
 export default function usersReducer(state = initialState, action) {
@@ -8,17 +8,12 @@ export default function usersReducer(state = initialState, action) {
         case "GET_USERS":
             return {
                 ...state,
-                users: action.payload
-            }
-        case "REGISTER":
-            return {
-                ...state,
-                user: action.payload
-            }
+                users: action.payload,
+            };
         case "SET_PRODUCT_TO_CART":
             return {
                 ...state,
-                userCart: state.userCart.concat(action.payload)
+                userCart: state.userCart.concat(action.payload),
             };
         case "GET_USER_CART":
             let cart = [];

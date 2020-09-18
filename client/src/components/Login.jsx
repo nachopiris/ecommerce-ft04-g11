@@ -5,11 +5,33 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { IconContext } from "react-icons";
 import { BiShowAlt, BiHide } from "react-icons/bi";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 function Login({ login }) {
     const { register, handleSubmit, watch, errors } = useForm();
-    const onSubmit = (data) => login(data);
+    const onSubmit = (data) => {
+        login(data)
+            .then((res) => {
+                console.log(res);
+                setState({
+                    ...state,
+                    loading: false,
+                });
+                if (res.token) {
+                    setState({
+                        ...state,
+                        logged: true,
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                setState({
+                    ...state,
+                    loading: false,
+                });
+            });
+    };
     console.log(watch("email"));
 
     const regValidated = {
@@ -18,6 +40,8 @@ function Login({ login }) {
 
     const [state, setState] = useState({
         passwordShowing: false,
+        logged: false,
+        loading: false,
     });
 
     const switchPassword = () => {
@@ -29,6 +53,7 @@ function Login({ login }) {
 
     return (
         <Container>
+            {state.logged && <Redirect to="/cuenta" />}
             <Row className="justify-content-center">
                 <Col md={8}>
                     <Card className="border-0 bg-dark2">
@@ -116,8 +141,13 @@ function Login({ login }) {
                                     </Link>
                                 </Form.Group>
                                 <Form.Group className="d-flex justify-content-between">
-                                    <Button type="submit">
-                                        Iniciar sesión
+                                    <Button
+                                        disabled={state.loading}
+                                        type="submit"
+                                    >
+                                        {state.loading
+                                            ? "Cargando..."
+                                            : "Iniciar sesión"}
                                     </Button>
                                     <span>
                                         ¿No estás registrado?{" "}

@@ -22,17 +22,6 @@ export function getUsers() {
     };
 }
 
-export function register(attributes) {
-    return (dispatch) => {
-        return axios
-            .post(BASE_URI, attributes)
-            .then((res) => res.data)
-            .then((res) => {
-                dispatch({ type: REGISTER, payload: res.data });
-            });
-    };
-}
-
 export function getUserCart() {
     const userId = 1;
     return (dispatch) => {
