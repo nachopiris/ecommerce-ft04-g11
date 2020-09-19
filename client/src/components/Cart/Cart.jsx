@@ -11,6 +11,7 @@ import { Container, Row, Col, Button, Alert } from "react-bootstrap";
 
 import { MdCameraAlt, MdDelete } from "react-icons/md";
 import Order from "./Order";
+import { removeProductToCart, changeProductQuantity, clearCart } from "../../actions/guest";
 
 class Cart extends React.Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class Cart extends React.Component {
 
     this.delete = this.delete.bind(this);
     this.quantityChange = this.quantityChange.bind(this);
+    this.deleteAll = this.deleteAll.bind(this);
 
     this.state = {
       cartProducts: [],
@@ -25,38 +27,64 @@ class Cart extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getUserCart(1).then(() => {
-      if (this.props.orders.length) {
-        this.getCartProducts();
-      }
-    });
+    if(!!this.props.token){
+      this.props.getUserCart(1).then(() => {
+        if (this.props.orders.length) {
+          this.getCartProducts();
+        }
+      });
+    }
+    this.getCartProducts();
   }
 
   getCartProducts() {
-    let productsIds = [];
-    this.props.orders.forEach((order) => {
-      productsIds.push(order.productId);
-    });
-    this.props.getProducts().then(() => {
-      const cartProducts = this.props.products.filter((product) =>
-        productsIds.includes(product.id)
-      );
-      this.setState({
-        cartProducts: cartProducts,
+    if(!!this.props.token){
+      let productsIds = [];
+      this.props.orders.forEach((order) => {
+        productsIds.push(order.productId);
       });
-    });
+      this.props.getProducts().then(() => {
+        const cartProducts = this.props.products.filter((product) =>
+          productsIds.includes(product.id)
+        );
+        this.setState({
+          cartProducts: cartProducts,
+        });
+      });
+    }else{
+      this.setState({
+        cartProducts: this.props.guestCart,
+      });
+    }
+  
   }
 
   quantityChange(quantity, productId) {
-    const body = {
-      idProduct: productId,
-      quantityProduct: quantity,
-    };
-    this.props.changeQuantity(1, body);
+    if(!!this.props.token){
+      const body = {
+        idProduct: productId,
+        quantityProduct: quantity,
+      };
+      this.props.changeQuantity(1, body);
+    }else{
+      this.props.changeGuestQuantity({id: productId, quantity});
+    }
   }
 
   delete(productId) {
-    this.props.deleteItem(1, productId).then(() => {
+    if(!!this.props.token){
+      this.props.deleteItem(1, productId).then(() => {
+        const products = this.state.cartProducts;
+        const productToRemove = products.findIndex(
+          (product) => product.id === productId
+        );
+        products.splice(productToRemove, 1);
+        this.setState({
+          cartProducts: products,
+        });
+      });
+    }else{
+      this.props.deleteGuestItem(productId);
       const products = this.state.cartProducts;
       const productToRemove = products.findIndex(
         (product) => product.id === productId
@@ -65,15 +93,23 @@ class Cart extends React.Component {
       this.setState({
         cartProducts: products,
       });
-    });
+      
+    }
   }
 
   deleteAll() {
-    this.props.emptyCart(1).then(() => {
+    if(!!this.props.token){
+      this.props.emptyCart(1).then(() => {
+        this.setState({
+          cartProducts: [],
+        });
+      });
+    }else{
+      this.props.emptyGuestCart();
       this.setState({
         cartProducts: [],
       });
-    });
+    }
   }
 
   render() {
@@ -119,7 +155,7 @@ class Cart extends React.Component {
           </Row>
         )}
         {this.state.cartProducts.map((product, index) => {
-          if (this.props.orders.length) {
+          if (this.props.guestCart || this.props.orders.length) {
             const findOrder = this.props.orders.find(
               (order) => order.productId === product.id
             );
@@ -127,9 +163,9 @@ class Cart extends React.Component {
               <Order
                 key={index}
                 productId={product.id}
-                image={JSON.parse(product.images)[0]}
+                image={product.images ? JSON.parse(product.images)[0] : product.image}
                 title={product.name}
-                quantity={findOrder.quantity}
+                quantity={!!this.props.token ? findOrder.quantity : product.quantity}
                 price={product.price}
                 stock={product.stock}
                 onDelete={this.delete}
@@ -160,6 +196,9 @@ function mapStateToProps(state) {
   return {
     orders: state.usersReducer.userCart,
     products: state.productsReducer.products.rows,
+    token: state.authReducer.token,
+    user: state.authReducer.user,
+    guestCart: state.guestReducer.cart
   };
 }
 
@@ -170,6 +209,9 @@ function mapDispatchToProps(dispatch) {
     emptyCart: (userId) => dispatch(emptyCart(userId)),
     changeQuantity: (userId, body) => dispatch(changeQuantity(userId, body)),
     deleteItem: (userId, productId) => dispatch(deleteItem(userId, productId)),
+    deleteGuestItem: (id) => dispatch(removeProductToCart(id)),
+    changeGuestQuantity: (data) => dispatch(changeProductQuantity(data)),
+    emptyGuestCart: () => dispatch(clearCart())
   };
 }
 
