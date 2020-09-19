@@ -6,6 +6,10 @@ import { FiUser } from "react-icons/fi";
 
 function Account({ auth }) {
     const { user, token } = auth;
+    const logOut = () => {
+        localStorage.clear();
+        window.location.reload();
+    }
     return (
         <Container>
             <Row>
@@ -27,7 +31,7 @@ function Account({ auth }) {
                                 src="https://image.freepik.com/vector-gratis/gamer-girl-character-esport-plantilla-logotipo_162048-110.jpg"
                             />
                             <Card.Title>{user.fullname}</Card.Title>
-                            <Button variant="primary">Cerrar sesión</Button>
+                            <Button variant="primary" onClick={() => logOut()}>Cerrar sesión</Button>
                         </Card.Body>
                     </Card>
                 </Col>

@@ -2,11 +2,13 @@ import React from 'react'
 import { Container } from "react-bootstrap";
 import { Link, useLocation } from 'react-router-dom'
 import style from '../styles/error404.module.scss'
+import { connect } from 'react-redux';
 
-export default function Error404() {
+export function Error404({ auth }) {
     const location = useLocation();
+    const { user } = auth;
     return (
-        location.pathname.split('/')[1] !== "admin" ?
+        location.pathname.split('/')[1] !== "admin" || user.role !== 'admin' ?
             <Container className="text-center">
                 <h1 className="display-2">Error 404</h1>
                 <span className="text-white-50">Qué extraño, parece que no hay nada acá. Intenta seguir navegando desde el menú o regresa al catálogo.</span><br /><br />
@@ -20,3 +22,15 @@ export default function Error404() {
             </Container>
     )
 }
+
+const mapStateToProps = (state) => {
+    return {
+        auth: state.authReducer,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Error404);
