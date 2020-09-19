@@ -6,8 +6,10 @@ import { Row, Col, Card, Button, Form, InputGroup } from "react-bootstrap";
 
 const Order = ({
   productId,
+  id,
   image,
   title,
+  name,
   quantity,
   price,
   stock,
@@ -44,7 +46,7 @@ const Order = ({
       }
     }
     setQuantityInput(filteredValue);
-    quantityChange(filteredValue, productId);
+    quantityChange(filteredValue, productId || id);
   };
 
   return (
@@ -59,21 +61,22 @@ const Order = ({
               <Row>
                 <Col xs={6} md={4} className="mb-3 text-left">
                   <Link
-                    to={`/productos/${productId}`}
+                    to={`/productos/${productId || id}`}
                     style={{ textDecoration: "none" }}
                   >
-                    <h4>{title}</h4>
+                    <h4>{title || name}</h4>
                   </Link>
                 </Col>
                 <Col xs={6} md={3} className="mb-3 text-center">
                   <InputGroup size="sm">
+                    
                     <InputGroup.Prepend>
                       <Button
-                        onClick={() => sumar()}
+                        onClick={() => restar()}
                         variant="dark"
                         className="px-2"
                       >
-                        +
+                        -
                       </Button>
                     </InputGroup.Prepend>
                     <Form.Control
@@ -82,17 +85,17 @@ const Order = ({
                       type="number"
                       disabled
                       value={quantityInput}
-                      onChange={(e) => setQuantityInput(e.target.value)}
                     />
                     <InputGroup.Append>
                       <Button
-                        onClick={() => restar()}
+                        onClick={() => sumar()}
                         variant="dark"
                         className="px-2"
                       >
-                        -
+                        +
                       </Button>
                     </InputGroup.Append>
+                    
                   </InputGroup>
                 </Col>
                 <Col className="text-left">
@@ -109,7 +112,7 @@ const Order = ({
                 <Col className="text-left">
                   <Button
                     size="sm"
-                    onClick={() => onDelete(productId)}
+                    onClick={() => onDelete(productId || id)}
                     variant="danger"
                   >
                     Eliminar

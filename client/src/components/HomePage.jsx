@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import { getLatests } from "../actions/products";
 import { setProductToCart, getUserCart } from "../actions/users";
 import { FiCheck } from 'react-icons/fi';
+import {addProductToCart as setProductToGuestCart} from '../actions/guest' ;
 
 const APP_NAME = config.app.name;
 
@@ -110,7 +111,7 @@ function ExploreButton() {
     );
 }
 
-function HomePage({ products, getLatests, setProductToCart, getUserCart, userCart }) {
+function HomePage({ products, getLatests, setProductToCart, getUserCart, userCart, guestCart, setProductToGuestCart, token, user}) {
     const props = useSpring({
         from: {
             filter: "brightness(1.5)",
@@ -126,8 +127,13 @@ function HomePage({ products, getLatests, setProductToCart, getUserCart, userCar
 
     useEffect(() => {
         getLatests();
-        getUserCart();
+        if(!!token) getUserCart();
     }, []);
+
+    const handleSetToCart = () => {
+        if(!!token) return setProductToCart;
+        return setProductToGuestCart;
+    }
 
     return (
         <Container fluid>
@@ -144,18 +150,26 @@ function HomePage({ products, getLatests, setProductToCart, getUserCart, userCar
                     <ExploreButton />
                 </div>
             </Row>
-
-            {products.rows && <Gallery setToCart={setProductToCart} userCart={userCart} products={products.rows} />}
+            {products.rows && <Gallery setToCart={handleSetToCart()} isGuest={!!!token} guestCart={guestCart} userCart={userCart} products={products.rows} />}
         </Container>
     );
 }
 
-function Gallery({ products, userCart, setToCart }) {
+function Gallery({ products, userCart, setToCart, isGuest, guestCart }) {
     const handleOnDragStart = (e) => e.preventDefault();
     useEffect(() => { }, []);
 
     const isAdded = (id) => {
-        return userCart.find(item => item.productId === id) ? true : false;
+
+        if(!isGuest) return userCart.find(item => item.productId === id) ? true : false;
+        return guestCart.find(item => item.id === id) ? true : false;
+    }
+
+    const handleSetToCart = ({id, name, images, price, stock}) => {
+        if(!isGuest) {
+            return () => setToCart(id, 1)
+        }
+        return () => setToCart({id, name, stock, image: JSON.parse(images)[0], price, quantity:1});
     }
     var items = products
         .map((item, index) => (
@@ -172,7 +186,7 @@ function Gallery({ products, userCart, setToCart }) {
                 </div>
                 <span className="mb-4 mt-auto">{item.name}</span>
                 <span className="mt-auto mb-4">
-                    {!isAdded(item.id) && <Button onClick={() => setToCart(item.id, 1)} variant="light">
+                    {!isAdded(item.id) && <Button onClick={handleSetToCart(item)} variant="light">
                         <CgShoppingCart />
                     </Button>}
 
@@ -222,7 +236,10 @@ function Gallery({ products, userCart, setToCart }) {
 function mapStateToProps(state) {
     return {
         products: state.productsReducer.products,
-        userCart: state.usersReducer.userCart
+        userCart: state.usersReducer.userCart,
+        token: state.authReducer.token,
+        user: state.authReducer.user,
+        guestCart: state.guestReducer.cart
     };
 }
 
@@ -230,7 +247,8 @@ function mapDispatchToProps(dispatch) {
     return {
         getLatests: () => dispatch(getLatests()),
         setProductToCart: (productId, quantity) => dispatch(setProductToCart(productId, quantity)),
-        getUserCart: () => dispatch(getUserCart())
+        getUserCart: () => dispatch(getUserCart()),
+        setProductToGuestCart: product => dispatch(setProductToGuestCart(product))
     };
 }
 

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import Axios from "axios";
 import {
     Container,
     Row,
@@ -15,11 +14,12 @@ import { CgShoppingCart } from "react-icons/cg";
 import NumberFormat from "react-number-format";
 import { connect } from "react-redux";
 import { getProduct } from "../../actions/products";
+import {addProductToCart as setProductToGuestCart} from '../../actions/guest' ;
 import { setProductToCart, getUserCart } from "../../actions/users";
 import Error404 from '../Error404'
 
 //***************CONECTADO AL STORE DE REDUX ********************/
-export function Product({ product, getProduct, setProductToCart, getUserCart, userCart }) {
+export function Product({ product, getProduct, setProductToCart, setProductToGuestCart, getUserCart, userCart, token, user, guestCart }) {
     const { id } = useParams();
     var start = true;
     const [state, setState] = useState({
@@ -28,7 +28,11 @@ export function Product({ product, getProduct, setProductToCart, getUserCart, us
     });
 
     const handleSetToCart = () => {
-        setProductToCart(id, state.quantity);
+        if(!token){
+            setProductToGuestCart({id: id * 1, stock: product.stock, name: product.name, price: product.price, quantity: state.quantity, image: JSON.parse(product.images)[0]})
+        }else{
+            setProductToCart(id, state.quantity);
+        }
     }
 
     const onChangeQuantity = (e) => {
@@ -49,22 +53,25 @@ export function Product({ product, getProduct, setProductToCart, getUserCart, us
     }, []);
 
     useEffect(() => {
+        let currentProduct;
         if (userCart.length && product) {
-            var currentProduct = userCart.find(item => item.productId === product.id);
-            console.log(currentProduct)
-            if (currentProduct) {
-                setState({
-                    ...state,
-                    isAdded: true
-                });
-            } else {
-                setState({
-                    ...state,
-                    isAdded: false
-                });
-            }
+            currentProduct = userCart.find(item => item.productId === product.id)
         }
-    }, [userCart, product])
+        if(guestCart.length && product){
+            currentProduct = guestCart.find(item => item.id === product.id)
+        }
+        if (currentProduct) {
+            setState({
+                ...state,
+                isAdded: true
+            });
+        } else {
+            setState({
+                ...state,
+                isAdded: false
+            });
+        }
+    }, [userCart, product, guestCart])
 
     return (
         <Container>
@@ -228,7 +235,10 @@ export function Product({ product, getProduct, setProductToCart, getUserCart, us
 function mapStateToProps(state) {
     return {
         product: state.productsReducer.product,
-        userCart: state.usersReducer.userCart
+        userCart: state.usersReducer.userCart,
+        guestCart: state.guestReducer.cart,
+        token: state.authReducer.token,
+        user: state.authReducer.user
     };
 }
 
@@ -236,7 +246,8 @@ function mapDispatchToProps(dispatch) {
     return {
         getProduct: (value) => dispatch(getProduct(value)),
         setProductToCart: (productId, quantity) => dispatch(setProductToCart(productId, quantity)),
-        getUserCart: () => dispatch(getUserCart())
+        getUserCart: () => dispatch(getUserCart()),
+        setProductToGuestCart: (product) => dispatch(setProductToGuestCart(product))
     };
 }
 

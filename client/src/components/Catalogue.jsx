@@ -6,6 +6,7 @@ import { getProducts, filterByCategory } from "../actions/products";
 import { getCategories } from "../actions/categories";
 import { connect } from "react-redux";
 import { Container, Row, Col, Form, Alert, Card, Button, ButtonGroup } from "react-bootstrap";
+import {addProductToCart as setProductToGuestCart} from '../actions/guest' ;
 import SearchBar from "./SearchBar";
 import { setProductToCart, getUserCart } from "../actions/users";
 
@@ -18,7 +19,11 @@ export function Catalogue({
   filterByCategory,
   setProductToCart,
   getUserCart,
-  userCart
+  userCart,
+  setProductToGuestCart,
+  guestCart,
+  token,
+  user
 }) {
   const perPage = 12;
   const [state, setState] = useState({
@@ -36,6 +41,12 @@ export function Catalogue({
     })
   }
 
+  const handleSetToCart = () => {
+    if(!token){
+      return setProductToGuestCart;
+    }
+    return setProductToCart
+  }
 
   useEffect(() => {
     getProducts();
@@ -94,7 +105,7 @@ export function Catalogue({
       </Row>
       <Row className={style.catalogue}>
         {state.products.map((product, index) => {
-          return <ProductCard userCart={userCart} setToCart={setProductToCart} key={index} product={product} />;
+          return <ProductCard isGuest={!!token ? false : true} guestCart={guestCart} userCart={userCart} setToCart={handleSetToCart()} key={index} product={product} />;
         })}
 
         {!state.products.length && (
@@ -145,7 +156,10 @@ function mapStateToProps(state) {
   return {
     products: state.productsReducer.products,
     categories: state.categoriesReducer.categories,
-    userCart: state.usersReducer.userCart
+    userCart: state.usersReducer.userCart,
+    token: state.authReducer.token,
+    user: state.authReducer.user,
+    guestCart: state.guestReducer.cart
   };
 }
 
@@ -155,7 +169,8 @@ function mapDispatchToProps(dispatch) {
     filterByCategory: (value) => dispatch(filterByCategory(value)),
     getCategories: () => dispatch(getCategories()),
     setProductToCart: (productId, quantity) => dispatch(setProductToCart(productId, quantity)),
-    getUserCart: () => dispatch(getUserCart())
+    getUserCart: () => dispatch(getUserCart()),
+    setProductToGuestCart: (product) => dispatch(setProductToGuestCart(product))
   };
 }
 
