@@ -14,6 +14,10 @@ import Users from "./components/Users";
 import Account from "./components/Account";
 import "./styles/ecommerce.scss";
 import React from "react";
+import LogOutRoute from './components/LogOutRoute';
+import LogInRoute from './components/LogInRoute';
+import AdminRoute from './components/AdminRoute';
+
 
 function App() {
     return (
@@ -21,29 +25,29 @@ function App() {
             <Route path="/" component={Navbar} />
             <Switch>
                 <Route exact path="/" component={HomePage} />
-                <Route exact path="/registrarse" component={UserRegister} />
-                <Route exact path="/ingresar" component={Login} />
+                <LogOutRoute exact path="/registrarse" component={UserRegister} />
+                <LogOutRoute exact path="/ingresar" component={Login} />
                 <Route exact path="/productos/:id" component={Product} />
                 <Route exact path="/catalogo" component={Catalogue} />
                 <Route exact path="/carrito" component={Cart} />
-                <Route exact path="/cuenta" component={Account} />
+                <LogInRoute exact path="/cuenta" component={Account} />
 
-                <Route exact path="/admin/usuarios" component={Users}></Route>
-                <Route
+                <AdminRoute exact path="/admin/usuarios" component={Users} />
+                <AdminRoute
                     exact
                     path="/admin/productos"
                     component={AdminProducts}
                 />
-                <Route
+                <AdminRoute
                     exact
                     path="/admin/categorias"
                     component={AddCategories}
                 />
-                <Route exact path="/admin/ordenes" component={Orders} />
+                <AdminRoute exact path="/admin/ordenes" component={Orders} />
 
                 <Route path="*" component={Error404} />
             </Switch>
-        </React.Fragment>
+        </React.Fragment >
     );
 }
 

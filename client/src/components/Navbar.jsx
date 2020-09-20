@@ -4,11 +4,13 @@ import s from "../styles/navbar.module.scss";
 import { Navbar as Navb, Nav, Container } from "react-bootstrap";
 import config from "../config";
 import { useSpring, animated } from "react-spring";
+import { connect } from 'react-redux';
 
 const APP_NAME = config.app.name;
 
-export default function Navbar() {
+export function Navbar({ auth }) {
     const location = useLocation();
+    const { user, token } = auth;
     const [state, setState] = useState({
         navbarBg: "",
         navbarExpanded: false,
@@ -85,7 +87,7 @@ export default function Navbar() {
                 <Link to="/" className="navbar-brand">{APP_NAME}</Link>
                 <Navb.Toggle onClick={handleToggle} aria-controls="basic-navbar-nav" />
                 <Navb.Collapse id="basic-navbar-nav">
-                    {location.pathname.split('/')[1] === "admin" ? (
+                    {location.pathname.split('/')[1] === "admin" && user.role === 'admin' ? (
                         <Nav className="ml-auto">
                             <NavLink className="nav-link" activeClassName="active" to="/admin/usuarios">
                                 Usuarios
@@ -102,16 +104,13 @@ export default function Navbar() {
                             <NavLink className="nav-link" exact to="/">
                                 Volver al sitio
                             </NavLink>
-                        </Nav>) : (
+                        </Nav>) : token ? (
                             <Nav className="ml-auto">
                                 <NavLink className="nav-link" activeClassName="active" exact to="/">
                                     Inicio
                                 </NavLink>
-                                <NavLink className="nav-link" activeClassName="active" exact to="/registrarse">
-                                    Registrarse
-                                </NavLink>
-                                <NavLink className="nav-link" activeClassName="active" exact to="/ingresar">
-                                    Ingresar
+                                <NavLink className="nav-link" activeClassName="active" exact to="/cuenta">
+                                    Cuenta
                                 </NavLink>
                                 <NavLink className="nav-link" activeClassName="active" to="/catalogo">
                                     Catálogo
@@ -119,13 +118,46 @@ export default function Navbar() {
                                 <NavLink className="nav-link" activeClassName="active" exact to="/carrito">
                                     Carrito
                                 </NavLink>
-                                <NavLink className="btn btn-dark" to="/admin">
-                                    Administración
-                                </NavLink>
+                                { user.role === 'admin' &&
+                                    <NavLink className="btn btn-dark" to="/admin">
+                                        Administración
+                            </NavLink>
+                                }
                             </Nav>
-                        )}
+                        ) :
+                            (
+                                <Nav className="ml-auto">
+                                    <NavLink className="nav-link" activeClassName="active" exact to="/">
+                                        Inicio
+                                </NavLink>
+                                    <NavLink className="nav-link" activeClassName="active" exact to="/registrarse">
+                                        Registrarse
+                                </NavLink>
+                                    <NavLink className="nav-link" activeClassName="active" exact to="/ingresar">
+                                        Ingresar
+                                </NavLink>
+                                    <NavLink className="nav-link" activeClassName="active" to="/catalogo">
+                                        Catálogo
+                                </NavLink>
+                                    <NavLink className="nav-link" activeClassName="active" exact to="/carrito">
+                                        Carrito
+                                </NavLink>
+                                </Nav>
+                            )}
                 </Navb.Collapse>
             </Container >
         </Navb >
     );
 }
+
+const mapStateToProps = (state) => {
+    return {
+        auth: state.authReducer,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
