@@ -7,17 +7,17 @@ import { IconContext } from "react-icons";
 import { BiShowAlt, BiHide } from "react-icons/bi";
 import { Link, Redirect } from "react-router-dom";
 
-function Login({ login }) {
+function Login({ login, guestCart}) {
     const { register, handleSubmit, watch, errors } = useForm();
     const onSubmit = (data) => {
-        login(data)
+        login({attributes:data, guestCart})
             .then((res) => {
                 console.log(res);
                 setState({
                     ...state,
                     loading: false,
                 });
-                if (res.token) {
+                if (res && res.token) {
                     setState({
                         ...state,
                         logged: true,
@@ -32,7 +32,6 @@ function Login({ login }) {
                 });
             });
     };
-    console.log(watch("email"));
 
     const regValidated = {
         email: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
@@ -66,6 +65,7 @@ function Login({ login }) {
                                     <Form.Label>Correo electrónico</Form.Label>
                                     <Form.Control
                                         autoComplete="off"
+                                        defaultValue="client@test.com"
                                         className={
                                             errors.email
                                                 ? "is-invalid"
@@ -119,6 +119,7 @@ function Login({ login }) {
                                     </IconContext.Provider>
                                     <Form.Control
                                         autoComplete="off"
+                                        defaultValue="12345678"
                                         className={
                                             errors.password
                                                 ? "is-invalid"
@@ -136,7 +137,7 @@ function Login({ login }) {
                                         {errors.password &&
                                             "Debes ingresar tu clave"}
                                     </Form.Control.Feedback>
-                                    <Link className="link" to="#">
+                                    <Link className="link" to="/olvide-mi-clave">
                                         <small>Olvidé mi clave</small>
                                     </Link>
                                 </Form.Group>
@@ -169,7 +170,9 @@ function Login({ login }) {
 }
 
 function mapStateToProps(state) {
-    return {};
+    return {
+        guestCart: state.guestReducer.cart
+    };
 }
 
 function mapDispatchToProps(dispatch) {

@@ -27,6 +27,11 @@ server.get("/custom/latests", (req, res, next) => {
     Product.findAll({
         order: [["createdAt", "DESC"]],
         limit: 6,
+        where:{
+            stock:{
+                [Op.gt]: 0
+            }
+        },
         include: {
             model: Category,
             through: { attributes: [] }, // this will remove the rows from the join table (i.e. 'UserPubCrawl table') in the result set

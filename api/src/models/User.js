@@ -98,6 +98,12 @@ module.exports = (sequelize) => {
           msg: 'La contraseña no puede ser superior a 255 caracteres'
         }
       }
+    },
+    mustChangePassword: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     }
+
   });
 };

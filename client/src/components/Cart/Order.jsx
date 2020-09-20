@@ -3,10 +3,10 @@ import NumberFormat from "react-number-format";
 import { Link } from "react-router-dom";
 import "./order.module.scss";
 import { Row, Col, Card, Button, Form, InputGroup } from "react-bootstrap";
+import { connect } from 'react-redux';
 
 const Order = ({
   productId,
-  id,
   image,
   title,
   name,
@@ -15,10 +15,22 @@ const Order = ({
   stock,
   onDelete,
   quantityChange,
+  orders
 }) => {
   const [quantityInput, setQuantityInput] = React.useState(quantity);
 
-  const restar = () => {
+  useEffect(() => {
+    let order = orders.find(item => item.productId === productId);
+    if(order){
+      setQuantityInput(order.quantity);
+    }
+    return () => {
+      console.log('gg')
+    }
+  },[quantity]);
+
+
+  const restar = async () => {
     if (quantityInput > 1) {
       setQuantityInput(quantityInput - 1);
       quantityChange(quantityInput - 1, productId);
@@ -46,7 +58,7 @@ const Order = ({
       }
     }
     setQuantityInput(filteredValue);
-    quantityChange(filteredValue, productId || id);
+    quantityChange(filteredValue, productId);
   };
 
   return (
@@ -61,10 +73,10 @@ const Order = ({
               <Row>
                 <Col xs={6} md={4} className="mb-3 text-left">
                   <Link
-                    to={`/productos/${productId || id}`}
+                    to={`/productos/${productId}`}
                     style={{ textDecoration: "none" }}
                   >
-                    <h4>{title || name}</h4>
+                    <h4>{title}</h4>
                   </Link>
                 </Col>
                 <Col xs={6} md={3} className="mb-3 text-center">
@@ -99,7 +111,7 @@ const Order = ({
                   </InputGroup>
                 </Col>
                 <Col className="text-left">
-                  <span class="h6">
+                  <span className="h6">
                     <NumberFormat
                       prefix="$"
                       value={price}
@@ -112,7 +124,7 @@ const Order = ({
                 <Col className="text-left">
                   <Button
                     size="sm"
-                    onClick={() => onDelete(productId || id)}
+                    onClick={() => onDelete(productId)}
                     variant="danger"
                   >
                     Eliminar
@@ -127,4 +139,20 @@ const Order = ({
   );
 };
 
-export default Order;
+function mapStateToProps(state){
+  return {
+    orders: state.usersReducer.userCart
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+
+  }
+}
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Order);

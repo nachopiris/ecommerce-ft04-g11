@@ -1,14 +1,16 @@
 import React from "react";
 import { connect } from "react-redux";
-
+import { logout } from '../actions/auth';
 import { Container, Row, Col, Card, Button, Nav } from "react-bootstrap";
 import { FiUser } from "react-icons/fi";
 
-function Account({ auth }) {
+function Account({ auth, logout }) {
     const { user, token } = auth;
     const logOut = () => {
-        localStorage.clear();
-        window.location.reload();
+        logout(token).then(()=>{
+            localStorage.clear();
+            window.location.reload();
+        });
     }
     return (
         <Container>
@@ -75,7 +77,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        logout: token => dispatch(logout(token))
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Account);

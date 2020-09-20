@@ -11,6 +11,11 @@ const GET_USERS = "GET_USERS";
 
 const BASE_URI = config.api.base_uri + "/users";
 
+
+const getUserId = () => {
+    return localStorage.redux ? JSON.parse(localStorage.redux).authReducer.user.id : null;
+}
+
 export function getUsers() {
     return (dispatch) => {
         return axios
@@ -25,7 +30,7 @@ export function getUsers() {
 export function getUserCart() {
     const userId = 1;
     return (dispatch) => {
-        return axios.get(`${BASE_URI}/${userId}/cart`).then((response) => {
+        return axios.get(`${BASE_URI}/${getUserId()}/cart`).then((response) => {
             dispatch({
                 type: GET_USER_CART,
                 payload: response.data,
@@ -36,7 +41,7 @@ export function getUserCart() {
 
 export function emptyCart(userId) {
     return (dispatch) => {
-        return axios.delete(`${BASE_URI}/${userId}/cart`).then(() => {
+        return axios.delete(`${BASE_URI}/${getUserId()}/cart`).then(() => {
             dispatch({
                 type: EMPTY_CART,
             });
@@ -47,7 +52,7 @@ export function emptyCart(userId) {
 export function changeQuantity(userId, body) {
     return (dispatch) => {
         return axios
-            .put(`${BASE_URI}/${userId}/cart`, body)
+            .put(`${BASE_URI}/${getUserId()}/cart`, body)
             .then((response) => {
                 dispatch({
                     type: CHANGE_QUANTITY,
@@ -60,7 +65,7 @@ export function changeQuantity(userId, body) {
 export function deleteItem(userId, productId) {
     return (dispatch) => {
         return axios
-            .delete(`${BASE_URI}/${userId}/cart/${productId}`)
+            .delete(`${BASE_URI}/${getUserId()}/cart/${productId}`)
             .then(() => {
                 dispatch({
                     type: DELETE_ITEM,
@@ -71,17 +76,16 @@ export function deleteItem(userId, productId) {
 }
 
 export function setProductToCart(productId, quantity) {
-    const user_id = 1;
     return (dispatch) => {
         console.log("paso 1");
         return axios
-            .post(config.api.base_uri + "/orders/" + user_id, {
+            .post(config.api.base_uri + "/orders/" + getUserId(), {
                 status: "shopping_cart",
             })
             .then(() => {
                 console.log("paso 2");
                 axios
-                    .post(BASE_URI + "/" + user_id + "/cart", {
+                    .post(BASE_URI + "/" + getUserId() + "/cart", {
                         idProduct: productId,
                         quantityProduct: quantity,
                     })

@@ -2,16 +2,42 @@ import config from "../config";
 import Axios from "axios";
 
 const BASE_URI = config.api.base_uri + "/auth";
+const USER_URI = config.api.base_uri + '/users';
 const LOGIN = "LOGIN";
 const LOGOUT = "LOGOUT";
 const REGISTER = "REGISTER";
+const PASSWORD_RESET = "PASSWORD_RESET";
 
-export function login(attributes) {
+const handleCart = (guestCart, {user,token}) => {
+    console.log(guestCart)
+    if(guestCart.length){
+        Axios.get(USER_URI + '/' + user.id + '/cart')
+        .then(res => {
+            console.log(guestCart);
+            res.data.forEach(async element => {
+                let index = guestCart.findIndex(item => item.id === element.productId);
+                if (index >= 0){
+                    const cartData = {idProduct: element.productId, quantityProduct: guestCart[index].quantity};
+                    await Axios.put(USER_URI + '/' + user.id + '/cart', cartData);
+                    guestCart.splice(index, 1);
+                }
+            });
+            console.log(guestCart);
+            guestCart.forEach(async element => {
+                const cartData = {idProduct: element.id, quantityProduct: element.quantity};
+                await Axios.post(USER_URI + '/' + user.id + '/cart', cartData);
+            })
+        })
+    }
+}
+
+export function login({attributes, guestCart}) {
     return (dispatch) => {
         return Axios.post(BASE_URI + "/login", attributes)
-            .then((res) => res.data)
-            .then((res) => {
-                dispatch({ type: LOGIN, payload: res }); // res = {user:{}, token:''}
+        .then((res) => res.data)
+        .then((res) => {
+            handleCart(guestCart, res);
+            dispatch({ type: LOGIN, payload: res }); // res = {user:{}, token:''}
                 return res;
             })
             .catch(() => {
@@ -36,11 +62,29 @@ export function register(attributes) {
 
 export function logout(token) {
     return (dispatch) => {
-        return Axios.post(BASE_URI + "/logout", token)
-            .then((res) => res.data)
-            .then((res) => {
-                //localStorage.clear(); // se limpia absolutamente todo el localstorage
+        let headers = {'x-access-token':token};
+        return Axios.post(BASE_URI + "/logout", {}, {headers})
+            .then(() => {
                 dispatch({ type: LOGOUT });
+            });
+    };
+}
+
+export function passwordReset(email){
+    return (dispatch) => {
+        return Axios.post(BASE_URI + "/password-reset",{email})
+            .then(() => {
+                dispatch({ type: PASSWORD_RESET });
+            });
+    };
+}
+
+export function passwordChange(data){
+    return (dispatch) => {
+        console.log(data);
+        return Axios.put(BASE_URI + "/password-reset",data)
+            .then(() => {
+                dispatch({ type: PASSWORD_RESET });
             });
     };
 }
