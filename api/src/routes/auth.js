@@ -2,10 +2,19 @@ const server = require("express").Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const LocalStorage = require("node-localstorage").LocalStorage;
+const nodemailer = require("nodemailer");
+
 localStorage = new LocalStorage("./blacklistJWT");
+codeStorage = new LocalStorage("./codeStorage");
 
 const verifyToken = require("../jwt/verifyToken.js");
 const secret = process.env.SECRET;
+const email_env = {
+    user: process.env.EMAIL_USER,
+    password: process.env.EMAIL_PASSWORD,
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT
+}
 
 const { User } = require("../db.js");
 
@@ -102,6 +111,14 @@ server.post("/login", (req, res) => {
         where: { email: email },
     }).then((user) => {
         if (!user) return res.status(404).send("The email doesn't exists");
+
+        let codeLocal = codeStorage.getItem(user.id+"");
+        if(codeLocal) codeLocal = JSON.parse(codeLocal);
+        if(codeLocal && codeLocal.password_reset){
+            codeLocal.password_reset.expired = true;
+            codeStorage.setItem(user.id+"", JSON.stringify(codeLocal));
+        }
+
         bcrypt.compare(password, user.password, (err, result) => {
             if (err) throw err;
             if (!result)
@@ -142,6 +159,70 @@ server.post("/logout", verifyToken, (req, res) => {
     blacklist.push(item);
     localStorage.setItem("blacklist", JSON.stringify(blacklist));
     return res.sendStatus(204);
+});
+
+server.post("/password-reset", (req, res) => {
+    const {email} = req.body;
+    User.findOne({
+        where: {
+            email: email
+        }
+    }).then(async user => {
+        if(!user) {
+           return res.sendStatus(422);
+        }
+        const code = Math.floor(100000 + Math.random() * 900000);
+        if(!codeStorage.getItem(user.id+"")) codeStorage.setItem(user.id+"","{}")
+        let userCodes = JSON.parse(codeStorage.getItem(user.id+""));
+        userCodes.password_reset = {
+            code,
+            expired: false,
+            createdAt: Date.now()
+        }
+        codeStorage.setItem(user.id+"", JSON.stringify(userCodes));
+
+        let transporter = nodemailer.createTransport({
+            host: email_env.host,
+            port: email_env.port,
+            secure: false, // true for 465, false for other ports
+            auth: {
+                user: email_env.user, 
+                pass: email_env.password,
+            },
+        });
+
+        await transporter.sendMail({
+            from: '"OriginMaster" <'+email_env.user+'>', // sender address
+            to: email, // list of receivers
+            subject: "Reestablecer clave de OriginMaster", // Subject line
+            html: "<h1>OriginMaster</h1><p>Código: <b>"+code+"</b></p>", // html body
+        });
+
+        return res.sendStatus(200);
+    });
+});
+
+
+server.put("/password-reset", (req, res) => {
+    const {email, code, password} = req.body;
+    User.findOne({
+        where: {
+            email: email
+        }
+    }).then(async user => {
+        if(!user) {
+           return res.sendStatus(422);
+        }
+        const codeLocal = JSON.parse(codeStorage.getItem(user.id+"")).password_reset;
+        const limitTime = 3600000; //60 minutos.
+        if(codeLocal.expired === true || Date.now() > codeLocal.createdAt + limitTime || (code*1) !== codeLocal.code){ //se excedió del tiempo límite o el código no es el mismo
+            return res.sendStatus(401);
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        await user.save();
+        return res.sendStatus(200);
+    });
 });
 
 module.exports = server;

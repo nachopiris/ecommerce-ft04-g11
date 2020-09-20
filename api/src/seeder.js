@@ -221,7 +221,7 @@ function usersSeeder()
     User.create({
         fullname: 'Usuario Cliente',
         email: 'client@test.com',
-        password: '12345678',
+        password: '$2b$10$W.Om7Tq9OOp7Ih9bYBdlUOpXiuAneqGlycNVKjHxIxXnt9uxzZFwi', //12345678
         role: 'client',
         address: 'Direccion del Cliente 123',
         doc_number: '11111111',
@@ -230,7 +230,7 @@ function usersSeeder()
         User.create({
             fullname: 'Usuario Admin',
             email: 'admin@test.com',
-            password: '12345678',
+            password: '$2b$10$W.Om7Tq9OOp7Ih9bYBdlUOpXiuAneqGlycNVKjHxIxXnt9uxzZFwi', //12345678
             role: 'admin',
             address: 'Av. Del Administrador 321',
             doc_number: '22222222',

@@ -17,6 +17,7 @@ import React from "react";
 import LogOutRoute from './components/LogOutRoute';
 import LogInRoute from './components/LogInRoute';
 import AdminRoute from './components/AdminRoute';
+import PasswordReset from "./components/PasswordReset";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
                 <Route exact path="/" component={HomePage} />
                 <LogOutRoute exact path="/registrarse" component={UserRegister} />
                 <LogOutRoute exact path="/ingresar" component={Login} />
+                <LogOutRoute exact path="/olvide-mi-clave" component={PasswordReset} />
                 <Route exact path="/productos/:id" component={Product} />
                 <Route exact path="/catalogo" component={Catalogue} />
                 <Route exact path="/carrito" component={Cart} />

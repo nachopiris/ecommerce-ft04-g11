@@ -25,7 +25,9 @@ class Cart extends React.Component {
       cartProducts: [],
     };
   }
-
+  componentDidUpdate(prevProps, prevState, snapshot){
+    console.log('okk')
+  }
   componentDidMount() {
     if(!!this.props.token){
       this.props.getUserCart(1).then(() => {
@@ -93,7 +95,6 @@ class Cart extends React.Component {
       this.setState({
         cartProducts: products,
       });
-      
     }
   }
 
@@ -155,7 +156,8 @@ class Cart extends React.Component {
           </Row>
         )}
         {this.state.cartProducts.map((product, index) => {
-          if (this.props.guestCart || this.props.orders.length) {
+          if (this.props.guestCart.length || this.props.orders.length) {
+            console.log('ff')
             const findOrder = this.props.orders.find(
               (order) => order.productId === product.id
             );
@@ -165,7 +167,7 @@ class Cart extends React.Component {
                 productId={product.id}
                 image={product.images ? JSON.parse(product.images)[0] : product.image}
                 title={product.name}
-                quantity={!!this.props.token ? findOrder.quantity : product.quantity}
+                quantity={!!this.props.token && findOrder ? findOrder.quantity : product.quantity}
                 price={product.price}
                 stock={product.stock}
                 onDelete={this.delete}

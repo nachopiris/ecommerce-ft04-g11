@@ -137,8 +137,9 @@ server.put("/:id", (req, res) => {
                     })
                     .status(404);
             }
+            let emailChanged = user.email !== email ? true : false;
+            if(emailChanged) user.email = email;
             user.fullname = fullname;
-            user.email = email;
             if (password) user.password = password;
             user.role = role;
             user.address = address;
@@ -146,19 +147,20 @@ server.put("/:id", (req, res) => {
             user.phone = phone;
             user.save()
                 .then(() => {
+                    let data = {
+                        id: user.id,
+                        fullname,
+                        role,
+                        email,
+                        address,
+                        doc_number,
+                        phone,
+                        createdAt: user.createdAt,
+                        updatedAt: user.updatedAt,
+                    }
                     return res
                         .send({
-                            data: {
-                                id: user.id,
-                                fullname,
-                                email,
-                                role,
-                                address,
-                                doc_number,
-                                phone,
-                                createdAt: user.createdAt,
-                                updatedAt: user.updatedAt,
-                            },
+                            data,
                         })
                         .status(200);
                 })
@@ -257,7 +259,7 @@ server.get("/:idUser/cart", (req, res) => {
                 }
                 return res.send(orders);
             })
-            .cath((error) => {
+            .catch((error) => {
                 return res.sendStatus(500).send(error);
             });
     });
