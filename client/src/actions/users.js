@@ -77,13 +77,11 @@ export function deleteItem(userId, productId) {
 
 export function setProductToCart(productId, quantity) {
     return (dispatch) => {
-        console.log("paso 1");
         return axios
             .post(config.api.base_uri + "/orders/" + getUserId(), {
                 status: "shopping_cart",
             })
             .then(() => {
-                console.log("paso 2");
                 axios
                     .post(BASE_URI + "/" + getUserId() + "/cart", {
                         idProduct: productId,

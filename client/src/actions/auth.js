@@ -8,24 +8,29 @@ const LOGOUT = "LOGOUT";
 const REGISTER = "REGISTER";
 const PASSWORD_RESET = "PASSWORD_RESET";
 
-const handleCart = (guestCart, {user,token}) => {
-    console.log(guestCart)
+const handleCart = async (guestCart, {user,token}) => {
     if(guestCart.length){
-        Axios.get(USER_URI + '/' + user.id + '/cart')
-        .then(res => {
-            console.log(guestCart);
-            res.data.forEach(async element => {
-                let index = guestCart.findIndex(item => item.id === element.productId);
-                if (index >= 0){
-                    const cartData = {idProduct: element.productId, quantityProduct: guestCart[index].quantity};
-                    await Axios.put(USER_URI + '/' + user.id + '/cart', cartData);
-                    guestCart.splice(index, 1);
+        Axios.post(config.api.base_uri + "/orders/" + user.id, {
+            status: "shopping_cart",
+        }).then(()=>{
+            Axios.get(USER_URI + '/' + user.id + '/cart')
+            .then(res => {
+                console.log(res.data);
+                if(res.data && Array.isArray(res.data)){
+                    res.data.forEach(async element => {
+                        let index = guestCart.findIndex(item => item.id === element.productId);
+                        if (index >= 0){
+                            const cartData = {idProduct: element.productId, quantityProduct: guestCart[index].quantity};
+                            await Axios.put(USER_URI + '/' + user.id + '/cart', cartData);
+                            guestCart.splice(index, 1);
+                        }
+                    });
                 }
-            });
-            console.log(guestCart);
-            guestCart.forEach(async element => {
-                const cartData = {idProduct: element.id, quantityProduct: element.quantity};
-                await Axios.post(USER_URI + '/' + user.id + '/cart', cartData);
+                console.log(guestCart);
+                guestCart.forEach(async element => {
+                    const cartData = {idProduct: element.id, quantityProduct: element.quantity};
+                    await Axios.post(USER_URI + '/' + user.id + '/cart', cartData);
+                })
             })
         })
     }

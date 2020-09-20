@@ -109,14 +109,14 @@ server.post("/login", (req, res) => {
     const { email, password } = req.body;
     User.findOne({
         where: { email: email },
-    }).then((user) => {
+    }).then(async (user) => {
         if (!user) return res.status(404).send("The email doesn't exists");
 
-        let codeLocal = codeStorage.getItem(user.id+"");
+        let codeLocal = await codeStorage.getItem(user.id+"");
         if(codeLocal) codeLocal = JSON.parse(codeLocal);
         if(codeLocal && codeLocal.password_reset){
             codeLocal.password_reset.expired = true;
-            codeStorage.setItem(user.id+"", JSON.stringify(codeLocal));
+            await codeStorage.setItem(user.id+"", JSON.stringify(codeLocal));
         }
 
         bcrypt.compare(password, user.password, (err, result) => {
