@@ -5,16 +5,16 @@ const Reviews = require("../models/Reviews.js");
 const Op = Sequelize.Op;
 
 server.post('/custom/collect', (req, res) => {
-    const {ids} = req.body;
-    if(!Array.isArray(ids)) return res.sendStatus(422);
+    const { ids } = req.body;
+    if (!Array.isArray(ids)) return res.sendStatus(422);
     Product.findAll({
-        where:{
-            id:{
+        where: {
+            id: {
                 [Op.in]: ids
             }
         }
     }).then(products => {
-        return res.send({data: products}).status(200);
+        return res.send({ data: products }).status(200);
     }).catch((err) => {
         console.log(err);
         return res.sendStatus(500);
@@ -44,8 +44,8 @@ server.get("/custom/latests", (req, res, next) => {
     Product.findAll({
         order: [["createdAt", "DESC"]],
         limit: 6,
-        where:{
-            stock:{
+        where: {
+            stock: {
                 [Op.gt]: 0
             }
         },
@@ -447,6 +447,7 @@ server.put("/:idProduct/review/:idReview", (req, res) => {
 
 //************************** RUTA PARA OBETENER TODAS LAS REVIEW ******************************* */
 
+
 server.get("/:idProduct/review", (req, res) => {
     const idProduct = req.params.idProduct;
 
@@ -454,9 +455,12 @@ server.get("/:idProduct/review", (req, res) => {
         where: {
             productId: idProduct,
         },
+        include: {
+            model: User
+        }
     })
         .then((reviews) => {
-            res.send(reviews);
+            res.send({ data: reviews });
         })
         .catch((error) => {
             res.send(error);
@@ -483,5 +487,37 @@ server.delete("/:idProduct/review/:idReview", (req, res) => {
             res.send(error);
         });
 });
+
+//************************** RUTA PARA OBTENER EL PROMEDIO DE LAS REVIEW DE UN PRODUCTO *******************************//
+
+server.get("/:idProduct/review/average", (req, res) => {
+    const idProduct = req.params.idProduct;
+
+    Review.count({
+        where: {
+            productId: idProduct
+        }
+    }).then(count => {
+        const countReviews = count
+        Review.sum('rating', {
+            where: {
+                productId: idProduct
+            }
+        }).then(sum => {
+            const sumReviews = sum
+            res.send({
+                data: {
+                    avg: sumReviews / countReviews,
+                    totalReviews: countReviews
+                }
+            })
+        }).catch(error => {
+            res.send(error);
+        })
+
+    }).catch(error => {
+        res.send(error);
+    })
+})
 
 module.exports = server;
