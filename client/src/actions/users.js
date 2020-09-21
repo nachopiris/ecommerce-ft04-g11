@@ -8,8 +8,10 @@ const CHANGE_QUANTITY = "CHANGE_QUANTITY";
 const SET_PRODUCT_TO_CART = "SET_PRODUCT_TO_CART";
 const REGISTER = "REGISTER";
 const GET_USERS = "GET_USERS";
+const GET_ORDERS = "GET_ORDERS";
 
 const BASE_URI = config.api.base_uri + "/users";
+const BASE_AUTH = config.api.base_uri + "/auth";
 
 
 const getUserId = () => {
@@ -96,4 +98,15 @@ export function setProductToCart(productId, quantity) {
                     });
             });
     };
+}
+
+
+export function getOrders(token){
+    return dispatch => {
+        return axios.get(BASE_AUTH + '/orders',{headers:{'x-access-token': token}})
+        .then(res => res.data)
+        .then(res => {
+            dispatch({type:GET_ORDERS,payload:res.data})
+        })
+    }
 }

@@ -19,6 +19,7 @@ export function Navbar({ auth, logout }) {
     const logOut = () => {
         logout(token).then(() => {
             localStorage.clear();
+            window.location.reload();
         });
     }
 
