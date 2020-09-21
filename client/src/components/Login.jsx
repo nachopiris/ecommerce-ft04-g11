@@ -7,10 +7,10 @@ import { IconContext } from "react-icons";
 import { BiShowAlt, BiHide } from "react-icons/bi";
 import { Link, Redirect } from "react-router-dom";
 
-function Login({ login, guestCart}) {
+function Login({ login, guestCart }) {
     const { register, handleSubmit, watch, errors } = useForm();
     const onSubmit = (data) => {
-        login({attributes:data, guestCart})
+        login({ attributes: data, guestCart })
             .then((res) => {
                 console.log(res);
                 setState({
@@ -65,7 +65,6 @@ function Login({ login, guestCart}) {
                                     <Form.Label>Correo electrónico</Form.Label>
                                     <Form.Control
                                         autoComplete="off"
-                                        defaultValue="client@test.com"
                                         className={
                                             errors.email
                                                 ? "is-invalid"
@@ -107,19 +106,18 @@ function Login({ login, guestCart}) {
                                                     title="Ocultar clave"
                                                 />
                                             ) : (
-                                                <BiShowAlt
-                                                    type="button"
-                                                    onClick={() =>
-                                                        switchPassword()
-                                                    }
-                                                    title="Mostrar clave"
-                                                />
-                                            )}
+                                                    <BiShowAlt
+                                                        type="button"
+                                                        onClick={() =>
+                                                            switchPassword()
+                                                        }
+                                                        title="Mostrar clave"
+                                                    />
+                                                )}
                                         </Form.Label>
                                     </IconContext.Provider>
                                     <Form.Control
                                         autoComplete="off"
-                                        defaultValue="12345678"
                                         className={
                                             errors.password
                                                 ? "is-invalid"

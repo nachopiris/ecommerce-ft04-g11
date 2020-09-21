@@ -5,15 +5,26 @@ import { Navbar as Navb, Nav, Container } from "react-bootstrap";
 import config from "../config";
 import { useSpring, animated } from "react-spring";
 import { connect } from 'react-redux';
+import { logout } from '../actions/auth';
+import { FaShoppingCart } from 'react-icons/fa'
+import { MdAccountCircle } from 'react-icons/md'
+import { RiLogoutBoxRLine } from 'react-icons/ri'
 
 const APP_NAME = config.app.name;
 
-export function Navbar({ auth }) {
+export function Navbar({ auth, logout }) {
     const location = useLocation();
     const { user, token } = auth;
+
+    const logOut = () => {
+        logout(token).then(() => {
+            localStorage.clear();
+        });
+    }
+
     const [state, setState] = useState({
         navbarBg: "",
-        navbarExpanded: false,
+        navbarExpanded: false
     });
 
     const handleScroll = (e) => {
@@ -23,7 +34,7 @@ export function Navbar({ auth }) {
         ) {
             setState({
                 ...state,
-                navbarBg: "navbar-colorated",
+                navbarBg: "navbar-colorated"
             });
         }
         if (
@@ -33,7 +44,7 @@ export function Navbar({ auth }) {
         ) {
             setState({
                 ...state,
-                navbarBg: "",
+                navbarBg: ""
             });
         }
     };
@@ -43,20 +54,20 @@ export function Navbar({ auth }) {
             if (document.documentElement.scrollTop >= 50) {
                 setState({
                     ...state,
-                    navbarExpanded: false,
+                    navbarExpanded: false
                 });
             } else {
                 setState({
                     ...state,
                     navbarExpanded: false,
-                    navbarBg: "",
+                    navbarBg: ""
                 });
             }
         } else {
             setState({
                 ...state,
                 navbarExpanded: true,
-                navbarBg: "navbar-colorated",
+                navbarBg: "navbar-colorated"
             });
         }
     };
@@ -104,46 +115,46 @@ export function Navbar({ auth }) {
                             <NavLink className="nav-link" exact to="/">
                                 Volver al sitio
                             </NavLink>
-                        </Nav>) : token ? (
-                            <Nav className="ml-auto">
-                                <NavLink className="nav-link" activeClassName="active" exact to="/">
-                                    Inicio
-                                </NavLink>
-                                <NavLink className="nav-link" activeClassName="active" exact to="/cuenta">
-                                    Cuenta
-                                </NavLink>
-                                <NavLink className="nav-link" activeClassName="active" to="/catalogo">
-                                    Catálogo
-                                </NavLink>
-                                <NavLink className="nav-link" activeClassName="active" exact to="/carrito">
-                                    Carrito
-                                </NavLink>
-                                { user.role === 'admin' &&
-                                    <NavLink className="btn btn-dark" to="/admin">
-                                        Administración
-                            </NavLink>
-                                }
-                            </Nav>
-                        ) :
-                            (
+                        </Nav>) : (
+                            <React.Fragment>
+                                <Nav className="ml-auto">
+                                    {user.role === 'admin' &&
+                                        <NavLink className="btn btn-dark" to="/admin">
+                                            Administración
+                    </NavLink>}
+                                </Nav>
                                 <Nav className="ml-auto">
                                     <NavLink className="nav-link" activeClassName="active" exact to="/">
                                         Inicio
-                                </NavLink>
-                                    <NavLink className="nav-link" activeClassName="active" exact to="/registrarse">
-                                        Registrarse
-                                </NavLink>
-                                    <NavLink className="nav-link" activeClassName="active" exact to="/ingresar">
-                                        Ingresar
                                 </NavLink>
                                     <NavLink className="nav-link" activeClassName="active" to="/catalogo">
                                         Catálogo
                                 </NavLink>
                                     <NavLink className="nav-link" activeClassName="active" exact to="/carrito">
-                                        Carrito
+                                        <FaShoppingCart />
+                                    </NavLink>
+                                    {token ?
+                                        <React.Fragment>
+                                            <NavLink className="nav-link" activeClassName="active" exact to="/cuenta">
+                                                <MdAccountCircle size={20} />
+                                            </NavLink>
+                                            <a href="#" onClick={() => logOut()} className="nav-link" activeClassName="active" exact to="/#">
+                                                <RiLogoutBoxRLine />
+                                            </a>
+                                        </React.Fragment> :
+                                        < React.Fragment >
+                                            <NavLink className="nav-link" activeClassName="active" exact to="/ingresar">
+                                                Ingresar
                                 </NavLink>
+                                            <NavLink className="nav-link" activeClassName="active" exact to="/registrarse">
+                                                Registrarse
+                                </NavLink>
+                                        </React.Fragment>
+
+                                    }
                                 </Nav>
-                            )}
+                            </React.Fragment>
+                        )}
                 </Navb.Collapse>
             </Container >
         </Navb >
@@ -157,7 +168,9 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {};
+    return {
+        logout: token => dispatch(logout(token))
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
