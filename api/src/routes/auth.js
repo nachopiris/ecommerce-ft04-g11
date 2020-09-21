@@ -117,6 +117,7 @@ server.post("/login", (req, res) => {
         if(codeLocal && codeLocal.password_reset){
             codeLocal.password_reset.expired = true;
             await codeStorage.setItem(user.id+"", JSON.stringify(codeLocal));
+
         }
 
         bcrypt.compare(password, user.password, (err, result) => {
