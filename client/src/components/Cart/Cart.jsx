@@ -1,11 +1,12 @@
 import React from "react";
+import NumberFormat from "react-number-format";
 import {
   getUserCart,
   emptyCart,
   changeQuantity,
   deleteItem,
 } from "../../actions/users";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 import { getProducts } from "../../actions/products";
 import { connect } from "react-redux";
@@ -13,7 +14,11 @@ import { Container, Row, Col, Button, Alert } from "react-bootstrap";
 
 import { MdCameraAlt, MdDelete } from "react-icons/md";
 import Order from "./Order";
-import { removeProductToCart, changeProductQuantity, clearCart } from "../../actions/guest";
+import {
+  removeProductToCart,
+  changeProductQuantity,
+  clearCart,
+} from "../../actions/guest";
 
 class Cart extends React.Component {
   constructor(props) {
@@ -25,13 +30,12 @@ class Cart extends React.Component {
 
     this.state = {
       cartProducts: [],
+      totalCost: 0,
     };
   }
-  componentDidUpdate(prevProps, prevState, snapshot){
-    console.log('okk')
-  }
+
   componentDidMount() {
-    if(!!this.props.token){
+    if (!!this.props.token) {
       this.props.getUserCart(1).then(() => {
         if (this.props.orders.length) {
           this.getCartProducts();
@@ -42,7 +46,7 @@ class Cart extends React.Component {
   }
 
   getCartProducts() {
-    if(!!this.props.token){
+    if (!!this.props.token) {
       let productsIds = [];
       this.props.orders.forEach((order) => {
         productsIds.push(order.productId);
@@ -53,30 +57,30 @@ class Cart extends React.Component {
         );
         this.setState({
           cartProducts: cartProducts,
+          totalCost: this.props.totalCost,
         });
       });
-    }else{
+    } else {
       this.setState({
         cartProducts: this.props.guestCart,
       });
     }
-  
   }
 
   quantityChange(quantity, productId) {
-    if(!!this.props.token){
+    if (!!this.props.token) {
       const body = {
         idProduct: productId,
         quantityProduct: quantity,
       };
       this.props.changeQuantity(1, body);
-    }else{
-      this.props.changeGuestQuantity({id: productId, quantity});
+    } else {
+      this.props.changeGuestQuantity({ id: productId, quantity });
     }
   }
 
   delete(productId) {
-    if(!!this.props.token){
+    if (!!this.props.token) {
       this.props.deleteItem(1, productId).then(() => {
         const products = this.state.cartProducts;
         const productToRemove = products.findIndex(
@@ -87,7 +91,7 @@ class Cart extends React.Component {
           cartProducts: products,
         });
       });
-    }else{
+    } else {
       this.props.deleteGuestItem(productId);
       const products = this.state.cartProducts;
       const productToRemove = products.findIndex(
@@ -101,13 +105,13 @@ class Cart extends React.Component {
   }
 
   deleteAll() {
-    if(!!this.props.token){
+    if (!!this.props.token) {
       this.props.emptyCart(1).then(() => {
         this.setState({
           cartProducts: [],
         });
       });
-    }else{
+    } else {
       this.props.emptyGuestCart();
       this.setState({
         cartProducts: [],
@@ -159,7 +163,7 @@ class Cart extends React.Component {
         )}
         {this.state.cartProducts.map((product, index) => {
           if (this.props.guestCart.length || this.props.orders.length) {
-            console.log('ff')
+            console.log("ff");
             const findOrder = this.props.orders.find(
               (order) => order.productId === product.id
             );
@@ -167,9 +171,15 @@ class Cart extends React.Component {
               <Order
                 key={index}
                 productId={product.id}
-                image={product.images ? JSON.parse(product.images)[0] : product.image}
+                image={
+                  product.images ? JSON.parse(product.images)[0] : product.image
+                }
                 title={product.name}
-                quantity={!!this.props.token && findOrder ? findOrder.quantity : product.quantity}
+                quantity={
+                  !!this.props.token && findOrder
+                    ? findOrder.quantity
+                    : product.quantity
+                }
                 price={product.price}
                 stock={product.stock}
                 onDelete={this.delete}
@@ -179,15 +189,33 @@ class Cart extends React.Component {
           }
         })}
         {this.state.cartProducts.length !== 0 && (
-          <Row>
-            <Col className="text-right">
+          <Row className="mx-3 py-2">
+            <Col>
               <Button
                 className="btn btn-danger"
                 onClick={() => this.deleteAll()}
               >
                 Vaciar Carrito
               </Button>
-              <Link to="/comprando" className="btn btn-success mx-3">Pagar</Link>
+            </Col>
+            <Col className="text-right">
+              <h4>
+                Precio total:
+                <NumberFormat
+                  prefix=" $"
+                  value={
+                    !!this.props.token
+                      ? this.state.totalCost
+                      : this.props.totalCostGuest
+                  }
+                  decimalScale={2}
+                  fixedDecimalScale={true}
+                  displayType={"text"}
+                />
+              </h4>
+              <Link to="/comprando" className="btn btn-success mx-3">
+                Finalizar Compra
+              </Link>
             </Col>
           </Row>
         )}
@@ -202,7 +230,9 @@ function mapStateToProps(state) {
     products: state.productsReducer.products.rows,
     token: state.authReducer.token,
     user: state.authReducer.user,
-    guestCart: state.guestReducer.cart
+    guestCart: state.guestReducer.cart,
+    totalCost: state.usersReducer.totalCost,
+    totalCostGuest: state.guestReducer.totalCost,
   };
 }
 
@@ -215,7 +245,7 @@ function mapDispatchToProps(dispatch) {
     deleteItem: (userId, productId) => dispatch(deleteItem(userId, productId)),
     deleteGuestItem: (id) => dispatch(removeProductToCart(id)),
     changeGuestQuantity: (data) => dispatch(changeProductQuantity(data)),
-    emptyGuestCart: () => dispatch(clearCart())
+    emptyGuestCart: () => dispatch(clearCart()),
   };
 }
 

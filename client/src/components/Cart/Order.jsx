@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import NumberFormat from "react-number-format";
 import { Link } from "react-router-dom";
-import "./order.module.scss";
 import { Row, Col, Card, Button, Form, InputGroup } from "react-bootstrap";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
 const Order = ({
   productId,
@@ -15,20 +14,19 @@ const Order = ({
   stock,
   onDelete,
   quantityChange,
-  orders
+  orders,
 }) => {
   const [quantityInput, setQuantityInput] = React.useState(quantity);
 
   useEffect(() => {
-    let order = orders.find(item => item.productId === productId);
-    if(order){
+    let order = orders.find((item) => item.productId === productId);
+    if (order) {
       setQuantityInput(order.quantity);
     }
     return () => {
-      console.log('gg')
-    }
-  },[quantity]);
-
+      console.log("gg");
+    };
+  }, [quantity]);
 
   const restar = async () => {
     if (quantityInput > 1) {
@@ -42,23 +40,6 @@ const Order = ({
       setQuantityInput(quantityInput + 1);
       quantityChange(quantityInput + 1, productId);
     }
-  };
-
-  const verifyQuantity = (e) => {
-    const inputValue = parseInt(e.target.value);
-    let filteredValue;
-    if (inputValue <= stock && inputValue > 0) {
-      filteredValue = inputValue;
-    } else {
-      if (!inputValue || inputValue < 1) {
-        filteredValue = 1;
-      }
-      if (inputValue > stock) {
-        filteredValue = stock;
-      }
-    }
-    setQuantityInput(filteredValue);
-    quantityChange(filteredValue, productId);
   };
 
   return (
@@ -81,7 +62,6 @@ const Order = ({
                 </Col>
                 <Col xs={6} md={3} className="mb-3 text-center">
                   <InputGroup size="sm">
-                    
                     <InputGroup.Prepend>
                       <Button
                         onClick={() => restar()}
@@ -93,7 +73,6 @@ const Order = ({
                     </InputGroup.Prepend>
                     <Form.Control
                       className="border-dark"
-                      onBlur={(e) => verifyQuantity(e)}
                       type="number"
                       disabled
                       value={quantityInput}
@@ -107,14 +86,13 @@ const Order = ({
                         +
                       </Button>
                     </InputGroup.Append>
-                    
                   </InputGroup>
                 </Col>
                 <Col className="text-left">
                   <span className="h6">
                     <NumberFormat
                       prefix="$"
-                      value={price}
+                      value={quantityInput * price}
                       decimalScale={2}
                       fixedDecimalScale={true}
                       displayType={"text"}
@@ -139,20 +117,14 @@ const Order = ({
   );
 };
 
-function mapStateToProps(state){
+function mapStateToProps(state) {
   return {
-    orders: state.usersReducer.userCart
-  }
+    orders: state.usersReducer.userCart,
+  };
 }
 
-function mapDispatchToProps(dispatch){
-  return {
-
-  }
+function mapDispatchToProps(dispatch) {
+  return {};
 }
 
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Order);
+export default connect(mapStateToProps, mapDispatchToProps)(Order);
