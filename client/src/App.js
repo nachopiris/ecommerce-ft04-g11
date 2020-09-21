@@ -18,6 +18,7 @@ import LogOutRoute from './components/LogOutRoute';
 import LogInRoute from './components/LogInRoute';
 import AdminRoute from './components/AdminRoute';
 import PasswordReset from "./components/PasswordReset";
+import Checkout from './components/Checkout';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
                 <Route exact path="/catalogo" component={Catalogue} />
                 <Route exact path="/carrito" component={Cart} />
                 <LogInRoute exact path="/cuenta" component={Account} />
+                <LogInRoute exact path="/comprando" component={Checkout} />
 
                 <AdminRoute exact path="/admin/usuarios" component={Users} />
                 <AdminRoute

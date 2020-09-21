@@ -4,6 +4,23 @@ const { Product, Category, User, Review } = require("../db.js");
 const Reviews = require("../models/Reviews.js");
 const Op = Sequelize.Op;
 
+server.post('/custom/collect', (req, res) => {
+    const {ids} = req.body;
+    if(!Array.isArray(ids)) return res.sendStatus(422);
+    Product.findAll({
+        where:{
+            id:{
+                [Op.in]: ids
+            }
+        }
+    }).then(products => {
+        return res.send({data: products}).status(200);
+    }).catch((err) => {
+        console.log(err);
+        return res.sendStatus(500);
+    });
+});
+
 server.get("/", (req, res, next) => {
     const perPage = 12;
     const page = req.query.page ? req.query.page : 1;

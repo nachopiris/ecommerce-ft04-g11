@@ -64,6 +64,13 @@ export function getProduct(id) {
     }
 }
 
+export function getCollect(ids){
+    return dispatch => {
+        return Axios.post(BASE_URI + '/custom/collect', {ids})
+        .then(res => res.data.data);
+    }
+}
+
 export function createProduct(attributes) {
     /*
         'attributes' es un objeto que contiene como propiedades los atributos del producto. En el Back-End,

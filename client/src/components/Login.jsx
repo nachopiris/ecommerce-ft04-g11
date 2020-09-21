@@ -8,7 +8,7 @@ import { BiShowAlt, BiHide } from "react-icons/bi";
 import { Link, Redirect } from "react-router-dom";
 
 function Login({ login, guestCart }) {
-    const { register, handleSubmit, watch, errors } = useForm();
+    const { register, handleSubmit, errors } = useForm();
     const onSubmit = (data) => {
         login({ attributes: data, guestCart })
             .then((res) => {

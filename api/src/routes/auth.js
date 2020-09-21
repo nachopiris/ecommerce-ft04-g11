@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const LocalStorage = require("node-localstorage").LocalStorage;
 const nodemailer = require("nodemailer");
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 localStorage = new LocalStorage("./blacklistJWT");
 codeStorage = new LocalStorage("./codeStorage");
@@ -16,7 +18,7 @@ const email_env = {
     port: process.env.EMAIL_PORT
 }
 
-const { User } = require("../db.js");
+const { User, Order } = require("../db.js");
 
 server.post("/promote/:id", (req, res) => {
     const id = req.params.id;
@@ -131,7 +133,7 @@ server.post("/login", (req, res) => {
                 user: {
                     id: user.id,
                     fullname: user.fullname,
-                    dni: user.dni,
+                    doc_number: user.doc_number,
                     phone: user.phone,
                     address: user.address,
                     role: user.role,
@@ -225,5 +227,48 @@ server.put("/password-reset", (req, res) => {
         return res.sendStatus(200);
     });
 });
+
+server.get('/orders', verifyToken, (req, res) => {
+    const {userId} = req;
+    Order.findAll({
+        limit:10,
+        where:{
+            userId: userId,
+            status:{
+                [Op.ne]: 'shopping_cart'
+            }
+        }
+    })
+    .then(orders => {
+        return res.send({data: orders});
+    })
+    .catch(err => {
+        console.log(err);
+        return res.sendStatus(500);
+    })
+});
+
+
+server.put('/orders/cancel', verifyToken, (req, res) => {
+    const {userId} = req;
+    const {orderId} = req.body;
+    Order.findOne({
+        where:{
+            id: orderId,
+            userId: userId
+        }
+    })
+    .then(async order => {
+        if(!order) return res.sendStatus(404);
+        if(order.status !== 'created') return res.sendStatus(403);
+        order.status = 'canceled';
+        await order.save();
+        return res.send({data: order});
+    })
+    .catch(err => {
+        console.log(err);
+        return res.sendStatus(500);
+    })
+})
 
 module.exports = server;

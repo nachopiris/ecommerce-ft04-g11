@@ -5,6 +5,8 @@ import {
   changeQuantity,
   deleteItem,
 } from "../../actions/users";
+import { Link } from 'react-router-dom';
+
 import { getProducts } from "../../actions/products";
 import { connect } from "react-redux";
 import { Container, Row, Col, Button, Alert } from "react-bootstrap";
@@ -185,7 +187,7 @@ class Cart extends React.Component {
               >
                 Vaciar Carrito
               </Button>
-              <Button className="btn btn-success mx-3">Finalizar Compra</Button>
+              <Link to="/comprando" className="btn btn-success mx-3">Pagar</Link>
             </Col>
           </Row>
         )}
