@@ -138,7 +138,7 @@ server.put("/:id", (req, res) => {
                     .status(404);
             }
             let emailChanged = user.email !== email ? true : false;
-            if(emailChanged) user.email = email;
+            if (emailChanged) user.email = email;
             user.fullname = fullname;
             if (password) user.password = password;
             user.role = role;
@@ -425,6 +425,43 @@ server.delete("/:idUser/cart/:idProduct", (req, res) => {
                 });
         });
     });
+});
+
+// Ruta que borra un usuario //
+
+server.delete("/:id", function (req, res) {
+    if (!Number.isInteger(req.params.id * 1)) {
+        res.send({
+            errors: {
+                messages: ["El id del usuario es inválido"],
+                status: 422
+            },
+        }).status(422);
+        return;
+    }
+    User.destroy({
+        where: {
+            id: req.params.id,
+        },
+    })
+        .then(function (rowDeleted) {
+            // rowDeleted will return number of rows deleted
+            if (rowDeleted === 1) {
+                res.send({
+                    errors: { messages: ["Usuario eliminado"], status: 204 },
+                }).status(204);
+            } else {
+                res.send({
+                    errors: {
+                        messages: ["No existe el usuario"],
+                        status: 404,
+                    },
+                }).status(404);
+            }
+        })
+        .catch((err) => {
+            return res.sendStatus(500);
+        });
 });
 
 module.exports = server;
