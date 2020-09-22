@@ -9,7 +9,7 @@ import { FiTrash2, FiEdit3, FiExternalLink } from 'react-icons/fi';
 
 function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUserRights, deleteUser }) {
     const DATE_FORMAT = "DD/MM/YYYY - HH:mm:ss"
-
+    const idLocal = JSON.parse(localStorage.redux).authReducer.user.id;
     const [state, setState] = useState({
         newData: false,
         editing: false,
@@ -132,7 +132,9 @@ function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUserRights
                                             <td className="align-middle">{user.createdAt === user.updatedAt ? "Sin modificaciones" : moment(user.updatedAt).format(DATE_FORMAT)}</td>
                                             <td className="align-middle">
                                                 <Button size="sm" onClick={() => handleEditing(user)} className="m-1" title="Modificar" variant="warning"><FiEdit3 /></Button>
-                                                <Button size="sm" onClick={() => handleDeleting(user)} className="m-1" title="Borrar" variant="danger"><FiTrash2 /></Button>
+                                                {user.id === idLocal ?
+                                                    <Button disabled size="sm" onClick={() => handleDeleting(user)} className="m-1" title="Borrar" variant="danger"><FiTrash2 /></Button> :
+                                                    <Button size="sm" onClick={() => handleDeleting(user)} className="m-1" title="Borrar" variant="danger"><FiTrash2 /></Button>}
                                             </td>
                                         </tr>
                                     )
