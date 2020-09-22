@@ -140,7 +140,7 @@ function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUserRights
                                 )}
                                 <EditUser show={state.editing} updateUser={handleUpdate} giveAdminRights={updateToAdminRights} giveUserRights={updateToUserRights} handleClose={handleEditing} user={state.user} />
                                 <DeleteUser show={state.deleting} deleteUser={handleDelete} handleClose={handleDeleting} user={state.user} />
-                            </tbody>rs
+                            </tbody>
                         </Table>
                         {(!allUsers || allUsers.length < 1) && (<div className="alert alert-info">No hay usuarios registrados.</div>)}
                     </div>
