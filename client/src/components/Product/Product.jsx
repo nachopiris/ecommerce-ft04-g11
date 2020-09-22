@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import {
-    Container,
-    Row,
-    Col,
-    Card,
-    Carousel,
-    Button,
-    Form,
-} from "react-bootstrap";
+import { Container, Row, Col, Card, Carousel, Button, Form } from "react-bootstrap";
 import s from "./product.module.scss";
 import { CgShoppingCart } from "react-icons/cg";
 import NumberFormat from "react-number-format";
 import { connect } from "react-redux";
-import { getProduct } from "../../actions/products";
-import {addProductToCart as setProductToGuestCart} from '../../actions/guest' ;
+import { getProduct, getReviews, getAverage } from "../../actions/products";
+import { addProductToCart as setProductToGuestCart } from '../../actions/guest';
 import { setProductToCart, getUserCart } from "../../actions/users";
 import Error404 from '../Error404'
+import Review from '../Review';
+import Rating from 'react-rating';
+import { MdStar } from 'react-icons/md';
 
 //***************CONECTADO AL STORE DE REDUX ********************/
-export function Product({ product, getProduct, setProductToCart, setProductToGuestCart, getUserCart, userCart, token, user, guestCart }) {
+export function Product({ reviews, product, getProduct, setProductToCart, setProductToGuestCart, getUserCart, userCart, token, user, guestCart, getReviews, getAverage, avgReviews }) {
     const { id } = useParams();
     var start = true;
     const [state, setState] = useState({
@@ -28,9 +23,9 @@ export function Product({ product, getProduct, setProductToCart, setProductToGue
     });
 
     const handleSetToCart = () => {
-        if(!token){
-            setProductToGuestCart({id: id * 1, stock: product.stock, name: product.name, price: product.price, quantity: state.quantity, image: JSON.parse(product.images)[0]})
-        }else{
+        if (!token) {
+            setProductToGuestCart({ id: id * 1, stock: product.stock, name: product.name, price: product.price, quantity: state.quantity, image: JSON.parse(product.images)[0] })
+        } else {
             setProductToCart(id, state.quantity);
         }
     }
@@ -50,6 +45,8 @@ export function Product({ product, getProduct, setProductToCart, setProductToGue
     useEffect(() => {
         getUserCart();
         getProduct(id);
+        getReviews(id);
+        getAverage(id);
     }, []);
 
     useEffect(() => {
@@ -57,7 +54,7 @@ export function Product({ product, getProduct, setProductToCart, setProductToGue
         if (userCart.length && product) {
             currentProduct = userCart.find(item => item.productId === product.id)
         }
-        if(guestCart.length && product){
+        if (guestCart.length && product) {
             currentProduct = guestCart.find(item => item.id === product.id)
         }
         if (currentProduct) {
@@ -72,6 +69,8 @@ export function Product({ product, getProduct, setProductToCart, setProductToGue
             });
         }
     }, [userCart, product, guestCart])
+
+    const { avg, totalReviews } = avgReviews
 
     return (
         <Container>
@@ -182,12 +181,12 @@ export function Product({ product, getProduct, setProductToCart, setProductToGue
                                                     <CgShoppingCart className="mr-1" />
                           Ir al carrito
                       </Link>
-                                                <small>El producto, se encuentra en el carrito</small>
+                                                <small>Ya añadiste este producto al carrito</small>
                                             </div>)}
 
                                             {product.stock < 1 && (
                                                 <Button size="lg" block variant="primary" disabled>
-                                                    Videojuego agotado!
+                                                    ¡Producto agotado!
                                                 </Button>
                                             )}
                                         </Col>
@@ -209,6 +208,23 @@ export function Product({ product, getProduct, setProductToCart, setProductToGue
                     </Row>
 
                     <Row className="mb-4">
+                        <Col>
+                            <Card className="bg-dark">
+                                <Card.Header className="d-flex justify-content-between">Reseñas <Rating
+                                    initialRating={avg}
+                                    readonly="true"
+                                    emptySymbol={<MdStar style={{ color: "grey", fontSize: "1.5rem" }} />}
+                                    fullSymbol={<MdStar style={{ color: "#ffb900", fontSize: "1.5rem" }} />}
+                                /></Card.Header>
+                                <Card.Body>
+                                    <small className="d-flex flex-row-reverse">{avgReviews && totalReviews === 1 ? totalReviews + " calificación" : totalReviews + " calificaciones"}</small>
+                                    {(reviews.length > 0) ? reviews.map(review => (
+                                        <Review props={review} />
+                                    )) :
+                                        <span>No hay comentarios sobre este producto</span>}
+                                </Card.Body>
+                            </Card>
+                        </Col>
                         <Col>
                             <Card className="bg-dark">
                                 <Card.Header>Categorías</Card.Header>
@@ -234,6 +250,8 @@ export function Product({ product, getProduct, setProductToCart, setProductToGue
 
 function mapStateToProps(state) {
     return {
+        avgReviews: state.productsReducer.avgReviews,
+        reviews: state.productsReducer.reviews,
         product: state.productsReducer.product,
         userCart: state.usersReducer.userCart,
         guestCart: state.guestReducer.cart,
@@ -247,7 +265,9 @@ function mapDispatchToProps(dispatch) {
         getProduct: (value) => dispatch(getProduct(value)),
         setProductToCart: (productId, quantity) => dispatch(setProductToCart(productId, quantity)),
         getUserCart: () => dispatch(getUserCart()),
-        setProductToGuestCart: (product) => dispatch(setProductToGuestCart(product))
+        setProductToGuestCart: (product) => dispatch(setProductToGuestCart(product)),
+        getReviews: (id) => dispatch(getReviews(id)),
+        getAverage: (id) => dispatch(getAverage(id))
     };
 }
 
