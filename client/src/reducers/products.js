@@ -3,12 +3,24 @@ const initialState = {
         count: 0,
         rows: []
     },
-    product: {},
+    reviews: [],
+    avgReviews: [],
+    product: [],
     search: "",
 }
 
 export default function productsReducer(state = initialState, action) {
     switch (action.type) {
+        case 'GET_AVERAGE_REVIEWS':
+            return {
+                ...state,
+                avgReviews: action.payload
+            }
+        case 'GET_REVIEWS':
+            return {
+                ...state,
+                reviews: action.payload
+            }
         case 'GET_LATESTS':
             return {
                 ...state,

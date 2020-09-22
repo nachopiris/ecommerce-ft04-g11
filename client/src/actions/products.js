@@ -11,8 +11,30 @@ const SEARCH_PRODUCT = 'SEARCH_PRODUCT';
 const ADD_CATEGORY_TO_PRODUCT = "ADD_CATEGORY_TO_PRODUCT";
 const DELETE_CATEGORY_TO_PRODUCT = 'DELETE_CATEGORY_TO_PRODUCT';
 const GET_LATESTS = 'GET_LATESTS';
+const GET_REVIEWS = 'GET_REVIEWS';
+const GET_AVERAGE_REVIEWS = 'GET_AVERAGE_REVIEWS';
 
 const BASE_URI = config.api.base_uri + '/products';
+
+export function getReviews(id) {
+    return dispatch => {
+        return Axios.get(BASE_URI + '/' + id + '/review')
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: GET_REVIEWS, payload: res.data })
+            })
+    }
+}
+
+export function getAverage(id) {
+    return dispatch => {
+        return Axios.get(BASE_URI + '/' + id + '/review/average')
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: GET_AVERAGE_REVIEWS, payload: res.data })
+            })
+    }
+}
 
 export function getLatests() {
     return dispatch => {
@@ -64,10 +86,10 @@ export function getProduct(id) {
     }
 }
 
-export function getCollect(ids){
+export function getCollect(ids) {
     return dispatch => {
-        return Axios.post(BASE_URI + '/custom/collect', {ids})
-        .then(res => res.data.data);
+        return Axios.post(BASE_URI + '/custom/collect', { ids })
+            .then(res => res.data.data);
     }
 }
 

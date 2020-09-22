@@ -53,6 +53,8 @@ Order.belongsToMany(Product, { through: { model: Orderline }, foreignKey: 'order
 Product.belongsToMany(User, { through: { model: Review }, foreignKey: "productId" });
 User.belongsToMany(Product, { through: { model: Review }, foreignKey: "userId" });
 
+Review.belongsTo(User);
+
 
 
 module.exports = {
