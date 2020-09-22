@@ -9,13 +9,55 @@ const SET_PRODUCT_TO_CART = "SET_PRODUCT_TO_CART";
 const REGISTER = "REGISTER";
 const GET_USERS = "GET_USERS";
 const GET_ORDERS = "GET_ORDERS";
+const UPDATE_USER = "UPDATE_USER";
+const GIVE_ADMIN_RIGHTS = "GIVE_ADMIN_RIGHTS";
+const GIVE_USER_RIGHTS = "GIVE_USER_RIGHTS";
+const DELETE_USER = "DELETE_USER";
 
 const BASE_URI = config.api.base_uri + "/users";
 const BASE_AUTH = config.api.base_uri + "/auth";
-
-
 const getUserId = () => {
     return localStorage.redux ? JSON.parse(localStorage.redux).authReducer.user.id : null;
+}
+
+export function deleteUser(id) {
+    return dispatch => {
+        return axios.delete(BASE_URI + '/' + id)
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: DELETE_USER });
+            })
+    }
+}
+
+export function giveAdminRights(id) {
+    return dispatch => {
+        return axios.post(BASE_AUTH + '/promote/' + id)
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: GIVE_ADMIN_RIGHTS });
+            })
+    }
+}
+
+export function giveUserRights(id) {
+    return dispatch => {
+        return axios.post(BASE_AUTH + '/remove/' + id)
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: GIVE_USER_RIGHTS });
+            })
+    }
+}
+
+export function updateUser(id, data) {
+    return dispatch => {
+        return axios.put(BASE_URI + '/' + id, data)
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: UPDATE_USER });
+            })
+    }
 }
 
 export function getUsers() {
@@ -101,12 +143,12 @@ export function setProductToCart(productId, quantity) {
 }
 
 
-export function getOrders(token){
+export function getOrders(token) {
     return dispatch => {
-        return axios.get(BASE_AUTH + '/orders',{headers:{'x-access-token': token}})
-        .then(res => res.data)
-        .then(res => {
-            dispatch({type:GET_ORDERS,payload:res.data})
-        })
+        return axios.get(BASE_AUTH + '/orders', { headers: { 'x-access-token': token } })
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: GET_ORDERS, payload: res.data })
+            })
     }
 }

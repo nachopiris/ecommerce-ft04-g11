@@ -68,6 +68,54 @@ server.post("/promote/:id", (req, res) => {
         });
 });
 
+server.post("/remove/:id", (req, res) => {
+    const id = req.params.id;
+    if (!Number.isInteger(id * 1)) {
+        return res.status(400).send({
+            errors: [{ message: "La consulta no es válida" }],
+            status: 400,
+        });
+    }
+    User.findByPk(id)
+        .then((user) => {
+            if (!user) {
+                return res.status(404).send({
+                    errors: [{ message: "No existe el usuario " + id }],
+                    status: 404,
+                });
+            }
+            user.role = "client";
+            user.save()
+                .then(() => {
+                    res.status(200).send(
+                        "Se le asignó el rol de Usuario al usuario " + id
+                    );
+                })
+                .catch((err) => {
+                    res.status(500).send({
+                        errors: [
+                            {
+                                message:
+                                    "Ha ocurrido un error al intentar contactar con el servidor",
+                            },
+                        ],
+                        status: 500,
+                    });
+                });
+        })
+        .catch(() => {
+            res.status(500).send({
+                errors: [
+                    {
+                        message:
+                            "Ha ocurrido un error al intentar contactar con el servidor",
+                    },
+                ],
+                status: 500,
+            });
+        });
+});
+
 server.post("/register", async (req, res) => {
     const { fullname, email, password } = req.body;
 
@@ -114,11 +162,11 @@ server.post("/login", (req, res) => {
     }).then(async (user) => {
         if (!user) return res.status(404).send("The email doesn't exists");
 
-        let codeLocal = await codeStorage.getItem(user.id+"");
-        if(codeLocal) codeLocal = JSON.parse(codeLocal);
-        if(codeLocal && codeLocal.password_reset){
+        let codeLocal = await codeStorage.getItem(user.id + "");
+        if (codeLocal) codeLocal = JSON.parse(codeLocal);
+        if (codeLocal && codeLocal.password_reset) {
             codeLocal.password_reset.expired = true;
-            await codeStorage.setItem(user.id+"", JSON.stringify(codeLocal));
+            await codeStorage.setItem(user.id + "", JSON.stringify(codeLocal));
 
         }
 
@@ -165,40 +213,55 @@ server.post("/logout", verifyToken, (req, res) => {
 });
 
 server.post("/password-reset", (req, res) => {
-    const {email} = req.body;
+    const { email } = req.body;
     User.findOne({
         where: {
             email: email
         }
     }).then(async user => {
-        if(!user) {
-           return res.sendStatus(422);
+        if (!user) {
+            return res.sendStatus(422);
         }
         const code = Math.floor(100000 + Math.random() * 900000);
-        if(!codeStorage.getItem(user.id+"")) codeStorage.setItem(user.id+"","{}")
-        let userCodes = JSON.parse(codeStorage.getItem(user.id+""));
+        if (!codeStorage.getItem(user.id + "")) codeStorage.setItem(user.id + "", "{}")
+        let userCodes = JSON.parse(codeStorage.getItem(user.id + ""));
         userCodes.password_reset = {
             code,
             expired: false,
             createdAt: Date.now()
         }
-        codeStorage.setItem(user.id+"", JSON.stringify(userCodes));
+        codeStorage.setItem(user.id + "", JSON.stringify(userCodes));
 
         let transporter = nodemailer.createTransport({
             host: email_env.host,
             port: email_env.port,
             secure: false, // true for 465, false for other ports
             auth: {
-                user: email_env.user, 
+                user: email_env.user,
                 pass: email_env.password,
             },
         });
 
         await transporter.sendMail({
-            from: '"OriginMaster" <'+email_env.user+'>', // sender address
+            from: '"OriginMaster" <' + email_env.user + '>', // sender address
             to: email, // list of receivers
-            subject: "Reestablecer clave de OriginMaster", // Subject line
-            html: "<h1>OriginMaster</h1><p>Código: <b>"+code+"</b></p>", // html body
+            subject: "Reestablece tu clave - OriginMaster", // Subject line
+            html: `<div id="container" style="width: 100%; font-family: sans-serif; font-weight: normal;">
+            <div style="width: 100%; max-width: 700px; margin: auto;">
+          <div style="background-color: #3a3a56; text-align: center; padding: 0.7rem 0;">
+          <h1 style="color: white; font-family: sans-serif; font-weight: normal;">Origin<span style="color: red;">Master</span></h1>
+            
+          </div>
+            
+          <div style="text-align: center; padding: 0 0.72rem; padding-top: 2.5rem; background-color:white">
+          <p style="color: #4f5154; margin-bottom: 1.4rem; font-size: 1rem;">&iexcl;Hola, ` + user.fullname + `!<br><br>Ingresa el c&oacute;digo y elige una nueva clave para seguir disfrutando de tu cuenta en OriginMaster.<br /><br /> Tu c&oacute;digo es:</p>
+          <span style="background-color: #3a3a56; padding: 1rem; color: white; border-radius: 3px; font-size: 1.5rem;">`+ code + `</span></div><br /><br /><br />
+            <span style="color: #4f5154; margin-bottom: 1.4rem; font-size: .9rem;">Si no solicitaste reestablecer tu clave ignora este correo.</span><br><br><br>
+            <div style="background-color: #cdd0d4; padding: 0.5rem; font-size: .7rem; text-align:justify;">
+                Estás recibiendo este correo porque registraste una cuenta en OriginMaster, un sitio ficticio que nunca, bajo ningún concepto, te pedirá datos personales.
+             </div>
+          </div>
+          </div>`, // html body
         });
 
         return res.sendStatus(200);
@@ -207,18 +270,18 @@ server.post("/password-reset", (req, res) => {
 
 
 server.put("/password-reset", (req, res) => {
-    const {email, code, password} = req.body;
+    const { email, code, password } = req.body;
     User.findOne({
         where: {
             email: email
         }
     }).then(async user => {
-        if(!user) {
-           return res.sendStatus(422);
+        if (!user) {
+            return res.sendStatus(422);
         }
-        const codeLocal = JSON.parse(codeStorage.getItem(user.id+"")).password_reset;
+        const codeLocal = JSON.parse(codeStorage.getItem(user.id + "")).password_reset;
         const limitTime = 3600000; //60 minutos.
-        if(codeLocal.expired === true || Date.now() > codeLocal.createdAt + limitTime || (code*1) !== codeLocal.code){ //se excedió del tiempo límite o el código no es el mismo
+        if (codeLocal.expired === true || Date.now() > codeLocal.createdAt + limitTime || (code * 1) !== codeLocal.code) { //se excedió del tiempo límite o el código no es el mismo
             return res.sendStatus(401);
         }
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -229,46 +292,46 @@ server.put("/password-reset", (req, res) => {
 });
 
 server.get('/orders', verifyToken, (req, res) => {
-    const {userId} = req;
+    const { userId } = req;
     Order.findAll({
-        limit:10,
-        where:{
+        limit: 10,
+        where: {
             userId: userId,
-            status:{
+            status: {
                 [Op.ne]: 'shopping_cart'
             }
         }
     })
-    .then(orders => {
-        return res.send({data: orders});
-    })
-    .catch(err => {
-        console.log(err);
-        return res.sendStatus(500);
-    })
+        .then(orders => {
+            return res.send({ data: orders });
+        })
+        .catch(err => {
+            console.log(err);
+            return res.sendStatus(500);
+        })
 });
 
 
 server.put('/orders/cancel', verifyToken, (req, res) => {
-    const {userId} = req;
-    const {orderId} = req.body;
+    const { userId } = req;
+    const { orderId } = req.body;
     Order.findOne({
-        where:{
+        where: {
             id: orderId,
             userId: userId
         }
     })
-    .then(async order => {
-        if(!order) return res.sendStatus(404);
-        if(order.status !== 'created') return res.sendStatus(403);
-        order.status = 'canceled';
-        await order.save();
-        return res.send({data: order});
-    })
-    .catch(err => {
-        console.log(err);
-        return res.sendStatus(500);
-    })
+        .then(async order => {
+            if (!order) return res.sendStatus(404);
+            if (order.status !== 'created') return res.sendStatus(403);
+            order.status = 'canceled';
+            await order.save();
+            return res.send({ data: order });
+        })
+        .catch(err => {
+            console.log(err);
+            return res.sendStatus(500);
+        })
 })
 
 module.exports = server;

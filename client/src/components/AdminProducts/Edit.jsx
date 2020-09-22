@@ -149,7 +149,7 @@ function Edit({ show, handleClose, product, updateProduct, allCategories }) {
                 </form>
             </Modal.Body>
             <Modal.Footer className="border-0 bg-dark2">
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="danger" onClick={handleClose}>
                     Cancelar
               </Button>
                 <Button variant="warning" onClick={() => updateProduct()(id, state)}>

@@ -23,7 +23,7 @@ function PasswordReset({ passwordReset, passwordChange }) {
                             ...state,
                             loading: false,
                             email: data.email,
-                            step:2
+                            step: 2
                         });
                     })
                     .catch((err) => {
@@ -35,7 +35,7 @@ function PasswordReset({ passwordReset, passwordChange }) {
                     });
                 break;
             case 2:
-                passwordChange({email: state.email || data.email, code: data.code, password: data.password})
+                passwordChange({ email: state.email || data.email, code: data.code, password: data.password })
                     .then((res) => {
                         console.log(res);
                         setState({
@@ -52,7 +52,7 @@ function PasswordReset({ passwordReset, passwordChange }) {
                         });
                     });
                 break;
-        
+
             default:
                 break;
         }
@@ -89,16 +89,16 @@ function PasswordReset({ passwordReset, passwordChange }) {
                             Recuperar clave de acceso
                         </Card.Header>
                         <Card.Body>
-                             {state.step === 1 && (<p>
-                                Por favor ingrese su correo electrónico, para que le enviemos un código de seguridad.
-                                {" "} <a href="#" onClick={() => setState({...state,step:2})}>ya tengo el código </a>
+                            {state.step === 1 && (<p>
+                                Ingresa tu correo electrónico. Recibirás un código de seguridad para recuperar tu cuenta.
+                                {" "} <a href="#" onClick={() => setState({ ...state, step: 2 })}>ya tengo el código </a>
                             </p>)}
 
                             {state.step === 2 && (
-                            <p>
-                                Ya le enviamos una código por correo electrónico. Recuerde revisar la casilla de spam.
-                                <a href="#" onClick={() => setState({...state,step:1})}> No me llegó el código</a>
-                            </p>
+                                <p>
+                                    Código enviado. Recuerda revisar también la casilla de correo no deseado.
+                                    <a href="#" onClick={() => setState({ ...state, step: 1 })}>No me llegó el código</a>
+                                </p>
                             )}
                             <Form onSubmit={handleSubmit(onSubmit)}>
                                 {(state.step === 1 || state.email === null) && (<Form.Group>
@@ -132,99 +132,99 @@ function PasswordReset({ passwordReset, passwordChange }) {
 
                                 {state.step === 2 && (
                                     <React.Fragment>
-                                                                            <Form.Group>
-                                        <Form.Label>Ingrese el código</Form.Label>
-                                        <Form.Control
-                                            autoFocus
-                                            autoComplete="off"
-                                            className={
-                                                errors.code
-                                                    ? "is-invalid"
-                                                    : ""
-                                            }
-                                            ref={register({
-                                                required: true,
-                                                pattern: regValidated.code,
-                                            })}
-                                            type="text"
-                                            name="code"
-                                        ></Form.Control>
-                                        <Form.Control.Feedback type="invalid">
-                                            {errors.code?.type === "required" &&
-                                                "Debes ingresar el código de seguridad"}
-                                            {errors.code?.type === "pattern" &&
-                                                "El código ingresado no es válido"}
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
+                                        <Form.Group>
+                                            <Form.Label>Código recibido</Form.Label>
+                                            <Form.Control
+                                                autoFocus
+                                                autoComplete="off"
+                                                className={
+                                                    errors.code
+                                                        ? "is-invalid"
+                                                        : ""
+                                                }
+                                                ref={register({
+                                                    required: true,
+                                                    pattern: regValidated.code,
+                                                })}
+                                                type="text"
+                                                name="code"
+                                            ></Form.Control>
+                                            <Form.Control.Feedback type="invalid">
+                                                {errors.code?.type === "required" &&
+                                                    "Debes ingresar el código de seguridad"}
+                                                {errors.code?.type === "pattern" &&
+                                                    "El código ingresado no es válido"}
+                                            </Form.Control.Feedback>
+                                        </Form.Group>
 
 
 
-                                    <Form.Group>
-                                        <IconContext.Provider
-                                            value={
-                                                state.passwordShowing
-                                                    ? { className: "icon-change" }
-                                                    : { className: "icon" }
-                                            }
-                                        >
-                                            <Form.Label>
-                                                <span>Clave</span>{" "}
-                                                {state.passwordShowing ? (
-                                                    <BiHide
-                                                        type="button"
-                                                        onClick={() =>
-                                                            switchPassword()
-                                                        }
-                                                        title="Ocultar clave"
-                                                    />
-                                                ) : (
-                                                    <BiShowAlt
-                                                        type="button"
-                                                        onClick={() =>
-                                                            switchPassword()
-                                                        }
-                                                        title="Mostrar clave"
-                                                    />
-                                                )}
-                                            </Form.Label>
-                                        </IconContext.Provider>
-                                        <Form.Control
-                                            autoComplete="off"
-                                            className={
-                                                errors.password
-                                                    ? "is-invalid"
-                                                    : "password-input"
-                                            }
-                                            ref={register({
-                                                required: true,
-                                                minLength: 8,
-                                                maxLength: 16,
-                                                pattern: regValidated.password,
-                                            })}
-                                            name="password"
-                                            type={
-                                                state.passwordShowing
-                                                    ? "text"
-                                                    : "password"
-                                            }
-                                        ></Form.Control>
-                                        <Form.Control.Feedback type="invalid">
-                                            {errors.password?.type === "required" &&
-                                                "Por favor ingrese su nueva clave"}
-                                            {errors.password?.type === "pattern" &&
-                                                "La clave debe contener al menos una mayúscula y un número"}
-                                            {errors.password?.type ===
-                                                "maxLength" &&
-                                                "La clave no puede exceder los 16 caracteres"}
-                                            {errors.password?.type ===
-                                                "minLength" &&
-                                                "La clave debe contener al menos 8 caracteres"}
-                                        </Form.Control.Feedback>
-                                    </Form.Group>
-                                </React.Fragment>
+                                        <Form.Group>
+                                            <IconContext.Provider
+                                                value={
+                                                    state.passwordShowing
+                                                        ? { className: "icon-change" }
+                                                        : { className: "icon" }
+                                                }
+                                            >
+                                                <Form.Label>
+                                                    <span>Nueva clave</span>{" "}
+                                                    {state.passwordShowing ? (
+                                                        <BiHide
+                                                            type="button"
+                                                            onClick={() =>
+                                                                switchPassword()
+                                                            }
+                                                            title="Ocultar clave"
+                                                        />
+                                                    ) : (
+                                                            <BiShowAlt
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    switchPassword()
+                                                                }
+                                                                title="Mostrar clave"
+                                                            />
+                                                        )}
+                                                </Form.Label>
+                                            </IconContext.Provider>
+                                            <Form.Control
+                                                autoComplete="off"
+                                                className={
+                                                    errors.password
+                                                        ? "is-invalid"
+                                                        : "password-input"
+                                                }
+                                                ref={register({
+                                                    required: true,
+                                                    minLength: 8,
+                                                    maxLength: 16,
+                                                    pattern: regValidated.password,
+                                                })}
+                                                name="password"
+                                                type={
+                                                    state.passwordShowing
+                                                        ? "text"
+                                                        : "password"
+                                                }
+                                            ></Form.Control>
+                                            <Form.Control.Feedback type="invalid">
+                                                {errors.password?.type === "required" &&
+                                                    "Por favor ingrese su nueva clave"}
+                                                {errors.password?.type === "pattern" &&
+                                                    "La clave debe contener al menos una mayúscula y un número"}
+                                                {errors.password?.type ===
+                                                    "maxLength" &&
+                                                    "La clave no puede exceder los 16 caracteres"}
+                                                {errors.password?.type ===
+                                                    "minLength" &&
+                                                    "La clave debe contener al menos 8 caracteres"}
+                                            </Form.Control.Feedback>
+                                        </Form.Group>
+                                    </React.Fragment>
                                 )}
                                 <Form.Group>
-                                    
+
                                     <Link className="link" to="/ingresar">
                                         <small>Recordé mi clave</small>
                                     </Link>
@@ -261,7 +261,7 @@ function PasswordReset({ passwordReset, passwordChange }) {
 
 function mapStateToProps(state) {
     return {
-        
+
     };
 }
 

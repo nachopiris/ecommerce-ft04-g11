@@ -10,7 +10,7 @@ import Cart from "./components/Cart/Cart";
 import Navbar from "./components/Navbar";
 import Orders from "./components/Orders";
 import Login from "./components/Login";
-import Users from "./components/Users";
+import Users from "./components/Users/Users";
 import Account from "./components/Account";
 import "./styles/ecommerce.scss";
 import React from "react";
