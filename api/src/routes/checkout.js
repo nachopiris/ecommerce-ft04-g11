@@ -117,7 +117,7 @@ server.post("/", verifyToken, (req, res) => {
                                        </ul>
                 
                                         <br /><br /></p>
-                                            <a href="http://localhost:3000/cuenta" style="background-color:blue;box-sizing:border-box; padding:15px; text-decoration:none; color:white">
+                                            <a href="http://localhost:3000/admin/orders" style="background-color:blue;box-sizing:border-box; padding:15px; text-decoration:none; color:white">
                                             Ir a ordenes
                                             </a>
                                         </div><br /><br /><br />
