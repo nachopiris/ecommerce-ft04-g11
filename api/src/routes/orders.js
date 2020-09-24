@@ -210,10 +210,6 @@ server.post('/:idUser', (req, res) => {
             return res.sendStatus(500);
         });
     }
-
 });
-
-
-
 
 module.exports = server;

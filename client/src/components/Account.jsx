@@ -7,10 +7,10 @@ import { getOrders } from "../actions/users";
 import { cancelOrder } from '../actions/checkout';
 import moment from 'moment';
 
-function Account({ auth, logout, orders, getOrders, cancelOrder}) {
+function Account({ auth, logout, orders, getOrders, cancelOrder }) {
     const { user, token } = auth;
     const logOut = () => {
-        logout(token).then(()=>{
+        logout(token).then(() => {
             localStorage.clear();
             window.location.reload();
         });
@@ -18,7 +18,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder}) {
 
     const handleCancel = (id) => {
         return () => {
-            cancelOrder({token: auth.token, orderId:id}).then(() => {
+            cancelOrder({ token: auth.token, orderId: id }).then(() => {
                 getOrders(auth.token);
             });
         }
@@ -30,10 +30,10 @@ function Account({ auth, logout, orders, getOrders, cancelOrder}) {
 
     useEffect(() => {
         getOrders(auth.token);
-    },[])
+    }, [])
 
     useEffect(() => {
-        if(orders){
+        if (orders) {
             setState({
                 ...state,
                 orders
@@ -70,7 +70,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder}) {
                     <Row>
                         <Col>
                             <Card className="bg-dark2">
-                                <Card.Header className>
+                                <Card.Header>
                                     Mis ordenes
                                 </Card.Header>
                                 <Card.Body>
@@ -105,7 +105,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder}) {
                                                     <span className="badge badge-danger badge-pill">
                                                         Cancelada
                                                     </span>
-                                                )} 
+                                                )}
                                             </div>
                                             <span>
                                                 {item.status === 'created' && (
@@ -117,7 +117,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder}) {
                                                             Cancelar
                                                         </Button>
                                                     </React.Fragment>
-                                                )} 
+                                                )}
                                             </span>
 
                                         </div>

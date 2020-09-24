@@ -19,6 +19,7 @@ import LogInRoute from './components/LogInRoute';
 import AdminRoute from './components/AdminRoute';
 import PasswordReset from "./components/PasswordReset";
 import Checkout from './components/Checkout';
+import UserOverview from './components/Users/UserOverview';
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
                     path="/admin/productos"
                     component={AdminProducts}
                 />
+                <AdminRoute exact path="/admin/usuario/:id" component={UserOverview} />
                 <AdminRoute
                     exact
                     path="/admin/categorias"
