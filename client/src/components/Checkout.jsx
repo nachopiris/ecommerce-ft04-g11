@@ -6,6 +6,7 @@ import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { getCollect } from "../actions/products";
+import { payOrder } from "../actions/payment";
 
 function Checkout({
   token,
@@ -14,6 +15,7 @@ function Checkout({
   createOrder,
   getCollect,
   totalCost,
+  payOrder,
 }) {
   const { register, handleSubmit, errors } = useForm();
 
@@ -25,10 +27,13 @@ function Checkout({
 
     createOrder({ ...data, token })
       .then((res) => {
-        console.log(res.status);
-        setState({
-          ...state,
-          loading: false,
+        payOrder(user, data, state.products).then((response) => {
+          console.log(response.data);
+          setState({
+            ...state,
+            loading: false,
+          });
+          window.open(response.data, "_blank");
         });
       })
       .catch((err) => {
@@ -234,6 +239,8 @@ function mapDispatchToProps(dispatch) {
   return {
     createOrder: (data) => dispatch(createOrder(data)), //{token, email, address, phone}
     getCollect: (ids) => dispatch(getCollect(ids)),
+    payOrder: (user, data, products) =>
+      dispatch(payOrder(user, data, products)),
   };
 }
 
