@@ -1,12 +1,29 @@
 const initialState = {
     userCart: [],
     totalCost: 0,
-    user: {},
+    users: [],
     orders: [],
+    user: {},
+    orderlines: []
 };
 
 export default function usersReducer(state = initialState, action) {
     switch (action.type) {
+        case 'GET_USER_ORDERLINES':
+            return {
+                ...state,
+                orderlines: action.payload
+            }
+        case 'GET_USER_ORDERS':
+            return {
+                ...state,
+                orders: action.payload
+            }
+        case 'GET_USER':
+            return {
+                ...state,
+                user: action.payload
+            }
         case 'DELETE_USER':
             return {
                 ...state

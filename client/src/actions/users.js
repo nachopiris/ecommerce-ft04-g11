@@ -13,11 +13,46 @@ const UPDATE_USER = "UPDATE_USER";
 const GIVE_ADMIN_RIGHTS = "GIVE_ADMIN_RIGHTS";
 const GIVE_USER_RIGHTS = "GIVE_USER_RIGHTS";
 const DELETE_USER = "DELETE_USER";
+const GET_USER = "GET_USER";
+const GET_USER_ORDERS = "GET_USER_ORDERS";
+const GET_USER_ORDERLINES = 'GET_USER_ORDERLINES';
 
 const BASE_URI = config.api.base_uri + "/users";
 const BASE_AUTH = config.api.base_uri + "/auth";
 const getUserId = () => {
     return localStorage.redux ? JSON.parse(localStorage.redux).authReducer.user.id : null;
+}
+
+
+export function getUserOrderlines(id) {
+    return dispatch => {
+        return axios.get(BASE_URI + '/' + id + '/orderline')
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: GET_USER_ORDERLINES, payload: res.data });
+            });
+    }
+}
+
+
+export function getUserOrders(id) {
+    return dispatch => {
+        return axios.get(BASE_URI + "/" + id + "/allorders")
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: GET_USER_ORDERS, payload: res.data });
+            });
+    }
+}
+
+export function getUser(id) {
+    return dispatch => {
+        return axios.get(BASE_URI + '/' + id)
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: GET_USER, payload: res.data });
+            })
+    }
 }
 
 export function deleteUser(id) {

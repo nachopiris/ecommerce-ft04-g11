@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { getUsers, updateUser, giveAdminRights, giveUserRights, deleteUser } from '../../actions/users';
 import moment from 'moment';
-import { Container, Row, Col, Button, Table } from 'react-bootstrap'
+import { Container, Row, Col, Button, Table } from 'react-bootstrap';
 import EditUser from './EditUser';
 import DeleteUser from './DeleteUser';
 import { FiTrash2, FiEdit3, FiExternalLink } from 'react-icons/fi';
 
-function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUserRights, deleteUser }) {
+export function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUserRights, deleteUser }) {
     const DATE_FORMAT = "DD/MM/YYYY - HH:mm:ss"
     const idLocal = JSON.parse(localStorage.redux).authReducer.user.id;
     const [state, setState] = useState({
@@ -131,6 +132,7 @@ function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUserRights
                                             <td className="align-middle">{moment(user.createdAt).format(DATE_FORMAT)}</td>
                                             <td className="align-middle">{user.createdAt === user.updatedAt ? "Sin modificaciones" : moment(user.updatedAt).format(DATE_FORMAT)}</td>
                                             <td className="align-middle">
+                                                <Link to={"usuario/" + user.id} className="m-1 btn btn-light btn-sm" title="Detalles de usuario"><FiExternalLink /></Link>
                                                 <Button size="sm" onClick={() => handleEditing(user)} className="m-1" title="Modificar" variant="warning"><FiEdit3 /></Button>
                                                 {user.id === idLocal ?
                                                     <Button disabled size="sm" onClick={() => handleDeleting(user)} className="m-1" title="Borrar" variant="danger"><FiTrash2 /></Button> :

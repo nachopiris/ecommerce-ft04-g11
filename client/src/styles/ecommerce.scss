@@ -29,6 +29,10 @@
     box-shadow: none !important;
 }
 
+.li {
+    list-style: none;
+}
+
 .is-invalid {
     background-position: left calc(0.375em + 0.1875rem) center !important;
     padding-left: 2.15rem !important;

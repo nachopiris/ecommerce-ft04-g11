@@ -1,13 +1,12 @@
 import React from 'react';
+import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
 import Error404 from './Error404';
 
-export function AdminRoute({ auth, component }) {
+export function AdminRoute({ auth, component, path }) {
     const { user } = auth;
-    const Component = component;
     return user.role === 'admin' ? (
-        <Component />
+        <Route exact path={path} component={component} />
     ) :
         (<Error404 />)
 }

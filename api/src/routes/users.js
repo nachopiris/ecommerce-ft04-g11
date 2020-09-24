@@ -1,6 +1,8 @@
 const server = require("express").Router();
 const { User, Order, Product, Orderline } = require("../db.js");
 const bcrypt = require("bcrypt");
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 server.get("/", (req, res) => {
     User.findAll({
@@ -214,6 +216,7 @@ server.post("/:idUser/cart", (req, res) => {
                 quantity: quantityProduct,
                 productId: idProduct,
                 orderId: orderId,
+                userId: idUser
             })
                 .then((orderCreated) => {
                     return res.send(orderCreated).sendStatus(201);
@@ -463,5 +466,68 @@ server.delete("/:id", function (req, res) {
             return res.sendStatus(500);
         });
 });
+
+// Ruta que devuelve un usuario específico según ID //
+
+server.get("/:id", (req, res) => {
+    const id = req.params.id;
+    User.findByPk(id)
+        .then(user => {
+            if (user) {
+                return res.send({ data: user });
+            } else {
+                res.send({
+                    errors: {
+                        messages: ["No existe el usuario"],
+                        status: 404,
+                    },
+                }).status(404);
+            }
+        })
+        .catch(() => {
+            return res.sendStatus(500);
+        });
+});
+
+// Ruta que devuelve todas las órdenes de un usuario
+
+server.get('/:id/allorders', (req, res) => {
+    const id = req.params.id
+    Order.findAll({
+        where: {
+            userId: id,
+            status: {
+                [Op.not]: "shopping_cart"
+            }
+        }
+    })
+        .then(orders => {
+            return res.send({ data: orders });
+        })
+        .catch(() => {
+            return res.status(500)
+        });
+})
+
+// Ruta que devuelve orderline de usuario por id 
+
+server.get('/:id/orderline', (req, res) => {
+    const id = req.params.id;
+
+    Orderline.findAll({
+        where: {
+            userId: id
+        }
+    })
+        .then(orderline => {
+            if (!orderline) {
+                return res.send({ errors: { messages: ['Línea de orden no encontrada'], status: 404 } }).status(404);
+            }
+            res.send({ data: orderline });
+        })
+        .catch(() => {
+            return res.sendStatus(500);
+        })
+})
 
 module.exports = server;
