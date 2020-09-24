@@ -33,9 +33,16 @@ async function verifyToken(req, res, next) {
             .send({ auth: false, message: "No token provided" });
     await jwt.verify(token, secret, async (err, decoded) => {
         const blacklist = await clearBlacklist();
-        if (err || inArray(blacklist, decoded.id)) return res.sendStatus(401);
+        // console.log(token);
+        if(err) {
+            console.log(err);
+            return res.sendStatus(401);
+        }
+        if (inArray(blacklist, token)){
+            console.log('blacklisted');
+            return res.sendStatus(401)
+        }
         req.userId = decoded.id;
-        console.log(req.userId);
         req.token = token;
         next();
     });
