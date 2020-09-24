@@ -1,5 +1,6 @@
 const server = require('express').Router();
-const { Order, User, Orderline } = require('../db.js');
+const { Order, User, Product, Orderline } = require('../db.js');
+const verifyToken = require("../jwt/verifyToken.js");
 
 server.get('/:id', (req, res, next) => {
     if (!Number.isInteger(req.params.id * 1)) {
@@ -22,7 +23,7 @@ server.get('/:id', (req, res, next) => {
 
 server.get('/', (req, res) => {
     if (!req.query.status) {
-        Order.findAll({ include: [{ model: User }] })
+        Order.findAll({ include: [{ model: User },{ model: Product, through:Orderline}] })
             .then(orders => {
                 return res.send({ data: orders });
             })
@@ -50,11 +51,23 @@ server.get('/', (req, res) => {
     }
 })
 
-server.put('/:id', (req, res) => {
+server.delete('/:id', verifyToken, (req, res) => {
+    const {id} = req.params;
+    Order.findByPk(id*1).then(async order => {
+        if(!order) return res.sendStatus(404);
+        await order.destroy();
+        res.sendStatus(204);
+    }).catch((err) => {
+        console.log(err);
+        res.sendStatus(500);
+    });
+});
+
+server.put('/:id', verifyToken, (req, res) => {
     const id = req.params.id;
 
     if (!Number.isInteger(id * 1)) {//multiplicar * 1 es muy IMPORTANTE (cositas de javascript xd)!
-        return res.send({ errors: [{ message: 'La id del producto no es valida.' }], status: 422 }).status(422);
+        return res.send({ errors: [{ message: 'La id de la orden no es valida.' }], status: 422 }).status(422);
     }
 
     const { status } = req.body
@@ -197,7 +210,6 @@ server.post('/:idUser', (req, res) => {
             return res.sendStatus(500);
         });
     }
-
 });
 
 module.exports = server;
