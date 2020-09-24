@@ -52,7 +52,6 @@ server.get('/', (req, res) => {
 
 server.put('/:id', (req, res) => {
     const id = req.params.id;
-
     if (!Number.isInteger(id * 1)) {//multiplicar * 1 es muy IMPORTANTE (cositas de javascript xd)!
         return res.send({ errors: [{ message: 'La id del producto no es valida.' }], status: 422 }).status(422);
     }

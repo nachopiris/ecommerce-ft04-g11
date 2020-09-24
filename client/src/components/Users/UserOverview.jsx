@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getUser, getUserOrders, getUserOrderlines } from '../../actions/users';
+import { updateOrderStatus } from '../../actions/orders';
 import { Container, Row, Col, Card, Form, Table, Button } from 'react-bootstrap';
 import { Tabs, Tab, TabList, TabPanel } from 'react-tabs';
 import style from '../../styles/userOverview.module.scss';
@@ -9,7 +10,7 @@ import moment from 'moment';
 import { FiTrash2, FiInfo } from 'react-icons/fi';
 import OrderInfo from './OrderInfo';
 
-export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrderlines, orderlines }) {
+export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrderlines, orderlines, updateOrderStatus }) {
     const DATE_FORMAT = "DD/MM/YYYY - HH:mm:ss"
     const { id } = useParams();
     const { fullname, email, role } = user;
@@ -18,7 +19,8 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
         showingInfo: false,
         order: {
             id: "",
-            status: ""
+            status: "",
+            updatedAt: ""
         },
         orderlines: ""
     });
@@ -27,9 +29,20 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
         setState({
             ...state,
             showingInfo: !state.showingInfo,
-            order: order ? order : { id: "", status: "" },
+            order: order ? order : { id: "", status: "", updatedAt: "" },
             orderlines: orderlines ? orderlines : ""
         })
+    }
+
+    const handleUpdateStatus = () => {
+        handleShowingInfo();
+        return (orderId, data) => {
+            setState({
+                ...state,
+                newData: true
+            })
+            updateOrderStatus(orderId, data)
+        }
     }
 
     useEffect(() => {
@@ -37,6 +50,15 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
         getUserOrders(id);
         getUserOrderlines(id);
     }, []);
+
+    useEffect(() => {
+        getUserOrders(id);
+        setState({
+            ...state,
+            showingInfo: false,
+            newData: false
+        })
+    }, [state.newData === true]);
 
     return (
         <Container>
@@ -54,17 +76,17 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
                                 <Form.Control value={id} name="id" placeholder="Usuario N°" readOnly disabled />
                             </Form.Group>
                             <Form.Group>
-                                <Form.Label>Rol</Form.Label>
-                                <Form.Control value={role === "client" && ("Usuario") ||
-                                    role === "admin" && ("Administrador")} name="role" placeholder="Rol" readOnly disabled />
-                            </Form.Group>
-                            <Form.Group>
                                 <Form.Label>Nombre</Form.Label>
                                 <Form.Control value={fullname} name="fullname" placeholder="Nombre" readOnly disabled />
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Correo electrónico</Form.Label>
                                 <Form.Control value={email} name="email" placeholder="Correo electrónico" readOnly disabled />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>Rol</Form.Label>
+                                <Form.Control value={role === "client" && ("Usuario") ||
+                                    role === "admin" && ("Administrador")} name="role" placeholder="Rol" readOnly disabled />
                             </Form.Group>
                         </Card.Body>
                     </Card>
@@ -84,7 +106,8 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
                                         <thead>
                                             <tr className="text-center">
                                                 <th>Orden N°</th>
-                                                <th>Fecha</th>
+                                                <th>Creada</th>
+                                                <th>Última modificación</th>
                                                 <th>Estado</th>
                                                 <th>Acciones</th>
                                             </tr>
@@ -96,8 +119,10 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
                                                         <tr key={index} className="text-center">
                                                             <td className="align-middle">{order.id}</td>
                                                             <td className="align-middle">{moment(order.createdAt).format(DATE_FORMAT)}</td>
+                                                            <td className="align-middle">{moment(order.updatedAt).format(DATE_FORMAT)}</td>
                                                             <td className="align-middle">
                                                                 {
+                                                                    order.status === "shopping_cart" && ("En carrito") ||
                                                                     order.status === "created" && ("Creada") ||
                                                                     order.status === "processing" && ("En proceso") ||
                                                                     order.status === "canceled" && ("Cancelada") ||
@@ -106,12 +131,11 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
                                                             </td>
                                                             <td>
                                                                 <Button size="sm" onClick={() => handleShowingInfo(order)} className="m-1" title="Ver detalle" variant="info"><FiInfo size="17" /></Button>
-                                                                <Button size="sm" className="m-1" title="Borrar" variant="danger"><FiTrash2 /></Button>
                                                             </td>
                                                         </tr>
                                                     )
                                                 })}
-                                            <OrderInfo show={state.showingInfo} handleClose={handleShowingInfo} order={state.order} orderlines={state.orderlines} />
+                                            <OrderInfo show={state.showingInfo} handleClose={handleShowingInfo} updateOrderStatus={handleUpdateStatus} order={state.order} orderlines={state.orderlines} />
                                         </tbody>
                                     </Table>
                                     {(!orders || orders.length < 1) && "No hay órdenes disponibles."}
@@ -140,7 +164,8 @@ function mapDispatchToProps(dispatch) {
     return {
         getUser: (id) => dispatch(getUser(id)),
         getUserOrders: (id) => dispatch(getUserOrders(id)),
-        getUserOrderlines: (id) => dispatch(getUserOrderlines(id))
+        getUserOrderlines: (id) => dispatch(getUserOrderlines(id)),
+        updateOrderStatus: (orderId, data) => dispatch(updateOrderStatus(orderId, data))
     }
 }
 

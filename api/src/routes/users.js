@@ -494,11 +494,9 @@ server.get("/:id", (req, res) => {
 server.get('/:id/allorders', (req, res) => {
     const id = req.params.id
     Order.findAll({
+        order: [["id", "ASC"]],
         where: {
-            userId: id,
-            status: {
-                [Op.not]: "shopping_cart"
-            }
+            userId: id
         }
     })
         .then(orders => {
