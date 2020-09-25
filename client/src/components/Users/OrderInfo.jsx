@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Table, Row, Col, Alert } from 'react-bootstrap';
-import { getProducts } from '../../actions/products';
-import { connect } from 'react-redux';
 
-export function OrderInfo({ show, handleClose, order, orderlines, getProducts, allProducts, updateOrderStatus }) {
+export default function OrderInfo({ show, handleClose, order, orderlines, allProducts, updateOrderStatus }) {
     const { id, status } = order;
     const products = allProducts.rows;
     var totalPrice = 0;
@@ -12,10 +10,6 @@ export function OrderInfo({ show, handleClose, order, orderlines, getProducts, a
         id: id,
         status: status
     });
-
-    useEffect(() => {
-        getProducts();
-    }, [])
 
     useEffect(() => {
         setState({
@@ -100,11 +94,10 @@ export function OrderInfo({ show, handleClose, order, orderlines, getProducts, a
                 <Form.Group>
                     <Form.Label>Estado</Form.Label>
                     <Form.Control as="select" onChange={handleSelect} onClick={() => showAlert()} value={state.status} name="orderStatus" placeholder="Estado de la orden">
-                        <option key="1" value="shopping_cart">En carrito</option>
-                        <option key="2" value="created">Creada</option>
-                        <option key="3" value="processing">En proceso</option>
-                        <option key="4" value="canceled">Cancelada</option>
-                        <option key="5" value="completed">Completada</option>
+                        <option key="1" value="created">Creada</option>
+                        <option key="2" value="processing">En proceso</option>
+                        <option key="3" value="canceled">Cancelada</option>
+                        <option key="4" value="completed">Completada</option>
                     </Form.Control>
                 </Form.Group>
             </Modal.Body>
@@ -119,20 +112,3 @@ export function OrderInfo({ show, handleClose, order, orderlines, getProducts, a
         </Modal >
     );
 }
-
-function mapStateToProps(state) {
-    return {
-        allProducts: state.productsReducer.products
-    }
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        getProducts: () => dispatch(getProducts())
-    }
-}
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(OrderInfo);

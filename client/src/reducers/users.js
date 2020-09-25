@@ -4,11 +4,17 @@ const initialState = {
     users: [],
     orders: [],
     user: {},
-    orderlines: []
+    orderlines: [],
+    reviews: []
 };
 
 export default function usersReducer(state = initialState, action) {
     switch (action.type) {
+        case 'GET_USER_REVIEWS':
+            return {
+                ...state,
+                reviews: action.payload
+            }
         case 'GET_USER_ORDERLINES':
             return {
                 ...state,

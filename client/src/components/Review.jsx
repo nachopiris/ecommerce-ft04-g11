@@ -6,7 +6,7 @@ import moment from 'moment';
 import 'moment/locale/es';
 
 moment.locale('es');
-const DATE_FORMAT = "DD [de] MMMM [del] YYYY"
+const REVIEW_DATE_FORMAT = "DD [de] MMMM [del] YYYY";
 
 export default function Review({ props }) {
     const { user: { fullname }, rating, createdAt, description } = props;
@@ -23,7 +23,7 @@ export default function Review({ props }) {
                         emptySymbol={<MdStar style={{ color: "grey", fontSize: "1.5rem" }} />}
                         fullSymbol={<MdStar style={{ color: "#ffb900", fontSize: "1.5rem" }} />}
                     /><br />
-                    <small>Publicada el {moment(createdAt).format(DATE_FORMAT)}</small><br />
+                    <small>Publicada el {moment(createdAt).format(REVIEW_DATE_FORMAT)}</small><br />
                     <span>{description}</span>
                 </Col>
             </Row>
