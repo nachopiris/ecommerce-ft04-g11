@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, Form, Table, Row, Col, Alert } from 'react-bootstrap';
+import { Modal, Button, Form, Alert } from 'react-bootstrap';
 
 export default function OrderInfo({ show, handleClose, order, orderlines, allProducts, updateOrderStatus }) {
     const { id, status } = order;
@@ -17,7 +17,7 @@ export default function OrderInfo({ show, handleClose, order, orderlines, allPro
             status: status,
             showingAlert: false
         });
-    }, [order]);
+    }, [order,id,status]);
 
     const handleSelect = (e) => {
         setState({
@@ -68,12 +68,14 @@ export default function OrderInfo({ show, handleClose, order, orderlines, allPro
                                                                 </span>
                                                             )
                                                         }
+                                                        return null;
                                                     })}
                                                 <b>${(orderline.quantity * orderline.price).toFixed(2)}</b>
                                             </div>
                                         </li>
                                     )
                                 }
+                                return null;
                             })}
                     </ul>
                 </div>

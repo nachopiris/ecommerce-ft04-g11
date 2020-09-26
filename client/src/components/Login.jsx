@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import { IconContext } from "react-icons";
 import { BiShowAlt, BiHide } from "react-icons/bi";
 import { Link, Redirect } from "react-router-dom";
-import Axios from "axios";
 import GoogleLogin from "react-google-login";
 
 function Login({ login, guestCart, googleLogin }) {

@@ -33,7 +33,7 @@ function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart}){
 
     useEffect(()=> {
       getCart(token);
-    },[]);
+    },[getCart, token]);
 
 
     const handleDelete = id => {
@@ -59,10 +59,12 @@ function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart}){
         products.push(product);
         total += product.subtotal;
       });
-      setState({
-        ...state,
-        products,
-        totalCost:total
+      setState(state => {
+        return {
+          ...state,
+          products,
+          totalCost:total
+        }
       });
     },[cart.products]);
 

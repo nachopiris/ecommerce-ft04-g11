@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   Form,
-  Button,
-  Col,
-  Row,
   FormControl,
   InputGroup,
 } from "react-bootstrap";
@@ -25,7 +22,7 @@ export function SearchBar({ searchProducts }) {
     if (canSearch) {
       searchProducts(search)
     }
-  }, [canSearch])
+  }, [canSearch,searchProducts,search])
 
   useEffect(() => {
     window.setTimeout(() => {
@@ -48,7 +45,7 @@ export function SearchBar({ searchProducts }) {
           onChange={handleInputChange}
         />
         <InputGroup.Append>
-          <span class="btn btn-primary">
+          <span className="btn btn-primary">
             <BsSearch />
           </span>
         </InputGroup.Append>

@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import  {Button, Row} from 'react-bootstrap';
 import s from "../styles/homePage.module.scss";
@@ -8,14 +8,6 @@ import { Link } from "react-router-dom";
 import { FiCheck } from 'react-icons/fi';
 
 function ProductsHomepage({ products, userCart, setToCart, isGuest, guestCart, token }) {
-
-    const [state, setState] = useState({
-        isAdded: false
-      });
-      
-    useEffect(()=>{
-        
-    },[userCart.products])
 
     const isAdded = (id) => {
 
@@ -38,6 +30,7 @@ function ProductsHomepage({ products, userCart, setToCart, isGuest, guestCart, t
                 {console.log(item)}
                 <div className={s["cover-carousel"]}>
                     <img
+                        alt={'Imagen del producto: '+item.name}
                         src={JSON.parse(item.images)[1] || JSON.parse(item.images)[0]}
                         className={s["perspective"]}
                     />

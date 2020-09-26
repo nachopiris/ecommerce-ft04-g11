@@ -16,7 +16,6 @@ import { MdStar } from 'react-icons/md';
 //***************CONECTADO AL STORE DE REDUX ********************/
 export function Product({ reviews, product, getProduct, setProductToCart, setProductToGuestCart, getUserCart, userCart, token, user, guestCart, getReviews, getAverage, avgReviews }) {
     const { id } = useParams();
-    var start = true;
     const [state, setState] = useState({
         quantity: 1,
         isAdded: false
@@ -47,7 +46,7 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
         getProduct(id);
         getReviews(id);
         getAverage(id);
-    }, []);
+    }, [getUserCart,getProduct,getReviews,getAverage,id,token]);
 
     useEffect(() => {
         let currentProduct;
@@ -58,14 +57,18 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
             currentProduct = guestCart.find(item => item.id === product.id)
         }
         if (currentProduct) {
-            setState({
-                ...state,
-                isAdded: true
+            setState(state => {
+                return {
+                    ...state,
+                    isAdded: true
+                }
             });
         } else {
-            setState({
-                ...state,
-                isAdded: false
+            setState(state => {
+                return {
+                    ...state,
+                    isAdded: false
+                }
             });
         }
     }, [userCart, product, guestCart])
@@ -99,6 +102,7 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
                                                     <div className={s["main-img-cover"] + " rounded"}>
                                                         {product.images && (
                                                             <img
+                                                                alt={'Imagen del producto '+product.name}
                                                                 src={JSON.parse(product.images)[0]}
                                                                 className="shadow rounded"
                                                             />
@@ -125,11 +129,12 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
                                                                                     s["cover-image"] + " rounded bg-dark"
                                                                                 }
                                                                             >
-                                                                                <img src={image} />
+                                                                                <img alt={'Imagen '+(index+1)+' del producto: '+product.name} src={image} />
                                                                             </div>
                                                                         </Carousel.Item>
                                                                     );
                                                                 }
+                                                                return null;
                                                             })}
                                                     </Carousel>
                                                 </Card.Body>

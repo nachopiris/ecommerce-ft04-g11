@@ -1,9 +1,8 @@
-import React, { useState, useEffect, setState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import s from "../styles/navbar.module.scss";
 import { Navbar as Navb, Nav, Container } from "react-bootstrap";
 import config from "../config";
-import { useSpring, animated } from "react-spring";
 import { connect } from 'react-redux';
 import { logout } from '../actions/auth';
 import { FaShoppingCart } from 'react-icons/fa'
@@ -95,7 +94,6 @@ export function Navbar({ auth, logout }) {
             }
         >
             <Container>
-                {console.log(document.documentElement.scrollTop)}
                 <Link to="/" className="navbar-brand">{APP_NAME}</Link>
                 <Navb.Toggle onClick={handleToggle} aria-controls="basic-navbar-nav" />
                 <Navb.Collapse id="basic-navbar-nav">
@@ -139,9 +137,9 @@ export function Navbar({ auth, logout }) {
                                             <NavLink className="nav-link" activeClassName="active" exact to="/cuenta">
                                                 <MdAccountCircle size={20} />
                                             </NavLink>
-                                            <a href="#" onClick={() => logOut()} className="nav-link" activeClassName="active" exact to="/#">
+                                            <Link onClick={() => logOut()} className="nav-link" activeClassName="active" exact to="/#">
                                                 <RiLogoutBoxRLine />
-                                            </a>
+                                            </Link>
                                         </React.Fragment> :
                                         < React.Fragment >
                                             <NavLink className="nav-link" activeClassName="active" exact to="/ingresar">

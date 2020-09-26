@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { logout } from "../actions/auth";
-import { Container, Row, Col, Card, Button, Nav } from "react-bootstrap";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { FiUser } from "react-icons/fi";
 import { getOrders } from "../actions/users";
 import { cancelOrder } from "../actions/checkout";
@@ -32,13 +32,15 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
 
   useEffect(() => {
     getOrders(auth.token);
-  }, []);
+  }, [auth.token,getOrders]);
 
   useEffect(() => {
     if (orders) {
-      setState({
-        ...state,
-        orders,
+      setState(state => {
+        return {
+          ...state,
+          orders,
+        }
       });
     }
   }, [orders]);
@@ -94,6 +96,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
           <Card className="bg-dark2 border-0 shadow">
             <Card.Body className="text-center">
               <img
+                alt="Avatar"
                 width="128"
                 height="128"
                 className="rounded-circle mb-2"

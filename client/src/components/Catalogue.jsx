@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "./ProductCard/ProductCard";
 import style from "../styles/catalogue.module.scss";
-import axios from "axios";
 import { getProducts, filterByCategory } from "../actions/products";
 import { getCategories } from "../actions/categories";
 import { connect } from "react-redux";
@@ -52,14 +51,16 @@ export function Catalogue({
     getUserCart(token);
     getProducts();
     getCategories();
-  }, []);
+  }, [getUserCart,getProducts, getCategories,token]);
 
   useEffect(() => {
-    setState({
-      ...state,
-      products: products.rows,
-      totalProducts: products.count,
-      pages: Math.ceil(products.count / perPage)
+    setState(state => {
+      return {
+        ...state,
+        products: products.rows,
+        totalProducts: products.count,
+        pages: Math.ceil(products.count / perPage)
+      }
     })
   }, [products, userCart]);
 

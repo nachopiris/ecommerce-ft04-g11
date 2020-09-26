@@ -3,7 +3,11 @@ import { Modal, Button, Form, Alert } from 'react-bootstrap';
 
 
 export default function DeleteUser({ show, handleClose, user, deleteUser }) {
-    const { id, fullname, email, role } = user;
+    let _user = user;
+    if(_user.role === 'client') _user.role = 'Usuario';
+    if(_user.role === 'admin') _user.role = 'Administrador';
+
+    const { id, fullname, email, role } = _user;
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header className="border-0 bg-dark2" closeButton>
@@ -21,8 +25,7 @@ export default function DeleteUser({ show, handleClose, user, deleteUser }) {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Rol</Form.Label>
-                    <Form.Control value={role === "client" && ("Usuario") ||
-                        role === "admin" && ("Administrador")} name="role" placeholder="Rol" readOnly disabled />
+                    <Form.Control value={role} name="role" placeholder="Rol" readOnly disabled />
                 </Form.Group>
             </Modal.Body>
             <Modal.Footer className="d-flex justify-content-between border-0 bg-dark2">

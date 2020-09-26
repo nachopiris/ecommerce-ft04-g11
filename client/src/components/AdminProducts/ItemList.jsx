@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ConfirmDelete from './ConfirmDelete';
-import { Table, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { switchLoading } from '../../actions/global';
 import { FiTrash2, FiEdit3, FiExternalLink } from 'react-icons/fi';
 import { deleteProduct, updateProduct, getProducts, addCategoryToProduct, deleteCategoryToProduct } from '../../actions/products';
@@ -67,7 +67,7 @@ function ItemList({ product, deleteProduct, updateProduct, switchLoading, getPro
             <ConfirmDelete deleteProduct={handleDelete} product={{ id, name, image }} show={state.deleting} handleClose={handleDeleting} />
             <Edit allCategories={allCategories} updateProduct={handleUpdate} show={state.editing} product={product} handleClose={handleEditing} />
             <td className="align-middle" width="70">
-                <img width="64" className="img-thumbnail" src={image} />
+                <img alt={'Imagen del producto' + name} width="64" className="img-thumbnail" src={image} />
             </td>
             <td className="align-middle">{name}</td>
             <td className="align-middle" style={{ maxWidth: "100px" }}>{categories && categories.length > 0 ? categories.map(category => (

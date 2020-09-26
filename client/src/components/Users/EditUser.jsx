@@ -25,7 +25,13 @@ export default function EditUser({ show, handleClose, user, updateUser, giveAdmi
             doc_number,
             phone
         });
-    }, [user]);
+    }, [user,id,
+        fullname,
+        email,
+        role,
+        address,
+        doc_number,
+        phone]);
 
     const handleInput = (e) => {
         setState({
@@ -63,8 +69,8 @@ export default function EditUser({ show, handleClose, user, updateUser, giveAdmi
                         <Col>
                             <Form.Group>
                                 <Form.Label>Rol</Form.Label>
-                                <Form.Control value={state.role === "client" && ("Usuario") ||
-                                    state.role === "admin" && ("Administrador")} name="role" placeholder="Rol" readOnly disabled />
+                                <Form.Control value={(state.role === "client" && ("Usuario")) ||
+                                    (state.role === "admin" && ("Administrador"))} name="role" placeholder="Rol" readOnly disabled />
                             </Form.Group>
                         </Col>
                         <Col>
@@ -84,13 +90,13 @@ export default function EditUser({ show, handleClose, user, updateUser, giveAdmi
                         <Col>
                             <Form.Group>
                                 <Form.Label>Documento</Form.Label>
-                                <Form.Control onChange={handleInput} value={state.doc_number * 1 == 0 ? "" : state.doc_number * 1} name="doc_number" placeholder="Documento" />
+                                <Form.Control onChange={handleInput} value={state.doc_number * 1 === 0 ? "" : state.doc_number * 1} name="doc_number" placeholder="Documento" />
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group>
                                 <Form.Label>N° de teléfono</Form.Label>
-                                <Form.Control onChange={handleInput} value={state.phone * 1 == 0 ? "" : state.phone * 1} name="phone" placeholder="N° de teléfono" />
+                                <Form.Control onChange={handleInput} value={state.phone * 1 === 0 ? "" : state.phone * 1} name="phone" placeholder="N° de teléfono" />
                             </Form.Group>
                         </Col>
                     </Row>
