@@ -1,5 +1,5 @@
 const server = require("express").Router();
-const { User, Order, Product, Orderline } = require("../db.js");
+const { User, Order, Product, Orderline, Review } = require("../db.js");
 const bcrypt = require("bcrypt");
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -494,11 +494,9 @@ server.get("/:id", (req, res) => {
 server.get('/:id/allorders', (req, res) => {
     const id = req.params.id
     Order.findAll({
+        order: [["id", "ASC"]],
         where: {
-            userId: id,
-            status: {
-                [Op.not]: "shopping_cart"
-            }
+            userId: id
         }
     })
         .then(orders => {
@@ -529,5 +527,41 @@ server.get('/:id/orderline', (req, res) => {
             return res.sendStatus(500);
         })
 })
+
+// Ruta que devuelve todas las review de un usuario por id
+
+server.get("/:id/reviews", (req, res) => {
+    const id = req.params.id;
+
+    Review.findAll({
+        where: {
+            userId: id
+        }
+    })
+        .then((reviews) => {
+            res.send({ data: reviews });
+        })
+        .catch((error) => {
+            res.send(error);
+        });
+});
+
+// RUTA PARA BORRAR UNA REVIEW POR ID
+
+server.delete("/reviews/:id", (req, res) => {
+    const id = req.params.id;
+
+    Review.destroy({
+        where: {
+            id: id
+        },
+    })
+        .then(() => {
+            res.send(200);
+        })
+        .catch((error) => {
+            res.send(error);
+        });
+});
 
 module.exports = server;
