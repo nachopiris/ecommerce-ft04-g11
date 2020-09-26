@@ -26,7 +26,7 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
         if (!token) {
             setProductToGuestCart({ id: id * 1, stock: product.stock, name: product.name, price: product.price, quantity: state.quantity, image: JSON.parse(product.images)[0] })
         } else {
-            setProductToCart(id, state.quantity);
+            setProductToCart({productId:id, quantity:state.quantity, token});
         }
     }
 
@@ -43,7 +43,7 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
 
 
     useEffect(() => {
-        getUserCart();
+        getUserCart(token);
         getProduct(id);
         getReviews(id);
         getAverage(id);
@@ -51,8 +51,8 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
 
     useEffect(() => {
         let currentProduct;
-        if (userCart.length && product) {
-            currentProduct = userCart.find(item => item.productId === product.id)
+        if (userCart.products.length && product) {
+            currentProduct = userCart.products.find(item => item.id === product.id)
         }
         if (guestCart.length && product) {
             currentProduct = guestCart.find(item => item.id === product.id)
@@ -263,8 +263,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getProduct: (value) => dispatch(getProduct(value)),
-        setProductToCart: (productId, quantity) => dispatch(setProductToCart(productId, quantity)),
-        getUserCart: () => dispatch(getUserCart()),
+        setProductToCart: (data) => dispatch(setProductToCart(data)),
+        getUserCart: (token) => dispatch(getUserCart(token)),
         setProductToGuestCart: (product) => dispatch(setProductToGuestCart(product)),
         getReviews: (id) => dispatch(getReviews(id)),
         getAverage: (id) => dispatch(getAverage(id))

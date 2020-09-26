@@ -1,19 +1,32 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import s from "./productCard.module.scss";
 import { Card, Col, Button } from "react-bootstrap";
 import { CgShoppingCart } from "react-icons/cg";
 import { FiCheck } from 'react-icons/fi';
 import NumberFormat from "react-number-format";
 import { Link } from "react-router-dom";
+import {connect} from 'react-redux';
 
-export default function ProductCard({ product: { id, name, price, images, stock }, setToCart, userCart, guestCart, isGuest}) {
+export function ProductCard({ product: { id, name, price, images, stock }, setToCart, userCart, guestCart, isGuest, token}) {
   var img = JSON.parse(images)[0];
-  var isAdded = false;
-  if(isGuest){
-    isAdded = guestCart.find(item => item.id === id) ? true : false;
-  }else{
-    isAdded = userCart.find(item => item.productId === id) ? true : false;
-  }
+
+  const [state, setState] = useState({
+    isAdded: false
+  });
+  
+  useEffect(()=>{
+    if(!Array.isArray(userCart.products)) return;
+    if(isGuest){
+      setState({...state,isAdded:guestCart.find(item => item.id === id) ? true : false})
+    }else{
+      setState({
+        ...state,
+        isAdded: userCart.products.find(item => item.id === id) ? true : false
+      })
+    }
+  },[userCart.products])
+
+
   const MAX_NAME_LENGTH = 40;
   if (name.length > MAX_NAME_LENGTH) {
     name = name.substring(0, MAX_NAME_LENGTH - 3) + "...";
@@ -23,7 +36,7 @@ export default function ProductCard({ product: { id, name, price, images, stock 
     if(isGuest){
       return () => setToCart({id, name, price, image: img, quantity: 1, stock})
     }
-      return () => setToCart(id, 1)
+      return () => setToCart({productId: id, token, quantity: 1})
   }
 
   return (
@@ -53,11 +66,11 @@ export default function ProductCard({ product: { id, name, price, images, stock 
                 displayType={"text"}
               />
             </span>
-            {stock > 0 && !isAdded && <Button onClick={handleSetToCart()} variant="outline-light border-0" size="sm">
+            {stock > 0 && !state.isAdded && <Button onClick={handleSetToCart()} variant="outline-light border-0" size="sm">
               <CgShoppingCart />
             </Button>}
 
-            {isAdded && <Link to="/carrito" className="btn btn-outline-light btn-sm border-0">
+            {state.isAdded && <Link to="/carrito" className="btn btn-outline-light btn-sm border-0">
               <span className="text-primary"><FiCheck /></span>
               <CgShoppingCart />
             </Link>}
@@ -72,3 +85,20 @@ export default function ProductCard({ product: { id, name, price, images, stock 
     </Col>
   );
 }
+
+function mapStateToProps(state){
+  return {
+    userCart: state.usersReducer.userCart
+  }
+}
+
+function mapDispatchToProps(dispatch){
+  return {
+
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProductCard);

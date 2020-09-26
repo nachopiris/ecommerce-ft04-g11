@@ -49,9 +49,9 @@ export function Catalogue({
   }
 
   useEffect(() => {
+    getUserCart(token);
     getProducts();
     getCategories();
-    getUserCart();
   }, []);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export function Catalogue({
       totalProducts: products.count,
       pages: Math.ceil(products.count / perPage)
     })
-  }, [products]);
+  }, [products, userCart]);
 
   function getFilterCategories(e) {
     let nombreCat = e.target.value;
@@ -105,7 +105,7 @@ export function Catalogue({
       </Row>
       <Row className={style.catalogue}>
         {state.products.map((product, index) => {
-          return <ProductCard isGuest={!!token ? false : true} guestCart={guestCart} userCart={userCart} setToCart={handleSetToCart()} key={index} product={product} />;
+          return <ProductCard token={token} isGuest={!!token ? false : true} guestCart={guestCart} setToCart={handleSetToCart()} key={index} product={product} />;
         })}
 
         {!state.products.length && (
@@ -169,7 +169,7 @@ function mapDispatchToProps(dispatch) {
     filterByCategory: (value) => dispatch(filterByCategory(value)),
     getCategories: () => dispatch(getCategories()),
     setProductToCart: (productId, quantity) => dispatch(setProductToCart(productId, quantity)),
-    getUserCart: () => dispatch(getUserCart()),
+    getUserCart: (token) => dispatch(getUserCart(token)),
     setProductToGuestCart: (product) => dispatch(setProductToGuestCart(product))
   };
 }
