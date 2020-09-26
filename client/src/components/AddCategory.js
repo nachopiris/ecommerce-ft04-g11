@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, Form, Button, Container, Row, Col } from "react-bootstrap";
-import axios from "axios";
 import { connect } from "react-redux";
 import { createCategory } from "../actions/categories";
 

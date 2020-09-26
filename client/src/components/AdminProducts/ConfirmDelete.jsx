@@ -10,7 +10,7 @@ function ConfirmDelete({ show, handleClose, product: { id, name, image }, delete
                         </Modal.Header>
                         <Modal.Body className="text-center">
                                 <h3 className="text-dark">{name}</h3>
-                                <img width="128" className="rounded img-thumbnail" src={image} />
+                                <img width="128" className="rounded img-thumbnail" alt={'Imagen del producto '+name} src={image} />
                                 <br />
                                 <span className="text-danger">
                                         ¡No hay vuelta atras!

@@ -40,7 +40,7 @@ const Order = ({
         <Card.Body className="bg-dark2 text-center">
           <Row>
             <Col xs={3} md={2}>
-              <img className="w-75" src={image} />
+              <img alt={'Imagen del producto: '+title} className="w-75" src={image} />
             </Col>
             <Col>
               <Row>
