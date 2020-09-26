@@ -16,6 +16,8 @@ const DELETE_USER = "DELETE_USER";
 const GET_USER = "GET_USER";
 const GET_USER_ORDERS = "GET_USER_ORDERS";
 const GET_USER_ORDERLINES = 'GET_USER_ORDERLINES';
+const GET_USER_REVIEWS = 'GET_USER_REVIEWS';
+const DELETE_REVIEW = 'DELETE_REVIEW';
 
 const BASE_URI = config.api.base_uri + "/users";
 const BASE_AUTH = config.api.base_uri + "/auth";
@@ -23,6 +25,25 @@ const getUserId = () => {
     return localStorage.redux ? JSON.parse(localStorage.redux).authReducer.user.id : null;
 }
 
+export function deleteReview(id) {
+    return dispatch => {
+        return axios.delete(BASE_URI + '/reviews/' + id)
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: DELETE_REVIEW })
+            })
+    }
+}
+
+export function getUserReviews(id) {
+    return dispatch => {
+        return axios.get(BASE_URI + '/' + id + '/reviews')
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: GET_USER_REVIEWS, payload: res.data })
+            })
+    }
+}
 
 export function getUserOrderlines(id) {
     return dispatch => {

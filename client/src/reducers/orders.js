@@ -4,6 +4,10 @@ const initialState = {
 
 export default function ordersReducer(state = initialState, action) {
     switch (action.type) {
+        case 'UPDATE_ORDER_STATUS':
+            return {
+                ...state
+            }
         case 'GET_ORDERS':
             return {
                 ...state,

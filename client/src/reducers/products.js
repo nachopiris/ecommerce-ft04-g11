@@ -11,6 +11,10 @@ const initialState = {
 
 export default function productsReducer(state = initialState, action) {
     switch (action.type) {
+        case 'DELETE_REVIEW':
+            return {
+                ...state
+            }
         case 'GET_AVERAGE_REVIEWS':
             return {
                 ...state,
