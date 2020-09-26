@@ -69,7 +69,6 @@ export function getProducts(keyword, page = 1) {
         return Axios.get(url)
             .then(res => res.data)
             .then(res => {
-                console.log(res);
                 dispatch({ type: GET_PRODUCTS, payload: res.data });
             });
     }
@@ -80,7 +79,6 @@ export function getProduct(id) {
         return Axios.get(BASE_URI + '/' + id)
             .then(res => res.data)
             .then(res => {
-                console.log(res);
                 dispatch({ type: GET_PRODUCT, payload: res.data })
             });
     }

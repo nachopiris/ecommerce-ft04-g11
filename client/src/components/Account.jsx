@@ -17,50 +17,50 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
     });
   };
 
-  const handleCancel = (id) => {
-    return () => {
-      cancelOrder({ token: auth.token, orderId: id }).then(() => {
-        getOrders(auth.token);
-      });
+    const handleCancel = (id) => {
+        return () => {
+            cancelOrder({ token: auth.token, orderId: id }).then(() => {
+                getOrders(auth.token);
+            });
+        };
     };
-  };
 
-  const [state, setState] = useState({
-    orders: [],
-    filter: "",
-  });
-
-  useEffect(() => {
-    getOrders(auth.token);
-  }, [auth.token,getOrders]);
-
-  useEffect(() => {
-    if (orders) {
-      setState(state => {
-        return {
-          ...state,
-          orders,
-        }
-      });
-    }
-  }, [orders]);
-
-  const handleInputChange = (e) => {
-    console.log(e.target.value);
-    if (e.target.value) {
-      setState({
-        orders: orders.filter((order) => {
-          return order.status === e.target.value;
-        }),
-        filter: e.target.value,
-      });
-    } else {
-      setState({
-        orders: orders,
+    const [state, setState] = useState({
+        orders: [],
         filter: "",
-      });
-    }
-  };
+    });
+
+    useEffect(() => {
+        getOrders(auth.token);
+    }, [auth.token, getOrders]);
+
+    useEffect(() => {
+        if (orders) {
+            setState(state => {
+                return {
+                    ...state,
+                    orders,
+                }
+            });
+        }
+    }, [orders]);
+
+    const handleInputChange = (e) => {
+        console.log(e.target.value);
+        if (e.target.value) {
+            setState({
+                orders: orders.filter((order) => {
+                    return order.status === e.target.value;
+                }),
+                filter: e.target.value,
+            });
+        } else {
+            setState({
+                orders: orders,
+                filter: "",
+            });
+        }
+    };
 
   const handlePayment = (orderId) => {
     const order = state.orders.find((order) => order.id === orderId);
@@ -88,23 +88,23 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
           <h1 className="align-items-center d-flex">
             <FiUser class="mr-2" /> Mi cuenta
           </h1>
-        </Col>
-      </Row>
+                </Col>
+            </Row>
 
-      <Row>
-        <Col md={4} lg={3}>
-          <Card className="bg-dark2 border-0 shadow">
-            <Card.Body className="text-center">
-              <img
-                alt="Avatar"
-                width="128"
-                height="128"
-                className="rounded-circle mb-2"
-                src="https://image.freepik.com/vector-gratis/gamer-girl-character-esport-plantilla-logotipo_162048-110.jpg"
-              />
-              <Card.Title>{user.fullname}</Card.Title>
-              <Button variant="primary" onClick={() => logOut()}>
-                Cerrar sesión
+            <Row>
+                <Col md={4} lg={3}>
+                    <Card className="bg-dark2 border-0 shadow">
+                        <Card.Body className="text-center">
+                            <img
+                                alt="Avatar"
+                                width="128"
+                                height="128"
+                                className="rounded-circle mb-2"
+                                src="https://image.freepik.com/vector-gratis/gamer-girl-character-esport-plantilla-logotipo_162048-110.jpg"
+                            />
+                            <Card.Title>{user.fullname}</Card.Title>
+                            <Button variant="primary" onClick={() => logOut()}>
+                                Cerrar sesión
               </Button>
             </Card.Body>
           </Card>
@@ -241,10 +241,10 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
 }
 
 const mapStateToProps = (state) => {
-  return {
-    auth: state.authReducer,
-    orders: state.usersReducer.orders,
-  };
+    return {
+        auth: state.authReducer,
+        orders: state.usersReducer.orders,
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
