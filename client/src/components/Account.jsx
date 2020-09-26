@@ -5,9 +5,10 @@ import { Container, Row, Col, Card, Button, Nav } from "react-bootstrap";
 import { FiUser } from "react-icons/fi";
 import { getOrders } from "../actions/users";
 import { cancelOrder } from "../actions/checkout";
+import { payOrder } from "../actions/payment";
 import moment from "moment";
 
-function Account({ auth, logout, orders, getOrders, cancelOrder }) {
+function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
   const { user, token } = auth;
   const logOut = () => {
     logout(token).then(() => {
@@ -57,6 +58,25 @@ function Account({ auth, logout, orders, getOrders, cancelOrder }) {
         filter: "",
       });
     }
+  };
+
+  const handlePayment = (orderId) => {
+    const order = state.orders.find((order) => order.id === orderId);
+    const products = order.products.map((item) => {
+      return {
+        id: item.id,
+        name: item.name,
+        quantity: item.orderline.quantity,
+        price: item.price,
+      };
+    });
+    payOrder(token, products)
+      .then((res) => {
+        window.open(res.data, "_blank");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -112,63 +132,100 @@ function Account({ auth, logout, orders, getOrders, cancelOrder }) {
                 </Card.Header>
                 <Card.Body>
                   {state.orders.map((item, index) => (
-                    <div
-                      key={index}
-                      className="p-2 d-flex justify-content-between aling-items-center"
-                    >
-                      <span className="text-muted">
-                        <em>
-                          {moment(item.createdAt).format(
-                            "DD/MM/YYYY - HH:mm:ss"
-                          )}
-                        </em>
-                      </span>
-                      <div>
-                        {item.status === "created" && (
-                          <span className="badge badge-warning badge-pill">
-                            Pendiente de pago
+                    <Row className="border-bottom border-dark py-4">
+                      <Col xs={12}>
+                        <div
+                          key={index}
+                          className="p-2 d-flex justify-content-between aling-items-center"
+                        >
+                          <span className="text-muted">
+                            <em>
+                              {moment(item.createdAt).format(
+                                "DD/MM/YYYY - HH:mm:ss"
+                              )}
+                            </em>
                           </span>
-                        )}
+                          <div>
+                            {item.status === "created" && (
+                              <span className="badge badge-warning badge-pill">
+                                Pendiente de pago
+                              </span>
+                            )}
 
-                        {item.status === "processed" && (
-                          <span className="badge badge-primary badge-pill">
-                            Pagada
-                          </span>
-                        )}
+                            {item.status === "processed" && (
+                              <span className="badge badge-primary badge-pill">
+                                Pagada
+                              </span>
+                            )}
 
-                        {item.status === "completed" && (
-                          <span className="badge badge-success badge-pill">
-                            Completada
-                          </span>
-                        )}
+                            {item.status === "completed" && (
+                              <span className="badge badge-success badge-pill">
+                                Completada
+                              </span>
+                            )}
 
-                        {item.status === "canceled" && (
-                          <span className="badge badge-danger badge-pill">
-                            Cancelada
+                            {item.status === "canceled" && (
+                              <span className="badge badge-danger badge-pill">
+                                Cancelada
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </Col>
+                      <Col xs={12}>
+                        {item.products.map((product, i) => (
+                          <div key={i} className="p-3 shadow">
+                            <span>
+                              <span className="text-muted">{product.name}</span>{" "}
+                              <span className="badge badge-dark">
+                                {product.orderline.quantity} x $
+                                {product.orderline.price}
+                              </span>
+                            </span>
+                            <span>
+                              $
+                              {product.orderline.quantity *
+                                parseFloat(product.orderline.price)}
+                            </span>
+                          </div>
+                        ))}
+                      </Col>
+                      <Col xs={12}>
+                        <div className="pt-3 d-flex justify-content-between aling-items-center">
+                          <h3>
+                            Total: $
+                            {item.products.reduce((acc, curr) => {
+                              return (
+                                acc +
+                                curr.orderline.quantity *
+                                  parseFloat(curr.orderline.price)
+                              );
+                            }, 0)}
+                          </h3>
+                          <span>
+                            {item.status === "created" && (
+                              <React.Fragment>
+                                <Button
+                                  size="sm"
+                                  className="mr-1"
+                                  variant="success"
+                                  onClick={() => handlePayment(item.id)}
+                                >
+                                  Pagar ahora
+                                </Button>
+                                <Button
+                                  onClick={handleCancel(item.id)}
+                                  size="sm"
+                                  variant="danger"
+                                >
+                                  Cancelar
+                                </Button>
+                              </React.Fragment>
+                            )}
                           </span>
-                        )}
-                      </div>
-                      <span>
-                        {item.status === "created" && (
-                          <React.Fragment>
-                            <Button
-                              size="sm"
-                              className="mr-1"
-                              variant="success"
-                            >
-                              Pagar ahora
-                            </Button>
-                            <Button
-                              onClick={handleCancel(item.id)}
-                              size="sm"
-                              variant="danger"
-                            >
-                              Cancelar
-                            </Button>
-                          </React.Fragment>
-                        )}
-                      </span>
-                    </div>
+                        </div>
+                      </Col>
+                    </Row>
                   ))}
                 </Card.Body>
               </Card>
@@ -192,6 +249,7 @@ const mapDispatchToProps = (dispatch) => {
     logout: (token) => dispatch(logout(token)),
     getOrders: (token) => dispatch(getOrders(token)),
     cancelOrder: (data) => dispatch(cancelOrder(data)),
+    payOrder: (token, products) => dispatch(payOrder(token, products)),
   };
 };
 
