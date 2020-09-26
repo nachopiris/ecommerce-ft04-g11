@@ -21,7 +21,7 @@ const { User, Order } = require("../db.js");
 
 mercadopago.configure({
   access_token:
-    "TEST-1520402290814953-092000-9711550a934ab2e34bacf7346ff23d3a-199025745",
+    "APP_USR-6598461348116788-092518-7155868d5ab76566022e9a4fc6413bf0-651261130",
 });
 
 server.post("/", verifyToken, (req, res) => {
@@ -56,8 +56,15 @@ server.post("/", verifyToken, (req, res) => {
     });
 });
 
-server.post("/payment", (req, res) => {
-  const { products, user, data } = req.body;
+server.post("/payment", verifyToken, async (req, res) => {
+  const { products } = req.body;
+  const userId = req.userId;
+
+  const user = await User.findOne({
+    where: { id: userId },
+  });
+
+  if (!user) return res.sendStatus(422);
 
   const items = products.map((product) => {
     return {
@@ -75,15 +82,15 @@ server.post("/payment", (req, res) => {
     email: user.email,
     phone: {
       area_code: "",
-      number: parseInt(data.phone),
+      number: parseInt(user.phone),
     },
     identification: {
       type: "DNI",
-      number: data.doc_number,
+      number: user.doc_number,
     },
     address: {
       zip_code: "",
-      street_name: data.address,
+      street_name: user.address,
       street_number: 0,
     },
   };
@@ -96,6 +103,7 @@ server.post("/payment", (req, res) => {
   mercadopago.preferences
     .create(preference)
     .then(function (response) {
+      console.log(response.body);
       res.send(response.body.init_point).status(200);
     })
     .catch(function (error) {
