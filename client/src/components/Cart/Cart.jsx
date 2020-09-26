@@ -17,14 +17,11 @@ import Order from "./Order";
 import {
   removeProductToCart,
   changeProductQuantity,
-  clearCart,
+  clearCart
 } from "../../actions/guest";
 
-function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart}){
+function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart, guestCart, emptyGuestCart, deleteGuestItem, changeGuestQuantity}){
 
-    // this.delete = this.delete.bind(this);
-    // this.quantityChange = this.quantityChange.bind(this);
-    // this.deleteAll = this.deleteAll.bind(this);
 
     const [state,setState] = useState({
       products: [],
@@ -32,17 +29,34 @@ function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart}){
     });
 
     useEffect(()=> {
-      getCart(token);
+      if(!!token){
+        getCart(token);
+      }
     },[getCart, token]);
 
-
     const handleDelete = id => {
+      if(!token) {
+        return () => {
+          deleteGuestItem(id);
+        }
+      }
       return () => {
         deleteItem({productId: id, token})
       }
     }
 
+    const handleChangeQuantity = () => {
+      if(!token) return changeGuestQuantity;
+      return changeQuantity
+    }
+
+    const handleEmptyCart = () => {
+      return emptyGuestCart();
+      return emptyCart(token);
+    }
+
     useEffect(() => {
+      
       if(!cart.products) return;
       let products = [];
       let total = 0;
@@ -59,6 +73,17 @@ function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart}){
         products.push(product);
         total += product.subtotal;
       });
+
+      if(!token){
+        products = guestCart;
+        products.map(item => {
+          item.subtotal = item.price * item.quantity;
+          total += item.subtotal;
+          return item;
+        });
+
+      }
+
       setState(state => {
         return {
           ...state,
@@ -66,92 +91,8 @@ function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart}){
           totalCost:total
         }
       });
-    },[cart.products]);
+    },[cart.products,guestCart,token]);
 
-  // componentDidMount() {
-  //   if (!!this.props.token) {
-  //     this.props.getUserCart(1).then(() => {
-  //       if (this.props.orders.length) {
-  //         this.getCartProducts();
-  //       }
-  //     });
-  //   }
-  //   this.getCartProducts();
-  // }
-
-  // getCartProducts() {
-  //   if (!!this.props.token) {
-  //     let productsIds = [];
-  //     this.props.orders.forEach((order) => {
-  //       productsIds.push(order.productId);
-  //     });
-  //     this.props.getProducts().then(() => {
-  //       const cartProducts = this.props.products.filter((product) =>
-  //         productsIds.includes(product.id)
-  //       );
-  //       this.setState({
-  //         cartProducts: cartProducts,
-  //         totalCost: this.props.totalCost,
-  //       });
-  //     });
-  //   } else {
-  //     this.setState({
-  //       cartProducts: this.props.guestCart,
-  //     });
-  //   }
-  // }
-
-  // quantityChange(quantity, productId) {
-  //   if (!!this.props.token) {
-  //     const body = {
-  //       idProduct: productId,
-  //       quantityProduct: quantity,
-  //     };
-  //     this.props.changeQuantity(1, body);
-  //   } else {
-  //     this.props.changeGuestQuantity({ id: productId, quantity });
-  //   }
-  // }
-
-  // delete(productId) {
-  //   if (!!this.props.token) {
-  //     this.props.deleteItem(1, productId).then(() => {
-  //       const products = this.state.cartProducts;
-  //       const productToRemove = products.findIndex(
-  //         (product) => product.id === productId
-  //       );
-  //       products.splice(productToRemove, 1);
-  //       this.setState({
-  //         cartProducts: products,
-  //       });
-  //     });
-  //   } else {
-  //     this.props.deleteGuestItem(productId);
-  //     const products = this.state.cartProducts;
-  //     const productToRemove = products.findIndex(
-  //       (product) => product.id === productId
-  //     );
-  //     products.splice(productToRemove, 1);
-  //     this.setState({
-  //       cartProducts: products,
-  //     });
-  //   }
-  // }
-
-  // deleteAll() {
-  //   if (!!this.props.token) {
-  //     this.props.emptyCart(1).then(() => {
-  //       this.setState({
-  //         cartProducts: [],
-  //       });
-  //     });
-  //   } else {
-  //     this.props.emptyGuestCart();
-  //     this.setState({
-  //       cartProducts: [],
-  //     });
-  //   }
-  // }
 
   return (
       <Container>
@@ -205,7 +146,7 @@ function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart}){
               price={item.price}
               stock={item.stock}
               onDelete={handleDelete(item.id)}
-              quantityChange={changeQuantity}
+              quantityChange={handleChangeQuantity()}
               token={token}
             />
         ))}
@@ -215,7 +156,7 @@ function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart}){
             <Col>
               <Button
                 className="btn btn-danger"
-                onClick={() => emptyCart(token)}
+                onClick={handleEmptyCart}
               >
                 Vaciar Carrito
               </Button>
@@ -225,11 +166,7 @@ function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart}){
                 Precio total:
                 <NumberFormat
                   prefix=" $"
-                  value={
-                    !!token
-                      ? state.totalCost
-                      : 0
-                  }
+                  value={state.totalCost}
                   decimalScale={2}
                   fixedDecimalScale={true}
                   displayType={"text"}
