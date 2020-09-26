@@ -29,7 +29,7 @@ export default function guestReducer(state = initialState, action) {
       };
     case "CHANGE_PRODUCT_QUANTITY":
       let cartForQuantity = state.cart.map((item) => {
-        if (item.id === action.payload.id) {
+        if (item.id === action.payload.productId) {
           item.quantity = action.payload.quantity;
         }
         return item;
