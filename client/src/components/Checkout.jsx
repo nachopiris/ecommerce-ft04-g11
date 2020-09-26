@@ -60,7 +60,7 @@ function Checkout({
 
   useEffect(() => {
     getUserCart(token);
-  },[])
+  },[getUserCart,token])
 
   useEffect(() => {
     if(!userCart.products) return;
@@ -79,11 +79,13 @@ function Checkout({
       products.push(product);
       total += product.subtotal;
     });
-    setState({
-      ...state,
-      products,
-      total:total,
-      user: userCart.user
+    setState( state => {
+        return {
+          ...state,
+          products,
+          total:total,
+          user: userCart.user
+        }
     });
   },[userCart]);
 

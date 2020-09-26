@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
-import { FiMaximize2, FiRotateCcw, FiTrash2, FiPlus } from 'react-icons/fi';
+import { FiMaximize2, FiTrash2, FiPlus } from 'react-icons/fi';
 
 
 function Edit({ show, handleClose, product, updateProduct, allCategories }) {
@@ -25,7 +25,7 @@ function Edit({ show, handleClose, product, updateProduct, allCategories }) {
             categories: categories ? categories.map(item => item.id) : [],
             categoriesToDelete: []
         });
-    }, [product, product.categories]);
+    }, [product, product.categories, categories,name, description,price,stock,images]);
 
     const handleInput = (e) => {
         setState({

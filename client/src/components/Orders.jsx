@@ -16,7 +16,7 @@ function Orders({ getOrders, orders, removeOrder, token, updateOrder }) {
 
     useEffect(() => {
         getOrders();
-    }, []);
+    }, [getOrders]);
 
     const handleDelete = (id) => {
         return () => {
@@ -38,9 +38,11 @@ function Orders({ getOrders, orders, removeOrder, token, updateOrder }) {
 
 
     useEffect(() => {
-        setState({
-            ...state,
-            orders: orders || []
+        setState(state => {
+            return {
+                ...state,
+                orders: orders || []
+            }
         });
     }, [orders]);
 
@@ -77,11 +79,11 @@ function Orders({ getOrders, orders, removeOrder, token, updateOrder }) {
                                             <td>{moment(order.createdAt).format(DATE_FORMAT)}</td>
                                             <td>{order.createdAt === order.updatedAt ? "Sin modificaciones" : moment(order.updatedAt).format(DATE_FORMAT)}</td>
                                             {/* Acá cambiamos el texto del valor recibido */}
-                                            <td>{order.status === "shopping_cart" && ("En carrito") ||
-                                                order.status === "created" && ("Creada") ||
-                                                order.status === "processing" && ("Procesada / Pagada") ||
-                                                order.status === "canceled" && ("Cancelada") ||
-                                                order.status === "completed" && ("Completada")}</td>
+                                            <td>{(order.status === "shopping_cart" && ("En carrito")) ||
+                                                (order.status === "created" && ("Creada")) ||
+                                                (order.status === "processing" && ("Procesada / Pagada")) ||
+                                                (order.status === "canceled" && ("Cancelada")) ||
+                                                (order.status === "completed" && ("Completada"))}</td>
                                             <td>
                                                 {state.deleting === order.id && <DeleteModal
                                                     token={token}
@@ -145,12 +147,14 @@ function UpdateModal({ token, order, updateOrder, show, handleClose }) {
             let products = order.products;
             let total = products.reduce((total, item) => total + item.orderline.quantity * item.orderline.price, 0);
             console.log(total);
-            setState({
-                ...state,
-                total
+            setState(state => {
+                return {
+                    ...state,
+                    total
+                }
             });
         }
-    }, []);
+    }, [order.products]);
 
 
     return (
@@ -218,11 +222,13 @@ function DeleteModal({ token, order, removeOrder, show, handleClose }) {
         let products = order.products;
         let total = products.reduce((total, item) => total + item.orderline.quantity * item.orderline.price, 0);
         console.log(total);
-        setState({
-            ...state,
-            total
+        setState(state => {
+            return {
+                ...state,
+                total
+            }
         });
-    }, []);
+    }, [order.products]);
 
     const handleRemove = () => {
         handleClose();

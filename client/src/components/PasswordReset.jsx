@@ -8,7 +8,7 @@ import { BiShowAlt, BiHide } from "react-icons/bi";
 import { Link, Redirect } from "react-router-dom";
 
 function PasswordReset({ passwordReset, passwordChange }) {
-    const { register, handleSubmit, watch, errors } = useForm();
+    const { register, handleSubmit, errors } = useForm();
     const onSubmit = (data) => {
         setState({
             ...state,
@@ -91,13 +91,13 @@ function PasswordReset({ passwordReset, passwordChange }) {
                         <Card.Body>
                             {state.step === 1 && (<p>
                                 Ingresa tu correo electrónico. Recibirás un código de seguridad para recuperar tu cuenta.
-                                {" "} <a href="#" onClick={() => setState({ ...state, step: 2 })}>ya tengo el código </a>
+                                {" "} <Button variant="link" className="p-0 m-0" onClick={() => setState({ ...state, step: 2 })}>ya tengo el código </Button>
                             </p>)}
 
                             {state.step === 2 && (
                                 <p>
                                     Código enviado. Recuerda revisar también la casilla de correo no deseado.
-                                    <a href="#" onClick={() => setState({ ...state, step: 1 })}>No me llegó el código</a>
+                                    <Button variant="link" className="p-0 m-0" onClick={() => setState({ ...state, step: 1 })}>No me llegó el código</Button>
                                 </p>
                             )}
                             <Form onSubmit={handleSubmit(onSubmit)}>

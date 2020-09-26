@@ -8,7 +8,7 @@ import { Container, Row, Col, Card, Form, Table, Button } from 'react-bootstrap'
 import { Tabs, Tab, TabList, TabPanel } from 'react-tabs';
 import style from '../../styles/userOverview.module.scss';
 import moment from 'moment';
-import { FiTrash2, FiInfo, FiEdit3 } from 'react-icons/fi';
+import { FiTrash2, FiInfo } from 'react-icons/fi';
 import { MdStar } from 'react-icons/md';
 import OrderInfo from './OrderInfo';
 import DeleteReview from './DeleteReview';
@@ -21,7 +21,13 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
     const REVIEW_DATE_FORMAT = "DD [de] MMMM [del] YYYY";
     const DATE_FORMAT = "DD/MM/YYYY - HH:mm:ss"
     const { id } = useParams();
-    const { fullname, email, role } = user;
+
+    let _user = user;
+    if(_user.role === 'client') _user.role = 'Usuario';
+    if(_user.role === 'admin') _user.role = 'Administrador';
+
+    const { fullname, email, role} = _user;
+
     const products = allProducts.rows;
     var product = {};
     const [state, setState] = useState({
@@ -131,9 +137,10 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
         getUserOrderlines(id);
         getUserReviews(id);
         getProducts();
-    }, []);
+    }, [id,getUser,getUserOrders,getUserOrderlines,getUserReviews,getProducts]);
 
-    useEffect(() => {
+    useEffect(() => { 
+        if(!state.newData) return;
         getUserOrders(id);
         getUserReviews(id);
         getUser(id);
@@ -144,7 +151,7 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
             reviewDeleting: false,
             newData: false
         })
-    }, [state.newData === true]);
+    }, [state.newData,id,getUserOrders,getUserReviews,getUser, state]);
 
     return (
         <Container>
@@ -171,8 +178,7 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Rol</Form.Label>
-                                <Form.Control value={role === "client" && ("Usuario") ||
-                                    role === "admin" && ("Administrador")} name="role" placeholder="Rol" readOnly disabled />
+                                <Form.Control value={role} name="role" placeholder="Rol" readOnly disabled />
                             </Form.Group>
                             <Button onClick={() => handleEditing(user)} className="w-100" title="Modificar" variant="warning">Editar</Button>
                             <EditUser show={state.editing} updateUser={handleUpdate} giveAdminRights={updateToAdminRights} giveUserRights={updateToUserRights} handleClose={handleEditing} user={state.user} />
@@ -210,11 +216,11 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
                                                             <td className="align-middle">{moment(order.updatedAt).format(DATE_FORMAT)}</td>
                                                             <td className="align-middle">
                                                                 {
-                                                                    order.status === "shopping_cart" && ("En carrito") ||
-                                                                    order.status === "created" && ("Creada") ||
-                                                                    order.status === "processing" && ("En proceso") ||
-                                                                    order.status === "canceled" && ("Cancelada") ||
-                                                                    order.status === "completed" && ("Completada")
+                                                                    (order.status === "shopping_cart" && ("En carrito")) ||
+                                                                    (order.status === "created" && ("Creada")) ||
+                                                                    (order.status === "processing" && ("En proceso")) ||
+                                                                    (order.status === "canceled" && ("Cancelada")) ||
+                                                                    (order.status === "completed" && ("Completada"))
                                                                 }
                                                             </td>
                                                             <td>

@@ -85,14 +85,17 @@ export function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUse
     }
 
     useEffect(() => {
+        if(state.newData !== true) return;
         getUsers();
-        setState({
-            ...state,
-            editing: false,
-            deleting: false,
-            newData: false
+        setState(state => {
+            return {
+                ...state,
+                editing: false,
+                deleting: false,
+                newData: false
+            }
         })
-    }, [state.newData === true]);
+    }, [state.newData,getUsers]);
 
     return (
         <Container fluid>
@@ -126,8 +129,8 @@ export function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUse
                                             <td className="align-middle">{user.fullname}</td>
                                             <td className="align-middle">{user.email}</td>
                                             {/* Acá cambiamos el texto del valor recibido */}
-                                            <td className="align-middle">{user.role === "client" && ("Usuario") ||
-                                                user.role === "admin" && ("Administrador")}</td>
+                                            <td className="align-middle">{(user.role === "client" && ("Usuario")) ||
+                                                (user.role === "admin" && ("Administrador"))}</td>
                                             {/* Las siguientes dos líneas formatean la fecha recibida de la base de datos para hacerla más amigable */}
                                             <td className="align-middle">{moment(user.createdAt).format(DATE_FORMAT)}</td>
                                             <td className="align-middle">{user.createdAt === user.updatedAt ? "Sin modificaciones" : moment(user.updatedAt).format(DATE_FORMAT)}</td>

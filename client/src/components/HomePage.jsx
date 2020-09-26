@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { Container, Row, Button } from "react-bootstrap";
-import config from "../config";
+import React, { useEffect } from "react";
+import { Container, Row } from "react-bootstrap";
 import s from "../styles/homePage.module.scss";
 import { Link } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
@@ -9,8 +8,6 @@ import { getLatests } from "../actions/products";
 import { setProductToCart, getUserCart } from "../actions/users";
 import {addProductToCart as setProductToGuestCart} from '../actions/guest' ;
 import ProductsHomepage from './ProductsHomepage';
-
-const APP_NAME = config.app.name;
 
 function TextIntro() {
     const props = useSpring({
@@ -126,7 +123,7 @@ function HomePage({ products, getLatests, setProductToCart, getUserCart, userCar
     useEffect(() => {
         getLatests();
         if(!!token) getUserCart(token);
-    }, []);
+    }, [getLatests, token, getUserCart]);
 
     const handleSetToCart = () => {
         if(!!token) return setProductToCart;
@@ -140,7 +137,7 @@ function HomePage({ products, getLatests, setProductToCart, getUserCart, userCar
                     style={props}
                     className={"overflow-hidden " + s["cover-main"]}
                 >
-                    <img src="https://images.hdqwalls.com/wallpapers/thanos-vs-kratos-jt.jpg" />
+                    <img alt="Background OriginMaster" src="https://images.hdqwalls.com/wallpapers/thanos-vs-kratos-jt.jpg" />
                 </animated.div>
                 <div className={s["main-inside"]}>
                     <ShowAppName />

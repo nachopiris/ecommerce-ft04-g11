@@ -8,7 +8,7 @@ import { BiShowAlt, BiHide } from "react-icons/bi";
 import { Link, Redirect } from "react-router-dom";
 
 function UserRegister({ userRegister, auth }) {
-    const { register, handleSubmit, watch, errors } = useForm();
+    const { register, handleSubmit, errors } = useForm();
     const onSubmit = (data) => {
         setState({
             ...state,
@@ -37,7 +37,7 @@ function UserRegister({ userRegister, auth }) {
     };
 
     const regValidated = {
-        email: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+        email: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
         password: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$/,
         fullname: /^[a-zA-Z]([-']?[a-zA-Z]+)*( [a-zA-Z]([-']?[a-zA-Z]+)*)+$/,
     };

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
 //components
-import { Container, Row, Col, Card, Button, ButtonGroup } from 'react-bootstrap';
+import { Container, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
 import { FiPlus } from 'react-icons/fi';
 import Create from './Create';
 import List from './List';
-import Loading from '../Loading';
 
 //actions
 import { createProduct, getProducts } from '../../actions/products';
@@ -56,15 +55,17 @@ function AdminProducts({ switchLoading, products, getProducts, createProduct, ge
                         // switchLoading(false);
                 });
                 getCategories();
-        }, []);
+        }, [switchLoading, getProducts, state.currentPage,getCategories]);
 
         useEffect(() => {
                 // switchLoading(false);
-                setState({
-                        ...state,
-                        products: products.rows,
-                        totalProducts: products.count,
-                        pages: Math.ceil(products.count / perPage),
+                setState(state => {
+                        return {
+                                ...state,
+                                products: products.rows,
+                                totalProducts: products.count,
+                                pages: Math.ceil(products.count / perPage),
+                        }
                 })
         }, [products]);
 

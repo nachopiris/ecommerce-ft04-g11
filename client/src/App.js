@@ -1,5 +1,5 @@
 import AdminProducts from "./components/AdminProducts/AdminProducts";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import UserRegister from "./components/UserRegister";
 import AddCategories from "./components/AddCategory";
 import Product from "./components/Product/Product";

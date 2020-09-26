@@ -6,7 +6,6 @@ const DELETE_ITEM = "DELETE_ITEM";
 const GET_USER_CART = "GET_USER_CART";
 const CHANGE_QUANTITY = "CHANGE_QUANTITY";
 const SET_PRODUCT_TO_CART = "SET_PRODUCT_TO_CART";
-const REGISTER = "REGISTER";
 const GET_USERS = "GET_USERS";
 const GET_ORDERS = "GET_ORDERS";
 const UPDATE_USER = "UPDATE_USER";
@@ -21,9 +20,6 @@ const DELETE_REVIEW = 'DELETE_REVIEW';
 
 const BASE_URI = config.api.base_uri + "/users";
 const BASE_AUTH = config.api.base_uri + "/auth";
-const getUserId = () => {
-    return localStorage.redux ? JSON.parse(localStorage.redux).authReducer.user.id : null;
-}
 
 export function deleteReview(id) {
     return dispatch => {
