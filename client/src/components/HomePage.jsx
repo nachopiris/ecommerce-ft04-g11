@@ -4,13 +4,11 @@ import config from "../config";
 import s from "../styles/homePage.module.scss";
 import { Link } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
-import AliceCarousel from "react-alice-carousel";
-import { CgShoppingCart } from "react-icons/cg";
 import { connect } from "react-redux";
 import { getLatests } from "../actions/products";
 import { setProductToCart, getUserCart } from "../actions/users";
-import { FiCheck } from 'react-icons/fi';
 import {addProductToCart as setProductToGuestCart} from '../actions/guest' ;
+import ProductsHomepage from './ProductsHomepage';
 
 const APP_NAME = config.app.name;
 
@@ -127,7 +125,7 @@ function HomePage({ products, getLatests, setProductToCart, getUserCart, userCar
 
     useEffect(() => {
         getLatests();
-        if(!!token) getUserCart();
+        if(!!token) getUserCart(token);
     }, []);
 
     const handleSetToCart = () => {
@@ -150,88 +148,12 @@ function HomePage({ products, getLatests, setProductToCart, getUserCart, userCar
                     <ExploreButton />
                 </div>
             </Row>
-            {products.rows && <Gallery setToCart={handleSetToCart()} isGuest={!!!token} guestCart={guestCart} userCart={userCart} products={products.rows} />}
+            {products.rows && <ProductsHomepage setToCart={handleSetToCart()} token={token} isGuest={!!!token} guestCart={guestCart} products={products.rows} />}
         </Container>
     );
 }
 
-function Gallery({ products, userCart, setToCart, isGuest, guestCart }) {
-    const handleOnDragStart = (e) => e.preventDefault();
-    useEffect(() => { }, []);
 
-    const isAdded = (id) => {
-
-        if(!isGuest) return userCart.find(item => item.productId === id) ? true : false;
-        return guestCart.find(item => item.id === id) ? true : false;
-    }
-
-    const handleSetToCart = ({id, name, images, price, stock}) => {
-        if(!isGuest) {
-            return () => setToCart(id, 1)
-        }
-        return () => setToCart({id, name, stock, image: JSON.parse(images)[0], price, quantity:1});
-    }
-    var items = products
-        .map((item, index) => (
-            <div
-                key={index}
-                className={"text-decoration-none text-light " + s["carousel-item"]}
-            >
-                {console.log(item)}
-                <div className={s["cover-carousel"]}>
-                    <img
-                        src={JSON.parse(item.images)[1] || JSON.parse(item.images)[0]}
-                        className={s["perspective"]}
-                    />
-                </div>
-                <span className="mb-4 mt-auto">{item.name}</span>
-                <span className="mt-auto mb-4">
-                    {!isAdded(item.id) && <Button onClick={handleSetToCart(item)} variant="light">
-                        <CgShoppingCart />
-                    </Button>}
-
-                    {isAdded(item.id) && <Link to="/carrito" className="btn btn-light border-0">
-                        <span className="text-primary"><FiCheck /></span>
-                        <CgShoppingCart />
-                    </Link>}
-                    <Link
-                        to={"/productos/" + item.id}
-                        className="ml-1 btn btn-outline-light"
-                    >
-                        Detalles
-          </Link>
-                </span>
-            </div>
-        ))
-        .concat(
-            <div className={s["carousel-item"]}>
-                <h2 className="mb-0">
-                    <p className={s["kewx"]}>Explorá</p>
-                </h2>
-                <p className={s.kewx}>Mirá nuestro catálogo completo!</p>
-                <Link
-                    to="/catalogo"
-                    className={s["kewx"] + " px-5 btn btn-outline-primary mb-4 btn-lg"}
-                >
-                    Ver todos
-        </Link>
-            </div>
-        );
-
-    return (
-        <Row className={s["section2"]}>
-            <AliceCarousel
-                mouseTrackingEnabled
-                mouseDragEnabled
-                items={items}
-                infinite={false}
-                responsive={{ 0: { items: 2 }, 500: { items: 3 }, 1024: { tems: 6 } }}
-                dotsDisabled
-                buttonsDisabled
-            />
-        </Row>
-    );
-}
 
 function mapStateToProps(state) {
     return {
@@ -246,8 +168,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getLatests: () => dispatch(getLatests()),
-        setProductToCart: (productId, quantity) => dispatch(setProductToCart(productId, quantity)),
-        getUserCart: () => dispatch(getUserCart()),
+        setProductToCart: (data) => dispatch(setProductToCart(data)),
+        getUserCart: (token) => dispatch(getUserCart(token)),
         setProductToGuestCart: product => dispatch(setProductToGuestCart(product))
     };
 }

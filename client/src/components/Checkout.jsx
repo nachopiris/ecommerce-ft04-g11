@@ -7,15 +7,15 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { getCollect } from "../actions/products";
 import { payOrder } from "../actions/payment";
+import {getUserCart} from '../actions/users';
 
 function Checkout({
   token,
   user,
   userCart,
   createOrder,
-  getCollect,
-  totalCost,
   payOrder,
+  getUserCart
 }) {
   const { register, handleSubmit, errors } = useForm();
 
@@ -49,6 +49,7 @@ function Checkout({
     total: 0,
     products: [],
     loading: false,
+    user: {}
   });
 
   const regRules = {
@@ -58,37 +59,41 @@ function Checkout({
   };
 
   useEffect(() => {
-    let total = 0;
-    let ids = userCart.map((item) => item.id);
-    let cart = [];
-    getCollect(ids).then((products) => {
-      userCart.forEach((item) => {
-        total += item.price * 1;
-        let product = products.find((i) => item.id === i.id);
-        if (product) {
-          product.price = item.price;
-          cart.push({
-            id: product.id,
-            name: product.name,
-            price: item.price,
-            quantity: item.quantity,
-            subtotal: item.price * item.quantity,
-          });
-        }
-      });
+    getUserCart(token);
+  },[])
 
-      setState({
-        ...state,
-        total,
-        products: cart,
-      });
+  useEffect(() => {
+    if(!userCart.products) return;
+    let products = [];
+    let total = 0;
+    userCart.products.forEach(item => {
+      let product = {
+        id: item.id,
+        name: item.name,
+        price: item.orderline.price,
+        quantity: item.orderline.quantity,
+        stock: item.stock,
+        subtotal: item.orderline.price * item.orderline.quantity,
+        image: JSON.parse(item.images)[0]
+      }
+      products.push(product);
+      total += product.subtotal;
     });
-  }, [userCart]);
+    setState({
+      ...state,
+      products,
+      total:total,
+      user: userCart.user
+    });
+  },[userCart]);
+
+
+
   return (
     <Container>
       <Row className="justify-content-center">
         <Col md={8}>
-          <Form onSubmit={handleSubmit(onSubmit)}>
+        { state.user && ( <Form onSubmit={handleSubmit(onSubmit)}>
             <Card className="bg-dark2">
               <Card.Header>Confirmar pedido</Card.Header>
               <Card.Body>
@@ -97,7 +102,7 @@ function Checkout({
                   <h2 className="mb-4">
                     <NumberFormat
                       prefix=" $"
-                      value={totalCost}
+                      value={state.total}
                       decimalScale={2}
                       fixedDecimalScale={true}
                       displayType={"text"}
@@ -121,7 +126,7 @@ function Checkout({
                   ))}
                 </div>
                 <div className="w-75 m-auto shadow rounded p-3 my-2">
-                  {(!user.address || !user.doc_number || !user.phone) && (
+                  {(!state.user.address || !state.user.doc_number || !state.user.phone) && (
                     <p className="text-muted py-4">
                       <b>{user.fullname.split(" ")[0]}</b>, necesitamos algunos
                       datos para completar la compra.{" "}
@@ -134,7 +139,7 @@ function Checkout({
                     </Form.Label>
                     <Form.Control
                       autoComplete="off"
-                      defaultValue={user.doc_number}
+                      defaultValue={state.user.doc_number}
                       className={errors.doc_number ? "is-invalid" : ""}
                       ref={register({
                         required: true,
@@ -157,7 +162,7 @@ function Checkout({
                     </Form.Label>
                     <Form.Control
                       autoComplete="off"
-                      defaultValue={user.address}
+                      defaultValue={state.user.address}
                       className={errors.address ? "is-invalid" : ""}
                       ref={register({
                         required: true,
@@ -185,7 +190,7 @@ function Checkout({
                     </Form.Label>
                     <Form.Control
                       autoComplete="off"
-                      defaultValue={user.phone}
+                      defaultValue={state.user.phone}
                       className={errors.phone ? "is-invalid" : ""}
                       ref={register({
                         required: true,
@@ -218,7 +223,7 @@ function Checkout({
                 <Link to="/carrito">Volver al carrito</Link>
               </Card.Footer>
             </Card>
-          </Form>
+          </Form>)}
         </Col>
       </Row>
     </Container>
@@ -239,8 +244,8 @@ function mapDispatchToProps(dispatch) {
   return {
     createOrder: (data) => dispatch(createOrder(data)), //{token, email, address, phone}
     getCollect: (ids) => dispatch(getCollect(ids)),
-    payOrder: (user, data, products) =>
-      dispatch(payOrder(user, data, products)),
+    payOrder: (user, data, products) => dispatch(payOrder(user, data, products)),
+    getUserCart: token => dispatch(getUserCart(token))
   };
 }
 

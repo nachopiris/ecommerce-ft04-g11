@@ -2,6 +2,7 @@ const server = require("express").Router();
 const { User, Order, Product, Orderline } = require("../db.js");
 const bcrypt = require("bcrypt");
 const Sequelize = require('sequelize');
+const verifyToken = require("../jwt/verifyToken.js");
 const Op = Sequelize.Op;
 
 server.get("/", (req, res) => {
@@ -189,7 +190,7 @@ server.post("/:idUser/cart", (req, res) => {
         where: {
             userId: idUser,
             status: "shopping_cart",
-        },
+        }
     }).then((order) => {
         if (!order) {
             res.send(
@@ -231,40 +232,178 @@ server.post("/:idUser/cart", (req, res) => {
     });
 });
 
-//**************************************************************************************************/
 
-//********************** RUTA QUE RETORNA LOS ITEMS DEL CARRITO ***********************************/
-
-server.get("/:idUser/cart", (req, res) => {
-    const idUser = req.params.idUser;
-
+server.get('/cart',verifyToken, (req,res) => {
+    const idUser = req.userId;
     Order.findOne({
+        include: [User, {model: Product, through: Orderline}],
         where: {
             userId: idUser,
             status: "shopping_cart",
         },
     }).then((order) => {
         if (!order) {
-            res.send(
-                "La orden para el usuario  " + idUser + ",no fue encontrada"
-            );
-            return;
+            return res.sendStatus(404);
         }
-        let orderId = order.id;
-        Orderline.findAll({
-            where: {
-                orderId: orderId,
-            },
-        })
-            .then((orders) => {
-                if (orders[0] == null) {
-                    return res.send("Ningun producto agregado a la orden");
-                }
-                return res.send(orders);
-            })
-            .catch((error) => {
-                return res.sendStatus(500).send(error);
-            });
+        return res.send({data: order});
+        
+    }).catch(err => {
+        console.log(err);
+        return res.sendStatus(500);
+    });
+});
+
+
+server.post('/cart',verifyToken, async (req, res) => {
+    const userId = req.userId;
+    const {productId, quantity} = req.body;
+
+    let order = await Order.findOne({
+        where:{
+            userId: userId,
+            status: 'shopping_cart'
+        }
+    });
+
+    if(!order) order = await Order.create({
+        status: 'shopping_cart',
+        userId: userId
+    });
+
+    let product = await Product.findByPk(productId);
+    if(product.stock < quantity) return res.sendStatus(422);
+
+    Orderline.create({
+        price: product.price,
+        quantity: quantity,
+        productId: productId,
+        orderId: order.id,
+        userId: userId
+    })
+    .then(orderline => {
+        product.dataValues['orderline'] = orderline;
+        return res.send({data:product});
+    })
+    .catch(err => {
+        console.log(err);
+        return res.sendStatus(500);
+    });
+});
+
+server.put('/cart/:id',verifyToken, async (req, res) => {
+    const userId = req.userId;
+    const productId = req.params.id;
+    const quantity = req.body.quantity;
+
+    let product = await Product.findByPk(productId);
+    if(product.stock < quantity) return res.sendStatus(422);
+
+    Orderline.findOne({
+        include:[
+            {model: Order},
+        ],
+        where:{
+            userId: userId,
+            productId: productId,
+            '$order.status$': 'shopping_cart'
+        }
+    })
+    .then(async orderline => {
+        if(!orderline) return res.sendStatus(404);
+        orderline.quantity = quantity;
+        await orderline.save();
+        return res.send({data: orderline});
+    })
+    .catch(err => {
+        console.log(err);
+        return res.sendStatus(500);
+    });
+
+});
+
+server.delete('/cart/:id', verifyToken, (req, res) => {
+    const idUser = req.userId;
+    const productId = req.params.id;
+
+    Orderline.findOne({
+        include: [{
+            model: Order,
+        }],
+        where: {
+            '$order.userId$': idUser,
+            '$order.status$':'shopping_cart',
+            productId: productId
+          }
+          
+    }).then(async orderline => {
+        if (!orderline) {
+            return res.sendStatus(404);
+        }
+        
+        await orderline.destroy();
+
+        let _orderline = await Orderline.findOne({
+            where:{
+                orderId: orderline.orderId
+            }
+        });
+        if(!_orderline) await Order.destroy({
+            where:{
+                id: orderline.orderId
+            }
+        });
+
+        return res.sendStatus(204);
+    }).catch(err => {
+        console.log(err);
+        return res.sendStatus(500);
+    });
+});
+
+
+server.delete('/cart', verifyToken, (req, res) => {
+    const userId = req.userId;
+
+    Order.findOne({
+        where:{
+            userId: userId,
+            status: 'shopping_cart'
+        }
+    })
+    .then(async order => {
+        if(!order) return res.sendStatus(404);
+        await order.destroy();
+        return res.sendStatus(204);
+    })
+    .catch(err => {
+        console.log(err);
+        return res.sendStatus(500);
+    });
+});
+
+
+//**************************************************************************************************/
+
+//********************** RUTA QUE RETORNA EL CARRITO DEL USUARIO ***********************************/
+
+server.get("/:idUser/cart", (req, res) => {
+    const idUser = req.params.idUser;
+
+    Order.findOne({
+        include: [User, {model: Product, through: Orderline}],
+        where: {
+            userId: idUser,
+            status: "shopping_cart",
+        },
+    }).then((order) => {
+        if (!order) {
+            return res.sendStatus(404);
+        }
+        return res.send({data: order});
+        
+    }).catch(err => {
+        console.log(err);
+        return res.sendStatus(500);
     });
 });
 //***********************************************************************************************/

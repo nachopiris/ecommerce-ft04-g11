@@ -8,37 +8,29 @@ const Order = ({
   productId,
   image,
   title,
-  name,
   quantity,
   price,
   stock,
   onDelete,
   quantityChange,
-  orders,
+  token
 }) => {
   const [quantityInput, setQuantityInput] = React.useState(quantity);
 
   useEffect(() => {
-    let order = orders.find((item) => item.productId === productId);
-    if (order) {
-      setQuantityInput(order.quantity);
-    }
-    return () => {
-      console.log("gg");
-    };
+    setQuantityInput(quantity);
   }, [quantity]);
 
   const restar = async () => {
     if (quantityInput > 1) {
-      setQuantityInput(quantityInput - 1);
-      quantityChange(quantityInput - 1, productId);
+      quantityChange({quantity:quantityInput - 1,productId, token});
     }
   };
 
   const sumar = () => {
     if (quantityInput < stock) {
-      setQuantityInput(quantityInput + 1);
-      quantityChange(quantityInput + 1, productId);
+      //setQuantityInput(quantityInput + 1);
+      quantityChange({quantity:quantityInput + 1,productId, token});
     }
   };
 

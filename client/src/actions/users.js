@@ -106,10 +106,11 @@ export function getUsers() {
     };
 }
 
-export function getUserCart() {
-    const userId = 1;
+export function getUserCart(token) {
     return (dispatch) => {
-        return axios.get(`${BASE_URI}/${getUserId()}/cart`).then((response) => {
+        return axios.get(`${BASE_URI}/cart`,{headers:{'x-access-token':token}})
+        .then(res => res.data)
+        .then((response) => {
             dispatch({
                 type: GET_USER_CART,
                 payload: response.data,
@@ -118,9 +119,9 @@ export function getUserCart() {
     };
 }
 
-export function emptyCart(userId) {
+export function emptyCart(token) {
     return (dispatch) => {
-        return axios.delete(`${BASE_URI}/${getUserId()}/cart`).then(() => {
+        return axios.delete(`${BASE_URI}/cart`,{headers:{'x-access-token':token}}).then(() => {
             dispatch({
                 type: EMPTY_CART,
             });
@@ -128,11 +129,12 @@ export function emptyCart(userId) {
     };
 }
 
-export function changeQuantity(userId, body) {
+export function changeQuantity({productId, token, quantity}) {
     return (dispatch) => {
         return axios
-            .put(`${BASE_URI}/${getUserId()}/cart`, body)
-            .then((response) => {
+            .put(`${BASE_URI}/cart/${productId}`, {quantity}, {headers:{'x-access-token':token}})
+            .then(res => res.data)
+            .then(response => {
                 dispatch({
                     type: CHANGE_QUANTITY,
                     payload: response.data,
@@ -141,10 +143,10 @@ export function changeQuantity(userId, body) {
     };
 }
 
-export function deleteItem(userId, productId) {
+export function deleteItem({productId, token}) {
     return (dispatch) => {
         return axios
-            .delete(`${BASE_URI}/${getUserId()}/cart/${productId}`)
+            .delete(`${BASE_URI}/cart/${productId}`,{headers:{'x-access-token':token}})
             .then(() => {
                 dispatch({
                     type: DELETE_ITEM,
@@ -154,26 +156,19 @@ export function deleteItem(userId, productId) {
     };
 }
 
-export function setProductToCart(productId, quantity) {
+export function setProductToCart({productId, quantity, token}) {
     return (dispatch) => {
-        return axios
-            .post(config.api.base_uri + "/orders/" + getUserId(), {
-                status: "shopping_cart",
-            })
-            .then(() => {
-                axios
-                    .post(BASE_URI + "/" + getUserId() + "/cart", {
-                        idProduct: productId,
-                        quantityProduct: quantity,
-                    })
+        return axios.post(BASE_URI + "/cart", {
+                        productId,
+                        quantity,
+                    },{headers:{'x-access-token':token}})
                     .then((res) => res.data)
                     .then((res) => {
                         dispatch({
                             type: SET_PRODUCT_TO_CART,
-                            payload: res,
+                            payload: res.data,
                         });
                     });
-            });
     };
 }
 

@@ -1,10 +1,10 @@
 const initialState = {
-    userCart: [],
+    userCart: {products:[]},
     totalCost: 0,
     users: [],
     orders: [],
     user: {},
-    orderlines: []
+    //orderlines: []
 };
 
 export default function usersReducer(state = initialState, action) {
@@ -45,54 +45,38 @@ export default function usersReducer(state = initialState, action) {
         case "SET_PRODUCT_TO_CART":
             return {
                 ...state,
-                userCart: state.userCart.concat(action.payload),
+                userCart:{...state.userCart, products:state.userCart.products.concat(action.payload)},
             };
         case "GET_USER_CART":
-            let cart = [];
-            if (Array.isArray(action.payload)) {
-                cart = action.payload;
-            }
-            let totalCost = cart.reduce((acc, curr) => {
-                return acc + curr.price * curr.quantity;
-            }, 0);
             return {
                 ...state,
-                userCart: cart,
-                totalCost: totalCost,
+                userCart: action.payload
             };
         case "EMPTY_CART":
             return {
                 ...state,
-                userCart: [],
-                totalCost: 0,
+                userCart: {products:[]},
             };
         case "CHANGE_QUANTITY":
-            let userCartForQuantity = state.userCart;
-            const orderForQuantity = userCartForQuantity.findIndex(
-                (order) => order.productId === action.payload.productId
-            );
-            userCartForQuantity.splice(orderForQuantity, 1, action.payload);
-            let totalCostForQuantity = userCartForQuantity.reduce((acc, curr) => {
-                return acc + curr.price * curr.quantity;
-            }, 0);
             return {
                 ...state,
-                userCart: userCartForQuantity,
-                totalCost: totalCostForQuantity,
+                userCart: {
+                    ...state.userCart,
+                    products: state.userCart.products.map(item => {
+                        if(item.id === action.payload.productId){
+                            item.orderline.quantity = action.payload.quantity;
+                        }
+                        return item;
+                    }),
+                }
             };
         case "DELETE_ITEM":
-            let userCartForDelete = state.userCart;
-            const orderForDelete = userCartForDelete.findIndex(
-                (order) => order.productId === action.payload
-            );
-            userCartForDelete.splice(orderForDelete, 1);
-            let totalCostForDelete = userCartForDelete.reduce((acc, curr) => {
-                return acc + curr.price * curr.quantity;
-            }, 0);
             return {
                 ...state,
-                userCart: userCartForDelete,
-                totalCost: totalCostForDelete,
+                userCart: {
+                    ...state.userCart,
+                    products: state.userCart.products.filter(item => item.id !== action.payload)
+                }
             };
         default:
             return state;

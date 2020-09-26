@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import NumberFormat from "react-number-format";
 import {
   getUserCart,
@@ -20,107 +20,138 @@ import {
   clearCart,
 } from "../../actions/guest";
 
-class Cart extends React.Component {
-  constructor(props) {
-    super(props);
+function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart}){
 
-    this.delete = this.delete.bind(this);
-    this.quantityChange = this.quantityChange.bind(this);
-    this.deleteAll = this.deleteAll.bind(this);
+    // this.delete = this.delete.bind(this);
+    // this.quantityChange = this.quantityChange.bind(this);
+    // this.deleteAll = this.deleteAll.bind(this);
 
-    this.state = {
-      cartProducts: [],
+    const [state,setState] = useState({
+      products: [],
       totalCost: 0,
-    };
-  }
+    });
 
-  componentDidMount() {
-    if (!!this.props.token) {
-      this.props.getUserCart(1).then(() => {
-        if (this.props.orders.length) {
-          this.getCartProducts();
+    useEffect(()=> {
+      getCart(token);
+    },[]);
+
+
+    const handleDelete = id => {
+      return () => {
+        deleteItem({productId: id, token})
+      }
+    }
+
+    useEffect(() => {
+      if(!cart.products) return;
+      let products = [];
+      let total = 0;
+      cart.products.forEach(item => {
+        let product = {
+          id: item.id,
+          name: item.name,
+          price: item.orderline.price,
+          quantity: item.orderline.quantity,
+          stock: item.stock,
+          subtotal: item.orderline.price * item.orderline.quantity,
+          image: JSON.parse(item.images)[0]
         }
+        products.push(product);
+        total += product.subtotal;
       });
-    }
-    this.getCartProducts();
-  }
+      setState({
+        ...state,
+        products,
+        totalCost:total
+      });
+    },[cart.products]);
 
-  getCartProducts() {
-    if (!!this.props.token) {
-      let productsIds = [];
-      this.props.orders.forEach((order) => {
-        productsIds.push(order.productId);
-      });
-      this.props.getProducts().then(() => {
-        const cartProducts = this.props.products.filter((product) =>
-          productsIds.includes(product.id)
-        );
-        this.setState({
-          cartProducts: cartProducts,
-          totalCost: this.props.totalCost,
-        });
-      });
-    } else {
-      this.setState({
-        cartProducts: this.props.guestCart,
-      });
-    }
-  }
+  // componentDidMount() {
+  //   if (!!this.props.token) {
+  //     this.props.getUserCart(1).then(() => {
+  //       if (this.props.orders.length) {
+  //         this.getCartProducts();
+  //       }
+  //     });
+  //   }
+  //   this.getCartProducts();
+  // }
 
-  quantityChange(quantity, productId) {
-    if (!!this.props.token) {
-      const body = {
-        idProduct: productId,
-        quantityProduct: quantity,
-      };
-      this.props.changeQuantity(1, body);
-    } else {
-      this.props.changeGuestQuantity({ id: productId, quantity });
-    }
-  }
+  // getCartProducts() {
+  //   if (!!this.props.token) {
+  //     let productsIds = [];
+  //     this.props.orders.forEach((order) => {
+  //       productsIds.push(order.productId);
+  //     });
+  //     this.props.getProducts().then(() => {
+  //       const cartProducts = this.props.products.filter((product) =>
+  //         productsIds.includes(product.id)
+  //       );
+  //       this.setState({
+  //         cartProducts: cartProducts,
+  //         totalCost: this.props.totalCost,
+  //       });
+  //     });
+  //   } else {
+  //     this.setState({
+  //       cartProducts: this.props.guestCart,
+  //     });
+  //   }
+  // }
 
-  delete(productId) {
-    if (!!this.props.token) {
-      this.props.deleteItem(1, productId).then(() => {
-        const products = this.state.cartProducts;
-        const productToRemove = products.findIndex(
-          (product) => product.id === productId
-        );
-        products.splice(productToRemove, 1);
-        this.setState({
-          cartProducts: products,
-        });
-      });
-    } else {
-      this.props.deleteGuestItem(productId);
-      const products = this.state.cartProducts;
-      const productToRemove = products.findIndex(
-        (product) => product.id === productId
-      );
-      products.splice(productToRemove, 1);
-      this.setState({
-        cartProducts: products,
-      });
-    }
-  }
+  // quantityChange(quantity, productId) {
+  //   if (!!this.props.token) {
+  //     const body = {
+  //       idProduct: productId,
+  //       quantityProduct: quantity,
+  //     };
+  //     this.props.changeQuantity(1, body);
+  //   } else {
+  //     this.props.changeGuestQuantity({ id: productId, quantity });
+  //   }
+  // }
 
-  deleteAll() {
-    if (!!this.props.token) {
-      this.props.emptyCart(1).then(() => {
-        this.setState({
-          cartProducts: [],
-        });
-      });
-    } else {
-      this.props.emptyGuestCart();
-      this.setState({
-        cartProducts: [],
-      });
-    }
-  }
+  // delete(productId) {
+  //   if (!!this.props.token) {
+  //     this.props.deleteItem(1, productId).then(() => {
+  //       const products = this.state.cartProducts;
+  //       const productToRemove = products.findIndex(
+  //         (product) => product.id === productId
+  //       );
+  //       products.splice(productToRemove, 1);
+  //       this.setState({
+  //         cartProducts: products,
+  //       });
+  //     });
+  //   } else {
+  //     this.props.deleteGuestItem(productId);
+  //     const products = this.state.cartProducts;
+  //     const productToRemove = products.findIndex(
+  //       (product) => product.id === productId
+  //     );
+  //     products.splice(productToRemove, 1);
+  //     this.setState({
+  //       cartProducts: products,
+  //     });
+  //   }
+  // }
 
-  render() {
-    return (
+  // deleteAll() {
+  //   if (!!this.props.token) {
+  //     this.props.emptyCart(1).then(() => {
+  //       this.setState({
+  //         cartProducts: [],
+  //       });
+  //     });
+  //   } else {
+  //     this.props.emptyGuestCart();
+  //     this.setState({
+  //       cartProducts: [],
+  //     });
+  //   }
+  // }
+
+  return (
       <Container>
         <Row className="m-3 d-none d-md-block">
           <Col>
@@ -151,7 +182,7 @@ class Cart extends React.Component {
             </Row>
           </Col>
         </Row>
-        {!this.state.cartProducts.length && (
+        {state.products.length < 1 && (
           <Row>
             <Col className="mx-3">
               <Alert variant="info">
@@ -161,39 +192,28 @@ class Cart extends React.Component {
             </Col>
           </Row>
         )}
-        {this.state.cartProducts.map((product, index) => {
-          if (this.props.guestCart.length || this.props.orders.length) {
-            console.log("ff");
-            const findOrder = this.props.orders.find(
-              (order) => order.productId === product.id
-            );
-            return (
-              <Order
-                key={index}
-                productId={product.id}
-                image={
-                  product.images ? JSON.parse(product.images)[0] : product.image
-                }
-                title={product.name}
-                quantity={
-                  !!this.props.token && findOrder
-                    ? findOrder.quantity
-                    : product.quantity
-                }
-                price={product.price}
-                stock={product.stock}
-                onDelete={this.delete}
-                quantityChange={this.quantityChange}
-              />
-            );
-          }
-        })}
-        {this.state.cartProducts.length !== 0 && (
+        
+        {state.products.map(item => (
+           <Order
+              key={item.id}
+              productId={item.id}
+              image={item.image}
+              title={item.name}
+              quantity={item.quantity}
+              price={item.price}
+              stock={item.stock}
+              onDelete={handleDelete(item.id)}
+              quantityChange={changeQuantity}
+              token={token}
+            />
+        ))}
+
+        {state.products.length > 0 && (
           <Row className="mx-3 py-2">
             <Col>
               <Button
                 className="btn btn-danger"
-                onClick={() => this.deleteAll()}
+                onClick={() => emptyCart(token)}
               >
                 Vaciar Carrito
               </Button>
@@ -204,9 +224,9 @@ class Cart extends React.Component {
                 <NumberFormat
                   prefix=" $"
                   value={
-                    !!this.props.token
-                      ? this.state.totalCost
-                      : this.props.totalCostGuest
+                    !!token
+                      ? state.totalCost
+                      : 0
                   }
                   decimalScale={2}
                   fixedDecimalScale={true}
@@ -221,12 +241,11 @@ class Cart extends React.Component {
         )}
       </Container>
     );
-  }
 }
 
 function mapStateToProps(state) {
   return {
-    orders: state.usersReducer.userCart,
+    cart: state.usersReducer.userCart,
     products: state.productsReducer.products.rows,
     token: state.authReducer.token,
     user: state.authReducer.user,
@@ -238,9 +257,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getUserCart: (userId) => dispatch(getUserCart(userId)),
+    getCart: (token) => dispatch(getUserCart(token)),
     getProducts: () => dispatch(getProducts()),
-    emptyCart: (userId) => dispatch(emptyCart(userId)),
+    emptyCart: (token) => dispatch(emptyCart(token)),
     changeQuantity: (userId, body) => dispatch(changeQuantity(userId, body)),
     deleteItem: (userId, productId) => dispatch(deleteItem(userId, productId)),
     deleteGuestItem: (id) => dispatch(removeProductToCart(id)),
