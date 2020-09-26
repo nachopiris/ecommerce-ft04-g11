@@ -137,7 +137,7 @@ export function Navbar({ auth, logout }) {
                                             <NavLink className="nav-link" activeClassName="active" exact to="/cuenta">
                                                 <MdAccountCircle size={20} />
                                             </NavLink>
-                                            <Link onClick={() => logOut()} className="nav-link" activeClassName="active" exact to="/#">
+                                            <Link onClick={() => logOut()} className="nav-link" to="/#">
                                                 <RiLogoutBoxRLine />
                                             </Link>
                                         </React.Fragment> :

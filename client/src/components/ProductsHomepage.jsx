@@ -1,6 +1,6 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import  {Button, Row} from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { Button, Row } from 'react-bootstrap';
 import s from "../styles/homePage.module.scss";
 import AliceCarousel from "react-alice-carousel";
 import { CgShoppingCart } from "react-icons/cg";
@@ -11,15 +11,15 @@ function ProductsHomepage({ products, userCart, setToCart, isGuest, guestCart, t
 
     const isAdded = (id) => {
 
-        if(!isGuest) return userCart.products.find(item => item.id === id) ? true : false;
+        if (!isGuest) return userCart.products.find(item => item.id === id) ? true : false;
         return guestCart.find(item => item.id === id) ? true : false;
     }
 
-    const handleSetToCart = ({id, name, images, price, stock}) => {
-        if(!isGuest) {
-            return () => setToCart({productId: id, quantity:1,token})
+    const handleSetToCart = ({ id, name, images, price, stock }) => {
+        if (!isGuest) {
+            return () => setToCart({ productId: id, quantity: 1, token })
         }
-        return () => setToCart({id, name, stock, image: JSON.parse(images)[0], price, quantity:1});
+        return () => setToCart({ id, name, stock, image: JSON.parse(images)[0], price, quantity: 1 });
     }
     var items = products
         .map((item, index) => (
@@ -27,10 +27,9 @@ function ProductsHomepage({ products, userCart, setToCart, isGuest, guestCart, t
                 key={index}
                 className={"text-decoration-none text-light " + s["carousel-item"]}
             >
-                {console.log(item)}
                 <div className={s["cover-carousel"]}>
                     <img
-                        alt={'Imagen del producto: '+item.name}
+                        alt={'Imagen del producto: ' + item.name}
                         src={JSON.parse(item.images)[1] || JSON.parse(item.images)[0]}
                         className={s["perspective"]}
                     />
@@ -93,7 +92,7 @@ function mapStateToProps(state) {
     };
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps() {
     return {
     };
 }
