@@ -74,7 +74,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
     });
     payOrder(token, products)
       .then((res) => {
-        window.open(res.data, "_blank");
+        window.open(res.data, "_self");
       })
       .catch((err) => {
         console.log(err);

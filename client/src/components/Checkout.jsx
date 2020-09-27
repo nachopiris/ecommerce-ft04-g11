@@ -33,7 +33,7 @@ function Checkout({
         });
         payOrder(token, state.products)
         .then((response) => {
-          window.open(response.data, "_blank");
+          window.open(response.data, "_self");
         });
       })
       .catch((err) => {
@@ -222,8 +222,9 @@ function Checkout({
                       block
                       size="lg"
                     >
-                      {state.loading ? "Cargando..." : "Confirmar"}
+                      {state.loading ? "Cargando..." : "Confirmar y pagar"}
                     </Button>
+                    <small></small>
                   </div>
                   <Link to="/carrito">Volver al carrito</Link>
                 </Card.Footer>

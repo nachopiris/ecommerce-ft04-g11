@@ -20,7 +20,9 @@ export function Catalogue({
   userCart,
   setProductToGuestCart,
   guestCart,
-  token
+  token,
+  search,
+  categoryName
 }) {
   const perPage = 12;
   const [state, setState] = useState({
@@ -31,7 +33,6 @@ export function Catalogue({
   });
 
   const onPaginate = (page) => {
-    getProducts(null, page);
     setState({
       ...state,
       currentPage: page
@@ -46,9 +47,12 @@ export function Catalogue({
   }
 
   useEffect(() => {
-    getProducts();
+    getProducts({search,categoryName,page:state.currentPage});
+  },[search,categoryName,getProducts,state.currentPage])
+
+  useEffect(() => {
     getCategories();
-  }, [getProducts, getCategories]);
+  }, [getCategories]);
 
   useEffect(() => {
     setState(state => {
@@ -63,9 +67,6 @@ export function Catalogue({
 
   function getFilterCategories(e) {
     let nombreCat = e.target.value;
-    if (!nombreCat) {
-      return getProducts();
-    }
     filterByCategory(nombreCat);
   }
 
@@ -82,6 +83,7 @@ export function Catalogue({
                       onChange={getFilterCategories}
                       as="select"
                       custom
+                      defaultValue={categoryName}
                     >
                       <option key={0} value="">
                         {" "}
@@ -94,7 +96,7 @@ export function Catalogue({
                   )}
                 </Col>
                 <Col sm={8} className="my-1">
-                  <SearchBar searchProducts={getProducts} />
+                  <SearchBar/>
                 </Col>
               </Row>
             </Card.Body>
@@ -157,7 +159,9 @@ function mapStateToProps(state) {
     userCart: state.usersReducer.userCart,
     token: state.authReducer.token,
     user: state.authReducer.user,
-    guestCart: state.guestReducer.cart
+    guestCart: state.guestReducer.cart,
+    search: state.productsReducer.search,
+    categoryName: state.productsReducer.categoryName
   };
 }
 
