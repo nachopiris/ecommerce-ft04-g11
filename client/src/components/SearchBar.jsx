@@ -5,9 +5,11 @@ import {
   InputGroup,
 } from "react-bootstrap";
 import { BsSearch } from "react-icons/bs";
+import {updateSearch} from "../actions/search";
+import {connect} from 'react-redux';
 
 //*******************CONECTADO AL STORE DE REDUX *********************/
-export function SearchBar({ searchProducts }) {
+export function SearchBar({ updateSearch }) {
 
   const [search, setSearch] = useState('')
   const [canSearch, setCanSearch] = useState(false)
@@ -20,9 +22,9 @@ export function SearchBar({ searchProducts }) {
 
   useEffect(() => {
     if (canSearch) {
-      searchProducts(search)
+      updateSearch(search)
     }
-  }, [canSearch,searchProducts,search])
+  }, [canSearch,updateSearch,search])
 
   useEffect(() => {
     window.setTimeout(() => {
@@ -54,4 +56,19 @@ export function SearchBar({ searchProducts }) {
   );
 }
 
-export default SearchBar;
+function mapStateToProps(state) {
+  return {
+    
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateSearch: search => dispatch(updateSearch(search))
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchBar);

@@ -21,23 +21,78 @@ server.post('/custom/collect', (req, res) => {
     });
 });
 
-server.get("/", (req, res, next) => {
+server.get("/", async (req, res) => {
     const perPage = 12;
     const page = req.query.page ? req.query.page : 1;
     var offset = (page - 1) * perPage;
-    Product.findAndCountAll({
+
+    let where = {}
+    const search = req.query.search;
+    const categoryName = req.query.categoryName ? req.query.categoryName : null;
+
+
+    let searchConfig = {
         order: [],
         limit: perPage,
         offset,
         include: {
-            model: Category,
-            through: { attributes: [] }, // this will remove the rows from the join table (i.e. 'UserPubCrawl table') in the result set
+            model: Category, // this will remove the rows from the join table (i.e. 'UserPubCrawl table') in the result set
         },
-    })
-        .then((products) => {
-            res.send({ data: products });
+    };
+    let cat = null;
+    if(categoryName){
+        await Category.findOne({
+            where: {
+                name: categoryName
+            }
+        }).then(category => {
+            if(!category) return res.send({data:{products:{rows:[]}}});
+            cat = category;
         })
-        .catch(next);
+    }
+
+    if(search) {
+        where = {
+            ...where,
+            [Op.or]: [
+                {
+                    name: {
+                        [Op.iLike]: "%" + search + "%",
+                    },
+                },
+                {
+                    description: {
+                        [Op.iLike]: "%" + search + "%",
+                    },
+                },
+            ],
+        }
+    }
+
+    if(cat){
+        searchConfig.include = [
+            {
+                model: Category,
+                where: {
+                    id: cat.id,
+                },
+                attributes: ["id", "name"],
+            },
+        ];
+    }
+    
+    
+    searchConfig = {...searchConfig,where};
+
+
+    Product.findAndCountAll(searchConfig)
+    .then((products) => {
+        return res.send({ data: products });
+    })
+    .catch(err => {
+        console.log(err);
+        return res.sendStatus(500);
+    });
 });
 
 server.get("/custom/latests", (req, res, next) => {
@@ -401,7 +456,6 @@ server.get("/categories/:idProduct", function (req, res, next) {
 server.post("/:idProduct/:idUser/review", (req, res) => {
     const productId = req.params.idProduct;
     const userId = req.params.idUser;
-
     Review.create({
         rating: req.body.rating,
         description: req.body.description,

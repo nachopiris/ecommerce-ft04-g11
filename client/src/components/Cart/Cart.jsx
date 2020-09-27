@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react";
 import NumberFormat from "react-number-format";
 import {
-  getUserCart,
   emptyCart,
   changeQuantity,
   deleteItem,
@@ -20,19 +19,13 @@ import {
   clearCart
 } from "../../actions/guest";
 
-function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart, guestCart, emptyGuestCart, deleteGuestItem, changeGuestQuantity}){
+function Cart({cart, token, deleteItem, changeQuantity, emptyCart, guestCart, emptyGuestCart, deleteGuestItem, changeGuestQuantity}){
 
 
     const [state,setState] = useState({
       products: [],
       totalCost: 0,
     });
-
-    useEffect(()=> {
-      if(!!token){
-        getCart(token);
-      }
-    },[getCart, token]);
 
     const handleDelete = id => {
       if(!token) {
@@ -51,7 +44,7 @@ function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart, gues
     }
 
     const handleEmptyCart = () => {
-      return emptyGuestCart();
+      if(!token) return emptyGuestCart();
       return emptyCart(token);
     }
 
@@ -196,7 +189,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    getCart: (token) => dispatch(getUserCart(token)),
     getProducts: () => dispatch(getProducts()),
     emptyCart: (token) => dispatch(emptyCart(token)),
     changeQuantity: (userId, body) => dispatch(changeQuantity(userId, body)),

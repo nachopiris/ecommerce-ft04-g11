@@ -260,7 +260,7 @@ server.get("/cart", verifyToken, (req, res) => {
   })
     .then((order) => {
       if (!order) {
-        return res.sendStatus(404);
+        return res.send({data: {products:[]}}).status(204);
       }
       return res.send({ data: order });
     })

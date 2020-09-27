@@ -20,6 +20,15 @@
     margin-top: -0.125rem;
 }
 
+.close-icon {
+    color: grey;
+    cursor: pointer;
+}
+
+.close-icon:hover {
+    color: white;
+}
+
 .link {
     color: hsl(211, 94%, 50%) !important;
     text-decoration: none !important;
@@ -36,6 +45,11 @@
 .is-invalid {
     background-position: left calc(0.375em + 0.1875rem) center !important;
     padding-left: 2.15rem !important;
+}
+
+.textarea {
+    background-position: left calc(0.375em + 0.1875rem) top calc(0.375em + 0.1875rem) !important;
+    
 }
 
 .name-input, .mail-input, .password-input {
@@ -120,6 +134,30 @@ h4 {
   color: white;
   opacity: 1;
   font-family: "HeaderFont";
+}
+
+.swal-modal {
+  background-color: $dark2;
+}
+
+.swal-button {
+  border-radius: 2px;
+  background-color: transparent;
+  border: 3px solid $white;
+  color:$white;
+  font-size: 12px;
+  text-shadow: none;
+  transition: all ease-in-out .3s;
+  &:focus,&:active{
+    box-shadow: none;
+  }
+  &:hover{
+    background-color: $blue !important;
+  }  
+}
+
+.swal-overlay {
+  background-color: rgba(0,0,0, .9);
 }
 
 @import "react-alice-carousel/lib/scss/alice-carousel.scss";

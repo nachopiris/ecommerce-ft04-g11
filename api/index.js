@@ -23,7 +23,7 @@ const { conn } = require('./src/db.js');
 const { productsSeeder, categoriesSeeder , usersSeeder, ordersSeeder } = require('./src/seeder.js')
 
 // Syncing all the models at once.
-conn.sync().then(() => {
+conn.sync(/*{force:true}*/).then(() => {
   // productsSeeder();
   // categoriesSeeder();
   // usersSeeder();

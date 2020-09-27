@@ -20,11 +20,15 @@ import AdminRoute from './components/AdminRoute';
 import PasswordReset from "./components/PasswordReset";
 import Checkout from './components/Checkout';
 import UserOverview from './components/Users/UserOverview';
+import ErrorAlert from './components/ErrorAlert';
+import GlobalGetters from './components/GlobalGetters';
 
 
 function App() {
     return (
         <React.Fragment>
+            <ErrorAlert/>
+            <GlobalGetters/>
             <Route path="/" component={Navbar} />
             <Switch>
                 <Route exact path="/" component={HomePage} />
