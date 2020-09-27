@@ -1,5 +1,6 @@
 import axios from "axios";
 import config from "../config";
+import {handle as errorsHandler} from '../errorsHandler';
 
 const EMPTY_CART = "EMPTY_CART";
 const DELETE_ITEM = "DELETE_ITEM";
@@ -17,6 +18,7 @@ const GET_USER_ORDERS = "GET_USER_ORDERS";
 const GET_USER_ORDERLINES = "GET_USER_ORDERLINES";
 const GET_USER_REVIEWS = "GET_USER_REVIEWS";
 const DELETE_REVIEW = "DELETE_REVIEW";
+const SET_ERROR= 'SET_ERROR';
 
 const BASE_URI = config.api.base_uri + "/users";
 const BASE_AUTH = config.api.base_uri + "/auth";
@@ -28,6 +30,9 @@ export function deleteReview(id) {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: DELETE_REVIEW });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -39,6 +44,9 @@ export function getUserReviews(id) {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: GET_USER_REVIEWS, payload: res.data });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -50,6 +58,9 @@ export function getUserOrderlines(id) {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: GET_USER_ORDERLINES, payload: res.data });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -61,6 +72,9 @@ export function getUserOrders(id) {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: GET_USER_ORDERS, payload: res.data });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -72,6 +86,9 @@ export function getUser(id) {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: GET_USER, payload: res.data });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -83,6 +100,9 @@ export function deleteUser(id) {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: DELETE_USER });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -94,6 +114,9 @@ export function giveAdminRights(id) {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: GIVE_ADMIN_RIGHTS });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -105,6 +128,9 @@ export function giveUserRights(id) {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: GIVE_USER_RIGHTS });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -116,6 +142,9 @@ export function updateUser(id, data) {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: UPDATE_USER });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -127,6 +156,9 @@ export function getUsers() {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: GET_USERS, payload: res.data });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -135,12 +167,15 @@ export function getUserCart(token) {
   return (dispatch) => {
     return axios
       .get(`${BASE_URI}/cart`, { headers: { "x-access-token": token } })
-      .then((res) => res.data)
-      .then((response) => {
+      .then(res => res.data)
+      .then(res => {
         dispatch({
           type: GET_USER_CART,
-          payload: response.data,
+          payload: res.data,
         });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -153,6 +188,9 @@ export function emptyCart(token) {
         dispatch({
           type: EMPTY_CART,
         });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -171,6 +209,9 @@ export function changeQuantity({ productId, token, quantity }) {
           type: CHANGE_QUANTITY,
           payload: response.data,
         });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -186,6 +227,9 @@ export function deleteItem({ productId, token }) {
           type: DELETE_ITEM,
           payload: productId,
         });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -207,6 +251,9 @@ export function setProductToCart({ productId, quantity, token }) {
           type: SET_PRODUCT_TO_CART,
           payload: res.data,
         });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }
@@ -218,6 +265,9 @@ export function getOrders(token) {
       .then((res) => res.data)
       .then((res) => {
         dispatch({ type: GET_ORDERS, payload: res.data });
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
       });
   };
 }

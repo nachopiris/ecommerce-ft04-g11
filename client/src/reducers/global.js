@@ -1,5 +1,6 @@
 const initialState = {
-        loading: false
+        loading: false,
+        error: null
 }
 
 export default function categoriesReducer(state = initialState, action) {
@@ -8,6 +9,16 @@ export default function categoriesReducer(state = initialState, action) {
                         return {
                                 ...state,
                                 loading: action.payload
+                        }
+                case 'SET_ERROR':
+                        return {
+                                ...state,
+                                error: action.payload
+                        }
+                case 'CLEAR_ERROR':
+                        return {
+                                ...state,
+                                error:null
                         }
                 default:
                         return state;
