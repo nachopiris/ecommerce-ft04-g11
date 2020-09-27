@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 import { connect } from "react-redux";
 import { getLatests } from "../actions/products";
-import { setProductToCart, getUserCart } from "../actions/users";
+import { setProductToCart } from "../actions/users";
 import {addProductToCart as setProductToGuestCart} from '../actions/guest' ;
 import ProductsHomepage from './ProductsHomepage';
 
@@ -106,7 +106,7 @@ function ExploreButton() {
     );
 }
 
-function HomePage({ products, getLatests, setProductToCart, getUserCart, userCart, guestCart, setProductToGuestCart, token, user}) {
+function HomePage({ products, getLatests, setProductToCart, guestCart, setProductToGuestCart, token, user}) {
     const props = useSpring({
         from: {
             filter: "brightness(1.5)",
@@ -122,8 +122,7 @@ function HomePage({ products, getLatests, setProductToCart, getUserCart, userCar
 
     useEffect(() => {
         getLatests();
-        if(!!token) getUserCart(token);
-    }, [getLatests, token, getUserCart]);
+    }, [getLatests, token]);
 
     const handleSetToCart = () => {
         if(!!token) return setProductToCart;
@@ -166,7 +165,6 @@ function mapDispatchToProps(dispatch) {
     return {
         getLatests: () => dispatch(getLatests()),
         setProductToCart: (data) => dispatch(setProductToCart(data)),
-        getUserCart: (token) => dispatch(getUserCart(token)),
         setProductToGuestCart: product => dispatch(setProductToGuestCart(product))
     };
 }

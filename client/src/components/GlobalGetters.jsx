@@ -1,0 +1,34 @@
+import {useEffect} from 'react';
+import {connect} from 'react-redux';
+
+import {getUserCart} from '../actions/users';
+
+function GlobalGetters({getCart,token, cart}){
+
+    useEffect(()=> {
+        if(!!token){
+            console.log('ok')
+            getCart(token);
+        }
+    },[getCart, token]);
+
+    return null;
+}
+
+function mapStateToProps(state){
+    return {
+        token: state.authReducer.token,
+        cart: state.usersReducer.userCart,
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        getCart: token => dispatch(getUserCart(token))
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(GlobalGetters);

@@ -31,18 +31,18 @@ function ErrorAlert({error, clearError}){
                 content: (
                     <div className="text-left">
                         <h4 className="h4 font-weight-bold">{error.title}</h4>
-                        <p>{error.message}</p>
+                        <p className="mb-0">{error.message}</p>
                     </div>
                 )
         })
         .then(() => {
-
+            clearError();
         })
     }
 
     return (
         <React.Fragment>
-            {state.error && showMessage(state.error)}
+            {(state.error && error) && showMessage(state.error)}
         </React.Fragment>
     );
 

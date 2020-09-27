@@ -10,6 +10,11 @@ const initialState = {
 
 export default function usersReducer(state = initialState, action) {
     switch (action.type) {
+        case 'ORDER_CREATED':
+            return {
+                ...state,
+                userCart:{products:[]}
+            }
         case 'GET_USER_REVIEWS':
             return {
                 ...state,

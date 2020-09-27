@@ -27,12 +27,12 @@ function Checkout({
 
     createOrder({ ...data, token })
       .then((res) => {
-        payOrder(token, state.products).then((response) => {
-          console.log(response.data);
-          setState({
-            ...state,
-            loading: false,
-          });
+        setState({
+          ...state,
+          loading: false,
+        });
+        payOrder(token, state.products)
+        .then((response) => {
           window.open(response.data, "_blank");
         });
       })

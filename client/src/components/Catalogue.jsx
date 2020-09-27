@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { Container, Row, Col, Form, Alert, Card, Button, ButtonGroup } from "react-bootstrap";
 import {addProductToCart as setProductToGuestCart} from '../actions/guest' ;
 import SearchBar from "./SearchBar";
-import { setProductToCart, getUserCart } from "../actions/users";
+import { setProductToCart } from "../actions/users";
 
 //*******************CONECTADO AL STORE DE REDUX *********************/
 export function Catalogue({
@@ -17,12 +17,10 @@ export function Catalogue({
   getProducts,
   filterByCategory,
   setProductToCart,
-  getUserCart,
   userCart,
   setProductToGuestCart,
   guestCart,
-  token,
-  user
+  token
 }) {
   const perPage = 12;
   const [state, setState] = useState({
@@ -48,10 +46,9 @@ export function Catalogue({
   }
 
   useEffect(() => {
-    getUserCart(token);
     getProducts();
     getCategories();
-  }, [getUserCart,getProducts, getCategories,token]);
+  }, [getProducts, getCategories]);
 
   useEffect(() => {
     setState(state => {
@@ -170,7 +167,6 @@ function mapDispatchToProps(dispatch) {
     filterByCategory: (value) => dispatch(filterByCategory(value)),
     getCategories: () => dispatch(getCategories()),
     setProductToCart: (productId, quantity) => dispatch(setProductToCart(productId, quantity)),
-    getUserCart: (token) => dispatch(getUserCart(token)),
     setProductToGuestCart: (product) => dispatch(setProductToGuestCart(product))
   };
 }
