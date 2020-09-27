@@ -51,7 +51,7 @@ function Cart({getCart, cart, token, deleteItem, changeQuantity, emptyCart, gues
     }
 
     const handleEmptyCart = () => {
-      return emptyGuestCart();
+      if(!token) return emptyGuestCart();
       return emptyCart(token);
     }
 
