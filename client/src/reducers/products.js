@@ -6,11 +6,17 @@ const initialState = {
     reviews: [],
     avgReviews: [],
     product: [],
-    search: "",
+    search: null,
+    categoryName: null
 }
 
 export default function productsReducer(state = initialState, action) {
     switch (action.type) {
+        case 'UPDATE_SEARCH':
+            return {
+                ...state,
+                search: action.payload
+            }
         case 'DELETE_REVIEW':
             return {
                 ...state
@@ -44,11 +50,9 @@ export default function productsReducer(state = initialState, action) {
                 search: action.payload
             }
         case 'FILTER_BY_CATEGORY':
-            let products = action.payload;
-            if (!products) products = { count: 0, rows: [] };
             return {
                 ...state,
-                products
+                categoryName: action.payload
             }
         case 'GET_PRODUCTS':
             return {
