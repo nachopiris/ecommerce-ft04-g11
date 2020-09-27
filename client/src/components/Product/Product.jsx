@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form';
 import { AiFillCloseSquare } from 'react-icons/ai';
 
 //***************CONECTADO AL STORE DE REDUX ********************/
+
 export function Product({ reviews, product, getProduct, setProductToCart, setProductToGuestCart, userCart, token, user, guestCart, getReviews, getAverage, avgReviews, createReview }) {
     const { id } = useParams();
     const { register, handleSubmit, errors } = useForm();

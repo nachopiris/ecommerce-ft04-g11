@@ -3,6 +3,7 @@ import config from '../config';
 import queryString from 'query-string';
 import { handle as errorsHandler } from '../errorsHandler';
 
+
 const GET_PRODUCTS = 'GET_PRODUCTS';
 const GET_PRODUCT = 'GET_PRODUCT';
 const CREATE_PRODUCT = 'CREATE_PRODUCT';
