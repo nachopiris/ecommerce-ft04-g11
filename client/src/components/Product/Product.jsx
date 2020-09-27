@@ -7,14 +7,14 @@ import NumberFormat from "react-number-format";
 import { connect } from "react-redux";
 import { getProduct, getReviews, getAverage } from "../../actions/products";
 import { addProductToCart as setProductToGuestCart } from '../../actions/guest';
-import { setProductToCart, getUserCart } from "../../actions/users";
+import { setProductToCart } from "../../actions/users";
 import Error404 from '../Error404'
 import Review from '../Review';
 import Rating from 'react-rating';
 import { MdStar } from 'react-icons/md';
 
 //***************CONECTADO AL STORE DE REDUX ********************/
-export function Product({ reviews, product, getProduct, setProductToCart, setProductToGuestCart, getUserCart, userCart, token, user, guestCart, getReviews, getAverage, avgReviews }) {
+export function Product({ reviews, product, getProduct, setProductToCart, setProductToGuestCart, userCart, token, user, guestCart, getReviews, getAverage, avgReviews }) {
     const { id } = useParams();
     const [state, setState] = useState({
         quantity: 1,
@@ -42,11 +42,10 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
 
 
     useEffect(() => {
-        getUserCart(token);
         getProduct(id);
         getReviews(id);
         getAverage(id);
-    }, [getUserCart,getProduct,getReviews,getAverage,id,token]);
+    }, [getProduct,getReviews,getAverage,id]);
 
     useEffect(() => {
         let currentProduct;
@@ -269,7 +268,6 @@ function mapDispatchToProps(dispatch) {
     return {
         getProduct: (value) => dispatch(getProduct(value)),
         setProductToCart: (data) => dispatch(setProductToCart(data)),
-        getUserCart: (token) => dispatch(getUserCart(token)),
         setProductToGuestCart: (product) => dispatch(setProductToGuestCart(product)),
         getReviews: (id) => dispatch(getReviews(id)),
         getAverage: (id) => dispatch(getAverage(id))

@@ -1,6 +1,8 @@
 import config from "../config";
 import Axios from "axios";
+import {handle as errorsHandler} from '../errorsHandler';
 
+const SET_ERROR = 'SET_ERROR';
 const BASE_URI = config.api.base_uri + "/auth";
 const USER_URI = config.api.base_uri + "/users";
 const LOGIN = "LOGIN";
@@ -93,6 +95,9 @@ export function logout(token) {
     let headers = { "x-access-token": token };
     return Axios.post(BASE_URI + "/logout", {}, { headers }).then(() => {
       dispatch({ type: LOGOUT });
+    })
+    .catch(err => {
+      dispatch({type:SET_ERROR,payload:errorsHandler(err)})
     });
   };
 }
@@ -101,6 +106,9 @@ export function passwordReset(email) {
   return (dispatch) => {
     return Axios.post(BASE_URI + "/password-reset", { email }).then(() => {
       dispatch({ type: PASSWORD_RESET });
+    })
+    .catch(err => {
+      dispatch({type:SET_ERROR,payload:errorsHandler(err)})
     });
   };
 }
@@ -110,6 +118,9 @@ export function passwordChange(data) {
     console.log(data);
     return Axios.put(BASE_URI + "/password-reset", data).then(() => {
       dispatch({ type: PASSWORD_RESET });
+    })
+    .catch(err => {
+      dispatch({type:SET_ERROR,payload:errorsHandler(err)})
     });
   };
 }
