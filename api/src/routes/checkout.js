@@ -169,6 +169,7 @@ server.post("/payment", verifyToken, async (req, res) => {
       id: product.id,
       currency_id: 'ARS',
       title: product.name,
+      picture_url: product.images[0],
       quantity: product.orderline.quantity,
       unit_price: parseFloat(product.orderline.price)
     }
