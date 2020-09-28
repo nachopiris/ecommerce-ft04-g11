@@ -25,7 +25,7 @@ export default function EditUser({ show, handleClose, user, updateUser, giveAdmi
             doc_number,
             phone
         });
-    }, [user,id,
+    }, [user, id,
         fullname,
         email,
         role,
@@ -48,7 +48,7 @@ export default function EditUser({ show, handleClose, user, updateUser, giveAdmi
             <Modal.Body className="bg-dark2">
                 <Form>
                     <Row>
-                        <Col >
+                        <Col>
                             <Form.Group>
                                 <Form.Label>Usuario N°</Form.Label>
                                 <Form.Control value={state.id} name="id" placeholder="Usuario N°" readOnly disabled />
@@ -69,14 +69,14 @@ export default function EditUser({ show, handleClose, user, updateUser, giveAdmi
                         <Col>
                             <Form.Group>
                                 <Form.Label>Rol</Form.Label>
-                                <Form.Control value={(state.role === "client" && ("Usuario")) ||
-                                    (state.role === "admin" && ("Administrador"))} name="role" placeholder="Rol" readOnly disabled />
+                                <Form.Control value={(state.role === "Usuario" && ("Usuario")) ||
+                                    (state.role === "Administrador" && ("Administrador"))} name="role" placeholder="Rol" readOnly disabled />
                             </Form.Group>
                         </Col>
                         <Col>
                             <Form.Group>
                                 <Form.Label>Acciones</Form.Label><br />
-                                {state.id === idLocal ? <span>No puedes modificar tus permisos</span> : user.role === "client" ?
+                                {state.id === idLocal ? <span>No puedes modificar tus permisos</span> : user.role === "Usuario" ?
                                     <Button className="w-100" onClick={() => giveAdminRights()(id)}>Asignar rol Administrador</Button> :
                                     <Button className="w-100" onClick={() => giveUserRights()(id)}>Asignar rol Usuario</Button>}
                             </Form.Group>

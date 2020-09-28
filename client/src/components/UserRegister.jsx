@@ -145,14 +145,14 @@ function UserRegister({ userRegister, auth }) {
                                                     title="Ocultar clave"
                                                 />
                                             ) : (
-                                                <BiShowAlt
-                                                    type="button"
-                                                    onClick={() =>
-                                                        switchPassword()
-                                                    }
-                                                    title="Mostrar clave"
-                                                />
-                                            )}
+                                                    <BiShowAlt
+                                                        type="button"
+                                                        onClick={() =>
+                                                            switchPassword()
+                                                        }
+                                                        title="Mostrar clave"
+                                                    />
+                                                )}
                                         </Form.Label>
                                     </IconContext.Provider>
                                     <Form.Control
