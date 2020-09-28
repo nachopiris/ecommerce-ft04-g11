@@ -31,7 +31,7 @@ function Checkout({
           ...state,
           loading: false,
         });
-        payOrder(token, state.products)
+        payOrder(token, userCart.id)
         .then((response) => {
           window.open(response.data, "_self");
         });
@@ -96,8 +96,8 @@ function Checkout({
         <Col md={8}>
           {state.user && (
             <Form onSubmit={handleSubmit(onSubmit)}>
-              <Card className="bg-dark2">
-                <Card.Header>Confirmar pedido</Card.Header>
+              <Card className="bg-dark2 text-center">
+                <Card.Header><h3>Confirmar pedido</h3></Card.Header>
                 <Card.Body>
                   <div className="text-center mt-3">
                     <span className="text-muted">Total a pagar:</span>
@@ -251,7 +251,7 @@ function mapDispatchToProps(dispatch) {
   return {
     createOrder: (data) => dispatch(createOrder(data)), //{token, email, address, phone}
     getCollect: (ids) => dispatch(getCollect(ids)),
-    payOrder: (token, products) => dispatch(payOrder(token, products)),
+    payOrder: (token, orderId) => dispatch(payOrder(token, orderId)),
     getUserCart: (token) => dispatch(getUserCart(token)),
   };
 }

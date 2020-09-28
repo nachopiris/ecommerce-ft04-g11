@@ -20,9 +20,12 @@ export function createOrder(data){ // {token, doc_number, address, phone}
     }
 }
 
-export function processOrder(data){ // {token, orderId}
+export function processOrder(token, orderId){ // {token, orderId}
     return dispatch => {
-        return Axios.post(BASE_URI + '/process', data);
+        return Axios.post(BASE_URI + '/process', {orderId}, {headers: {'x-access-token':token}})
+        .catch(err => {
+            dispatch({type:SET_ERROR,payload:errorsHandler(err)})
+        })
     }
 }
 
