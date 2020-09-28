@@ -62,7 +62,7 @@ export default function OrderInfo({ show, handleClose, order, orderlines, allPro
                                                     products.map(product => {
                                                         if (product.id === orderline.productId) {
                                                             return (
-                                                                <span>
+                                                                <span key={product.id}>
                                                                     {product.name}<br />
                                                                     <span className="text-muted">{orderline.quantity} x ${orderline.price}</span>
                                                                 </span>

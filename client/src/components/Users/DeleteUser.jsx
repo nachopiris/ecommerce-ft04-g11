@@ -17,15 +17,15 @@ export default function DeleteUser({ show, handleClose, user, deleteUser }) {
                 <Alert className="m-0 mb-1 p-2" variant="danger">Atención: ¡está acción no podrá deshacerse!</Alert>
                 <Form.Group>
                     <Form.Label>Nombre</Form.Label>
-                    <Form.Control value={fullname} name="fullname" placeholder="Nombre" readOnly disabled />
+                    <Form.Control defaultValue={fullname} name="fullname" placeholder="Nombre" readOnly disabled />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Correo electrónico</Form.Label>
-                    <Form.Control value={email} name="email" placeholder="Correo electrónico" readOnly disabled />
+                    <Form.Control defaultValue={email} name="email" placeholder="Correo electrónico" readOnly disabled />
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Rol</Form.Label>
-                    <Form.Control value={role} name="role" placeholder="Rol" readOnly disabled />
+                    <Form.Control defaultValue={role} name="role" placeholder="Rol" readOnly disabled />
                 </Form.Group>
             </Modal.Body>
             <Modal.Footer className="d-flex justify-content-between border-0 bg-dark2">

@@ -160,4 +160,45 @@ h4 {
   background-color: rgba(0,0,0, .9);
 }
 
+.navbar-toggler{
+  svg{
+    font-size: 30px;
+    padding: 0;
+  }
+}
+
+.toggle-mark{
+  position: absolute;
+  height: 10px !important;
+  top:-5px;
+  right: -5px;
+  border-radius: 5px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  position: relative;
+  svg{
+    margin-right: .4rem;
+  }
+
+  span{
+    position: absolute;
+    right:8%;
+    width: 20%;
+    height: 15px;
+    top: -4px;
+    border-radius:0 0px 5px 5px;
+    opacity: .7;
+
+    @media (max-width:767px) {
+      left:80px;
+      top: 3px;
+      border-radius: 8px;
+      width: 20px;
+    }
+  }
+}
+
 @import "react-alice-carousel/lib/scss/alice-carousel.scss";

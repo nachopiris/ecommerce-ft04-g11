@@ -21,13 +21,15 @@ const Failure = ({token, getNotPayedOrder}) => {
         if (query.get('external_reference')) {
         const orderId = query.get('external_reference').split('_')[1]
         getNotPayedOrder(token, orderId).then(response => {
-            setState({
-                ...state,
-                products: response.data.order.products
+            setState(state => {
+                return {
+                  ...state,
+                  products: response.data.order.products
+              }
             })
         })
       }
-    }, [])
+    }, [getNotPayedOrder, token, query])
 
     return (
         <React.Fragment>

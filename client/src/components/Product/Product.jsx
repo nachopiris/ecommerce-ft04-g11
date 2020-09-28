@@ -82,13 +82,16 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
     }
 
     useEffect(() => {
+        if(state.newData !== true) return;
         getReviews(id);
         getAverage(id);
-        setState({
-            ...state,
-            newData: false
+        setState(state => {
+            return {
+                ...state,
+                newData: false
+            }
         })
-    }, [state.newData === true])
+    }, [state.newData, getAverage, getReviews, id])
 
 
     useEffect(() => {
@@ -263,7 +266,7 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
 
                     <Row className="mb-4">
                         <Col>
-                            <Card className="bg-dark">
+                            <Card className="bg-dark h-100">
                                 <Card.Header className="d-flex justify-content-between">Reseñas <Rating
                                     initialRating={avg}
                                     readonly="true"
@@ -329,7 +332,7 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
                                         </div>
 
                                         {reviews.length > 0 ? reviews.map(review => (
-                                            <Review props={review} />
+                                            <Review key={review.id} props={review} />
                                         )) :
                                             <span className={!state.showReviewForm ? "d-block" : "d-none"}>No hay comentarios sobre este producto. <Link to="#" className="text-white" onClick={() => handleReviewForm()}>¡Sé el primero!</Link></span>}
 
@@ -340,13 +343,14 @@ export function Product({ reviews, product, getProduct, setProductToCart, setPro
 
                             </Card>
                         </Col>
-                        <Col>
-                            <Card className="bg-dark">
+                        <Col md={4}>
+                            <Card className="bg-dark h-100">
                                 <Card.Header>Categorías</Card.Header>
                                 <Card.Body>
                                     {product.categories &&
                                         product.categories.map((item) => (
                                             <Link
+                                                key={item.id}
                                                 to="#"
                                                 className="text-muted2 m-1 badge badge-dark2 badge-pill"
                                             >

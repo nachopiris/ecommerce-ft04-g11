@@ -21,15 +21,27 @@ export function SearchBar({ updateSearch }) {
   };
 
   useEffect(() => {
+    let mounted = true;
     if (canSearch) {
-      updateSearch(search)
+      if(mounted){
+        updateSearch(search)
+      }
+    }
+    return () => {
+      mounted = false;
     }
   }, [canSearch,updateSearch,search])
 
   useEffect(() => {
+    let mounted = true;
     window.setTimeout(() => {
-      setCanSearch(true);
-    }, 800)
+      if(mounted){
+        setCanSearch(true);
+      }
+    }, 800);
+    return () => {
+      mounted = false;
+    }
   }, [search])
 
   const handleSubmit = (e) => {
