@@ -20,6 +20,15 @@
     margin-top: -0.125rem;
 }
 
+.close-icon {
+    color: grey;
+    cursor: pointer;
+}
+
+.close-icon:hover {
+    color: white;
+}
+
 .link {
     color: hsl(211, 94%, 50%) !important;
     text-decoration: none !important;
@@ -36,6 +45,11 @@
 .is-invalid {
     background-position: left calc(0.375em + 0.1875rem) center !important;
     padding-left: 2.15rem !important;
+}
+
+.textarea {
+    background-position: left calc(0.375em + 0.1875rem) top calc(0.375em + 0.1875rem) !important;
+    
 }
 
 .name-input, .mail-input, .password-input {

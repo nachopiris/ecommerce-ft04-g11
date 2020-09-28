@@ -21,14 +21,15 @@ import PasswordReset from "./components/PasswordReset";
 import Checkout from './components/Checkout';
 import UserOverview from './components/Users/UserOverview';
 import ErrorAlert from './components/ErrorAlert';
-import GlobalGetters from './components/GlobalGetters';
-
+import CartHandler from './components/CartHandler';
+import Success from './components/Success';
+import Failure from './components/Failure'
 
 function App() {
     return (
         <React.Fragment>
             <ErrorAlert/>
-            <GlobalGetters/>
+            <CartHandler/>
             <Route path="/" component={Navbar} />
             <Switch>
                 <Route exact path="/" component={HomePage} />
@@ -38,6 +39,8 @@ function App() {
                 <Route exact path="/productos/:id" component={Product} />
                 <Route exact path="/catalogo" component={Catalogue} />
                 <Route exact path="/carrito" component={Cart} />
+                <Route exact path="/success" component={Success} />
+                <Route exact path="/failure" component={Failure} />
                 <LogInRoute exact path="/cuenta" component={Account} />
                 <LogInRoute exact path="/comprando" component={Checkout} />
 

@@ -1,7 +1,8 @@
 import Axios from 'axios';
 import config from '../config';
 import queryString from 'query-string';
-import {handle as errorsHandler} from '../errorsHandler';
+import { handle as errorsHandler } from '../errorsHandler';
+
 
 const GET_PRODUCTS = 'GET_PRODUCTS';
 const GET_PRODUCT = 'GET_PRODUCT';
@@ -15,9 +16,21 @@ const DELETE_CATEGORY_TO_PRODUCT = 'DELETE_CATEGORY_TO_PRODUCT';
 const GET_LATESTS = 'GET_LATESTS';
 const GET_REVIEWS = 'GET_REVIEWS';
 const GET_AVERAGE_REVIEWS = 'GET_AVERAGE_REVIEWS';
+const CREATE_REVIEW = "CREATE_REVIEW";
 const SET_ERROR = 'SET_ERROR'
 
 const BASE_URI = config.api.base_uri + '/products';
+
+export function createReview(id, data) {
+    const { userId, productId } = id;
+    return dispatch => {
+        return Axios.post(BASE_URI + "/" + productId + "/" + userId + "/review", data)
+            .then(res => res.data)
+            .then(res => {
+                dispatch({ type: CREATE_REVIEW })
+            })
+    }
+}
 
 export function getReviews(id) {
     return dispatch => {
@@ -57,7 +70,7 @@ export function searchProducts(searchWord) {
 
 export function filterByCategory(catName) {
     return dispatch => {
-        dispatch({ type: FILTER_BY_CATEGORY, payload:catName})
+        dispatch({ type: FILTER_BY_CATEGORY, payload: catName })
     }
 }
 
@@ -71,7 +84,7 @@ export function getProducts(data) { //{search, categoryName, page}
                 dispatch({ type: GET_PRODUCTS, payload: res.data });
             })
             .catch((err) => {
-                dispatch({type: SET_ERROR, payload: errorsHandler(err)});
+                dispatch({ type: SET_ERROR, payload: errorsHandler(err) });
             });
     }
 }
