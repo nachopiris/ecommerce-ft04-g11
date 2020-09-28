@@ -63,22 +63,10 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
     };
 
   const handlePayment = (orderId) => {
-    const order = state.orders.find((order) => order.id === orderId);
-    const products = order.products.map((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-        quantity: item.orderline.quantity,
-        price: item.price,
-      };
-    });
-    payOrder(token, products)
+    payOrder(token, orderId)
       .then((res) => {
         window.open(res.data, "_self");
       })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   return (
@@ -126,7 +114,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
                       >
                         <option value="">Todas las ordenes</option>
                         <option value="created">Creadas</option>
-                        <option value="processed">Procesadas</option>
+                        <option value="processing">Procesadas</option>
                         <option value="canceled">Canceladas</option>
                         <option value="completed">Completadas</option>
                       </select>
@@ -155,7 +143,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
                               </span>
                             )}
 
-                            {item.status === "processed" && (
+                            {item.status === "processing" && (
                               <span className="badge badge-primary badge-pill">
                                 Pagada
                               </span>

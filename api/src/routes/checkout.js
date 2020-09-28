@@ -17,7 +17,7 @@ const email_env = {
   port: process.env.EMAIL_PORT,
 };
 
-const { User, Order } = require("../db.js");
+const { User, Order, Product, Orderline } = require("../db.js");
 
 mercadopago.configure({
   access_token:
@@ -148,7 +148,7 @@ server.post("/", verifyToken, (req, res) => {
 });
 
 server.post("/payment", verifyToken, async (req, res) => {
-  const { products } = req.body;
+  const { orderId } = req.body;
   const userId = req.userId;
 
   const user = await User.findOne({
@@ -157,15 +157,22 @@ server.post("/payment", verifyToken, async (req, res) => {
 
   if (!user) return res.sendStatus(422);
 
-  const items = products.map((product) => {
+  const order = await Order.findOne({
+    include: {model: Product, through: Orderline },
+    where: {id: orderId, userId: userId}
+  })
+
+  if(!order) return res.sendStatus(404)
+
+  const items = order.products.map((product) => {
     return {
       id: product.id,
-      currency_id: "ARS",
+      currency_id: 'ARS',
       title: product.name,
-      quantity: product.quantity,
-      unit_price: parseFloat(product.price),
-    };
-  });
+      quantity: product.orderline.quantity,
+      unit_price: parseFloat(product.orderline.price)
+    }
+  })
 
   const payer = {
     name: user.fullname.split(" ")[0],
@@ -186,20 +193,73 @@ server.post("/payment", verifyToken, async (req, res) => {
     },
   };
 
+  const payment_methods = {
+    excluded_payment_types: [{id: 'ticket'}, {id: 'atm'}, {id: 'bank_transfer'}]
+  }
+
+  const back_urls = {
+    success: 'http://localhost:3000/success',
+    failure: 'http://localhost:3000/failure'
+  }
+
+  const binary_mode = true
+
+  const external_reference = `order_${orderId}`
+
   let preference = {
-    items: items,
+    items,
     payer,
+    back_urls,
+    payment_methods,
+    binary_mode,
+    external_reference
   };
 
   mercadopago.preferences
     .create(preference)
     .then(function (response) {
-      console.log(response.body);
       res.send(response.body.init_point).status(200);
     })
     .catch(function (error) {
+      console.log(error)
       res.send(error).status(500);
     });
 });
+
+server.post('/process', verifyToken, (req, res) => {
+
+  const {orderId} = req.body
+  const userId = req.userId
+
+  Order.findOne({
+    include: {model: Product, through: Orderline },
+    where: {id: orderId, userId: userId, status: 'created'}
+  }).then(async (order) => {
+    if (!order) return res.sendStatus(404)
+    
+    order.status = "processing";
+    await order.save();
+    return res.send({ order });
+  }).catch((err) => {
+    res.sendStatus(500)
+  })
+})
+
+server.get('/failure-order/:id', verifyToken, (req, res) => {
+  const orderId = req.params.id
+  const userId = req.userId
+
+  Order.findOne({
+    include: {model: Product, through: Orderline },
+    where: {id: orderId, userId: userId, status: 'created'}
+  }).then((order) => {
+    if (!order) return res.sendStatus(404)
+    return res.send({ order });
+  }).catch((err) => {
+    res.sendStatus(500)
+  })
+
+
+})
 
 module.exports = server;
