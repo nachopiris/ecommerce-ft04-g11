@@ -17,7 +17,9 @@ export function ProductCard({ product: { id, name, price, images, stock }, setTo
   useEffect(()=>{
     if(!Array.isArray(userCart.products)) return;
     if(isGuest){
-      setState({...state,isAdded:guestCart.find(item => item.id === id) ? true : false})
+      setState(state => {
+        return {...state,isAdded:guestCart.find(item => item.id === id) ? true : false}
+      })
     }else{
       setState(state => {
         return {

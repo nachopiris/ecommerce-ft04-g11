@@ -71,7 +71,7 @@ function ItemList({ product, deleteProduct, updateProduct, switchLoading, getPro
             </td>
             <td className="align-middle">{name}</td>
             <td className="align-middle" style={{ maxWidth: "100px" }}>{categories && categories.length > 0 ? categories.map(category => (
-                <span className="badge badge-secondary" style={{ margin: "3px" }}>{category.name}</span>
+                <span key={category.id} className="badge badge-secondary" style={{ margin: "3px" }}>{category.name}</span>
             )) : <span>Sin categorías</span>}</td>
             <td className="align-middle">{stock}</td>
             <td className="align-middle">{price}</td>

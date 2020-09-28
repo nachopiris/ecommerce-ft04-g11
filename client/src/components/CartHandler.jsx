@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {connect} from 'react-redux';
 
 import {getUserCart} from '../actions/users';
