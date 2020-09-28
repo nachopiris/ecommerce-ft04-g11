@@ -145,17 +145,9 @@ function Cart({cart, token, deleteItem, changeQuantity, emptyCart, guestCart, em
         ))}
 
         {state.products.length > 0 && (
-          <Row className="mx-3 py-2">
-            <Col>
-              <Button
-                className="btn btn-danger"
-                onClick={handleEmptyCart}
-              >
-                Vaciar Carrito
-              </Button>
-            </Col>
-            <Col className="text-right">
-              <h4>
+          <Row className="mx-3 py-2 text-center">
+            <Col xs={4} className="text-center bg-dark p-3 ml-auto">
+              <h4 className="shadow mb-4 py-2">
                 Precio total:
                 <NumberFormat
                   prefix=" $"
@@ -168,6 +160,12 @@ function Cart({cart, token, deleteItem, changeQuantity, emptyCart, guestCart, em
               <Link to="/comprando" className="btn btn-success mx-3">
                 Finalizar Compra
               </Link>
+              <Button
+                className="btn btn-danger"
+                onClick={handleEmptyCart}
+              >
+                Vaciar Carrito
+              </Button>
             </Col>
           </Row>
         )}
