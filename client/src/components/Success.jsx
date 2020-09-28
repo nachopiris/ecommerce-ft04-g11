@@ -21,12 +21,9 @@ const Success = ({token, processOrder}) => {
       if (query.get('external_reference')) {
         const orderId = query.get('external_reference').split('_')[1]
         processOrder(token, orderId).then(response => {
-            setState(state => {
-              return {
-                  ...state,
-                  products: response.data.order.products
-              }
-            })
+            if(response.data !== undefined){
+              window.location.replace("http://localhost:3000/cuenta",'_self');
+            }
         })
       }
     }, [processOrder,token,query])
