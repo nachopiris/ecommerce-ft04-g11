@@ -123,7 +123,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
                 </Card.Header>
                 <Card.Body>
                   {state.orders.map((item, index) => (
-                    <Row className="border-bottom border-dark py-4">
+                    <Row className="py-4" style={{borderBottom: "2px solid #8DA6FF"}}>
                       <Col xs={12}>
                         <div
                           key={index}
@@ -182,8 +182,8 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
                         ))}
                       </Col>
                       <Col xs={12}>
-                        <div className="pt-3 d-flex justify-content-between aling-items-center">
-                          <h3>
+                        <div className="p-3 shadow d-flex justify-content-between aling-items-center">
+                          <h5>
                             Total: $
                             {item.products.reduce((acc, curr) => {
                               return (
@@ -192,7 +192,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
                                   parseFloat(curr.orderline.price)
                               );
                             }, 0)}
-                          </h3>
+                          </h5>
                           <span>
                             {item.status === "created" && (
                               <React.Fragment>

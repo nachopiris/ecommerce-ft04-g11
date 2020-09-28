@@ -239,6 +239,16 @@ server.post('/process', verifyToken, (req, res) => {
     
     order.status = "processing";
     await order.save();
+
+    order.products.forEach(async product => {
+      const prod = await Product.findOne({
+        where: {id: product.id}
+      })
+
+      prod.stock = prod.stock - product.orderline.quantity
+      await prod.save()
+    })
+
     return res.send({ order });
   }).catch((err) => {
     res.sendStatus(500)
