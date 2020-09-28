@@ -170,15 +170,15 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Nombre</Form.Label>
-                                <Form.Control value={fullname} name="fullname" placeholder="Nombre" readOnly disabled />
+                                <Form.Control defaultValue={fullname} name="fullname" placeholder="Nombre" readOnly disabled />
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Correo electrónico</Form.Label>
-                                <Form.Control value={email} name="email" placeholder="Correo electrónico" readOnly disabled />
+                                <Form.Control defaultValue={email} name="email" placeholder="Correo electrónico" readOnly disabled />
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Rol</Form.Label>
-                                <Form.Control value={role} name="role" placeholder="Rol" readOnly disabled />
+                                <Form.Control defaultValue={role} name="role" placeholder="Rol" readOnly disabled />
                             </Form.Group>
                             <Button onClick={() => handleEditing(user)} className="w-100" title="Modificar" variant="warning">Editar</Button>
                             <EditUser show={state.editing} updateUser={handleUpdate} giveAdminRights={updateToAdminRights} giveUserRights={updateToUserRights} handleClose={handleEditing} user={state.user} />
@@ -239,7 +239,7 @@ export function UserOverview({ getUser, user, getUserOrders, orders, getUserOrde
                                     {(reviews && reviews.length > 0) ?
                                         <React.Fragment>
                                             {reviews.map(review => (
-                                                <Card className="bg-dark mb-2 position-relative">
+                                                <Card key={review.id} className="bg-dark mb-2 position-relative">
                                                     <div style={{ zIndex: "1", position: "absolute", top: ".4rem", right: ".4rem" }}>
                                                         <Button size="sm" onClick={() => handleReviewDeleting(review)} className="m-1" title="Borrar" variant="danger"><FiTrash2 /></Button>
                                                         <DeleteReview show={state.reviewDeleting} handleClose={handleReviewDeleting} deleteReview={confirmReviewDelete} review={review} />

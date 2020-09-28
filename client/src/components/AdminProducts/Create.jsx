@@ -90,7 +90,7 @@ function Create({ show, handleClose, createProduct }) {
                                         <Form.Group>
                                                 <Form.Label>Imágenes {state.images.length}/10</Form.Label>
                                                 {state.images.map((item, index) => (
-                                                        <Form.Group>
+                                                        <Form.Group key={index}>
                                                                 <InputGroup>
                                                                         <InputGroup.Prepend>
                                                                                 <Button size="sm" variant="light"><FiMaximize2 /></Button>

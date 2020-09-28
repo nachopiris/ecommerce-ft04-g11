@@ -10,10 +10,11 @@ import { MdAccountCircle, MdAssignmentInd } from 'react-icons/md'
 import { RiLogoutBoxRLine, RiLoginBoxLine } from 'react-icons/ri'
 import { ImHome3 } from 'react-icons/im';
 import { CgNotes } from 'react-icons/cg';
+import { IoIosMenu } from 'react-icons/io';
 
 const APP_NAME = config.app.name;
 
-export function Navbar({ auth, logout }) {
+export function Navbar({ auth, logout,guestCart, userCart }) {
     const location = useLocation();
     const { user, token } = auth;
 
@@ -26,8 +27,54 @@ export function Navbar({ auth, logout }) {
 
     const [state, setState] = useState({
         navbarBg: "",
-        navbarExpanded: false
+        navbarExpanded: false,
+        countCart: 0
     });
+
+    
+
+    useEffect(()=>{
+        const hideCollapse = () => {
+            setState(state => {
+                return {
+                    ...state,
+                    navbarExpanded: false
+                }
+            });
+        }
+
+        let elements = document.getElementsByClassName('nav-link');
+        
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].addEventListener("click",hideCollapse);
+        }
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].removeEventListener("click",hideCollapse);
+        }
+
+    },[auth]);
+
+    
+
+    useEffect(() => {
+        if(!auth.token){
+            setState(state => {
+                return {
+                    ...state,
+                    countCart: guestCart.length
+                }
+            })
+        }else{
+            setState(state => {
+                return {
+                    ...state,
+                    countCart: userCart.products.length
+                }
+            })
+        }
+
+        
+    },[guestCart, userCart, auth, state.navbarExpanded]);
 
     const handleScroll = (e) => {
         if (
@@ -83,6 +130,7 @@ export function Navbar({ auth, logout }) {
 
     return (
         <Navb
+            expanded={state.navbarExpanded}
             expand="md"
             variant="dark"
             bg=""
@@ -97,7 +145,10 @@ export function Navbar({ auth, logout }) {
         >
             <Container>
                 <Link to="/" className="navbar-brand">{APP_NAME}</Link>
-                <Navb.Toggle onClick={handleToggle} aria-controls="basic-navbar-nav" />
+                <Navb.Toggle id="toggle-nav" onClick={handleToggle} className="position-relative" aria-controls="basic-navbar-nav">
+                <IoIosMenu />
+                <div className={'toggle-mark badge badge-danger' + (state.countCart < 1 ? ' d-none' : '')}> </div>
+                </Navb.Toggle>
                 <Navb.Collapse id="basic-navbar-nav">
                     {location.pathname.split('/')[1] === "admin" && user.role === 'admin' ? (
                         <Nav className="ml-auto">
@@ -131,8 +182,9 @@ export function Navbar({ auth, logout }) {
                                     <NavLink className="nav-link" activeClassName="active" to="/catalogo">
                                         <CgNotes /> Catálogo
                                 </NavLink>
-                                    <NavLink className="nav-link" activeClassName="active" exact to="/carrito">
+                                    <NavLink className={'nav-link' +(state.countCart > 0 ? ' text-danger' : '')} activeClassName="active" exact to="/carrito">
                                         <FaShoppingCart /> Carrito
+                                        <span className={'badge badge-danger' + (state.countCart < 1 ? ' d-none' : '')}>{state.countCart}</span>
                                     </NavLink>
                                     {token ?
                                         <React.Fragment>
@@ -165,6 +217,8 @@ export function Navbar({ auth, logout }) {
 const mapStateToProps = (state) => {
     return {
         auth: state.authReducer,
+        guestCart: state.guestReducer.cart,
+        userCart: state.usersReducer.userCart
     };
 };
 
