@@ -12,6 +12,10 @@ const initialState = {
 
 export default function productsReducer(state = initialState, action) {
     switch (action.type) {
+        case 'CREATE_REVIEW':
+            return {
+                ...state
+            }
         case 'UPDATE_SEARCH':
             return {
                 ...state,

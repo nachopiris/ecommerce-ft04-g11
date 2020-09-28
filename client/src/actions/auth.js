@@ -6,18 +6,17 @@ const SET_ERROR = 'SET_ERROR';
 const BASE_URI = config.api.base_uri + "/auth";
 const USER_URI = config.api.base_uri + "/users";
 const LOGIN = "LOGIN";
-const GOOGLE_LOGIN = "GOOGLE_LOGIN";
 const LOGOUT = "LOGOUT";
 const REGISTER = "REGISTER";
 const PASSWORD_RESET = "PASSWORD_RESET";
 
 const handleCart = async (guestCart, { user, token }) => {
   if (guestCart.length) {
-    Axios.post(config.api.base_uri + "/orders/" + user.id, {
+    return Axios.post(config.api.base_uri + "/orders/" + user.id, {
       status: "shopping_cart",
-    }).then(() => {
-      Axios.get(USER_URI + "/" + user.id + "/cart").then((res) => {
-        console.log(res.data);
+    }).then(async () => {
+      await Axios.get(USER_URI + "/" + user.id + "/cart").then((res) => {
+        //console.log(res.data);
         if (res.data && Array.isArray(res.data)) {
           res.data.forEach(async (element) => {
             let index = guestCart.findIndex(
@@ -33,7 +32,7 @@ const handleCart = async (guestCart, { user, token }) => {
             }
           });
         }
-        console.log(guestCart);
+        // console.log(guestCart);
         guestCart.forEach(async (element) => {
           const cartData = {
             idProduct: element.id,
@@ -50,23 +49,8 @@ export function googleLogin({ tokenId, guestCart }) {
   return (dispatch) => {
     return Axios.post(BASE_URI + "/login-google", { tokenId })
       .then((res) => res.data)
-      .then((res) => {
-        handleCart(guestCart, res);
-        dispatch({ type: GOOGLE_LOGIN, payload: res }); // res = {user:{}, token:''}
-        return res;
-      })
-      .catch(() => {
-        dispatch({ type: GOOGLE_LOGIN, payload: { user: {}, token: null } }); // res = {user:{}, token:''}
-      });
-  };
-}
-
-export function login({ attributes, guestCart }) {
-  return (dispatch) => {
-    return Axios.post(BASE_URI + "/login", attributes)
-      .then((res) => res.data)
-      .then((res) => {
-        handleCart(guestCart, res);
+      .then(async res => {
+        await handleCart(guestCart, res)
         dispatch({ type: LOGIN, payload: res }); // res = {user:{}, token:''}
         return res;
       })
@@ -76,11 +60,27 @@ export function login({ attributes, guestCart }) {
   };
 }
 
-export function register(attributes) {
+export function login({ attributes, guestCart }) {
   return (dispatch) => {
-    return Axios.post(BASE_URI + "/register", attributes)
+    return Axios.post(BASE_URI + "/login", attributes)
       .then((res) => res.data)
-      .then((res) => {
+      .then(async res => {
+        await handleCart(guestCart, res);
+        dispatch({ type: LOGIN, payload: res }); // res = {user:{}, token:''}
+        return res;
+      })
+      .catch(() => {
+        dispatch({ type: LOGIN, payload: { user: {}, token: null } }); // res = {user:{}, token:''}
+      });
+  };
+}
+
+export function register({data, guestCart}) { //{data:{fullname, email, password}, guestCart}
+  return (dispatch) => {
+    return Axios.post(BASE_URI + "/register", data)
+      .then((res) => res.data)
+      .then(async res => {
+        await handleCart(guestCart, res);
         dispatch({ type: REGISTER, payload: res }); // res = {user:{}, token:''}
         return res;
       })

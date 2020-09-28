@@ -456,7 +456,6 @@ server.get("/categories/:idProduct", function (req, res, next) {
 server.post("/:idProduct/:idUser/review", (req, res) => {
     const productId = req.params.idProduct;
     const userId = req.params.idUser;
-
     Review.create({
         rating: req.body.rating,
         description: req.body.description,

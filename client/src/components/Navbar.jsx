@@ -6,8 +6,10 @@ import config from "../config";
 import { connect } from 'react-redux';
 import { logout } from '../actions/auth';
 import { FaShoppingCart } from 'react-icons/fa'
-import { MdAccountCircle } from 'react-icons/md'
-import { RiLogoutBoxRLine } from 'react-icons/ri'
+import { MdAccountCircle, MdAssignmentInd } from 'react-icons/md'
+import { RiLogoutBoxRLine, RiLoginBoxLine } from 'react-icons/ri'
+import { ImHome3 } from 'react-icons/im';
+import { CgNotes } from 'react-icons/cg';
 
 const APP_NAME = config.app.name;
 
@@ -124,29 +126,29 @@ export function Navbar({ auth, logout }) {
                                 </Nav>
                                 <Nav className="ml-auto">
                                     <NavLink className="nav-link" activeClassName="active" exact to="/">
-                                        Inicio
+                                        <ImHome3 /> Inicio
                                 </NavLink>
                                     <NavLink className="nav-link" activeClassName="active" to="/catalogo">
-                                        Catálogo
+                                        <CgNotes /> Catálogo
                                 </NavLink>
                                     <NavLink className="nav-link" activeClassName="active" exact to="/carrito">
-                                        <FaShoppingCart />
+                                        <FaShoppingCart /> Carrito
                                     </NavLink>
                                     {token ?
                                         <React.Fragment>
                                             <NavLink className="nav-link" activeClassName="active" exact to="/cuenta">
-                                                <MdAccountCircle size={20} />
+                                                <MdAccountCircle size={20} /> Mi Cuenta
                                             </NavLink>
                                             <Link onClick={() => logOut()} className="nav-link" to="/#">
-                                                <RiLogoutBoxRLine />
+                                                <RiLogoutBoxRLine /> Salir
                                             </Link>
                                         </React.Fragment> :
                                         < React.Fragment >
                                             <NavLink className="nav-link" activeClassName="active" exact to="/ingresar">
-                                                Ingresar
+                                                <RiLoginBoxLine /> Ingresar
                                 </NavLink>
                                             <NavLink className="nav-link" activeClassName="active" exact to="/registrarse">
-                                                Registrarse
+                                                <MdAssignmentInd /> Registrarse
                                 </NavLink>
                                         </React.Fragment>
 

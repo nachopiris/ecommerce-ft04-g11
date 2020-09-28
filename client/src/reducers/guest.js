@@ -5,6 +5,10 @@ const initialState = {
 
 export default function guestReducer(state = initialState, action) {
   switch (action.type) {
+    case "LOGIN":
+      return initialState;
+    case "REGISTER":
+      return initialState;
     case "ADD_PRODUCT_TO_CART":
       let cart = state.cart.concat(action.payload);
       let totalCost = cart.reduce((acc, curr) => {
