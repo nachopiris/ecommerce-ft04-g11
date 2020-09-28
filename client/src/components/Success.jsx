@@ -21,13 +21,15 @@ const Success = ({token, processOrder}) => {
       if (query.get('external_reference')) {
         const orderId = query.get('external_reference').split('_')[1]
         processOrder(token, orderId).then(response => {
-            setState({
-                ...state,
-                products: response.data.order.products
+            setState(state => {
+              return {
+                  ...state,
+                  products: response.data.order.products
+              }
             })
         })
       }
-    }, [])
+    }, [processOrder,token,query])
 
     return (
       <React.Fragment>

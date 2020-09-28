@@ -74,7 +74,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
       <Row>
         <Col>
           <h1 className="align-items-center d-flex">
-            <FiUser class="mr-2" /> Mi cuenta
+            <FiUser className="mr-2" /> Mi cuenta
           </h1>
                 </Col>
             </Row>
@@ -123,7 +123,7 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
                 </Card.Header>
                 <Card.Body>
                   {state.orders.map((item, index) => (
-                    <Row className="py-4" style={{borderBottom: "2px solid #8DA6FF"}}>
+                    <Row key={index} className="py-4" style={{borderBottom: "2px solid #8DA6FF"}}>
                       <Col xs={12}>
                         <div
                           key={index}

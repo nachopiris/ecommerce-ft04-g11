@@ -54,7 +54,7 @@ function Checkout({
 
   const regRules = {
     doc_number: /^[0-9]{7,8}$/,
-    phone: /^[0-9]{10,16}$/,
+    phone: /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/,
     address: /^[a-zA-Z0-9\s,'-]*$/,
   };
 

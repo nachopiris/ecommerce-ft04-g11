@@ -86,9 +86,10 @@ export function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUse
 
     useEffect(() => {
         getUsers();
-    }, [])
+    }, [getUsers])
 
     useEffect(() => {
+        if(state.newData !== true) return;
         getUsers();
         setState(state => {
             return {
@@ -98,7 +99,7 @@ export function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUse
                 newData: false
             }
         })
-    }, [state.newData === true, getUsers]);
+    }, [state.newData, getUsers]);
 
     return (
         <Container fluid>

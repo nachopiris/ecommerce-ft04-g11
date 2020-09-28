@@ -146,7 +146,6 @@ function UpdateModal({ token, order, updateOrder, show, handleClose }) {
         if (order.products) {
             let products = order.products;
             let total = products.reduce((total, item) => total + item.orderline.quantity * item.orderline.price, 0);
-            console.log(total);
             setState(state => {
                 return {
                     ...state,
@@ -221,7 +220,6 @@ function DeleteModal({ token, order, removeOrder, show, handleClose }) {
     useEffect(() => {
         let products = order.products;
         let total = products.reduce((total, item) => total + item.orderline.quantity * item.orderline.price, 0);
-        console.log(total);
         setState(state => {
             return {
                 ...state,
