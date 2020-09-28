@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import s from "../styles/navbar.module.scss";
 import { Navbar as Navb, Nav, Container } from "react-bootstrap";
-import config from "../config";
 import { connect } from 'react-redux';
 import { logout } from '../actions/auth';
 import { FaShoppingCart } from 'react-icons/fa'
@@ -12,9 +11,9 @@ import { ImHome3 } from 'react-icons/im';
 import { CgNotes } from 'react-icons/cg';
 import { IoIosMenu } from 'react-icons/io';
 
-const APP_NAME = config.app.name;
 
-export function Navbar({ auth, logout, guestCart, userCart }) {
+export function Navbar({ auth, logout,guestCart, userCart }) {
+
     const location = useLocation();
     const { user, token } = auth;
 
@@ -144,7 +143,10 @@ export function Navbar({ auth, logout, guestCart, userCart }) {
             }
         >
             <Container>
-                <Link to="/" className="navbar-brand">{APP_NAME}</Link>
+                <Link to="/" className="navbar-brand">
+                    <img src="/images/brand.png" width="32" alt="Logo OriginMaster (brand)" />
+                    <span>Origin<span className="text-danger font-weight-bold">Master</span></span>
+                </Link>
                 <Navb.Toggle id="toggle-nav" onClick={handleToggle} className="position-relative" aria-controls="basic-navbar-nav">
                     <IoIosMenu />
                     <div className={'toggle-mark badge badge-danger' + (state.countCart < 1 ? ' d-none' : '')}> </div>

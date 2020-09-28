@@ -5,6 +5,11 @@ const initialState = {
 
 export default function authReducer(state = initialState, action) {
   switch (action.type) {
+    case 'ACCOUNT_UPDATED':
+      return {
+        ...state,
+        user: action.payload
+      }
     case "GIVE_ADMIN_RIGHTS":
       return state;
     case "GIVE_USER_RIGHTS":

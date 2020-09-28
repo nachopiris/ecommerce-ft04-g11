@@ -44,12 +44,12 @@ export function Users({ getUsers, allUsers, updateUser, giveAdminRights, giveUse
 
     const handleUpdate = () => {
         handleEditing();
-        return (id, data) => {
+        return data => {
             setState({
                 ...state,
                 newData: true
             })
-            updateUser(id, data)
+            updateUser(data)
         }
     }
 
@@ -170,7 +170,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         getUsers: () => dispatch(getUsers()),
-        updateUser: (id, data) => dispatch(updateUser(id, data)),
+        updateUser: data => dispatch(updateUser(data)),
         giveAdminRights: (id) => dispatch(giveAdminRights(id)),
         giveUserRights: (id) => dispatch(giveUserRights(id)),
         deleteUser: (id) => dispatch(deleteUser(id))

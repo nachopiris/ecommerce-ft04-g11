@@ -110,6 +110,7 @@ server.get("/:id/orders", (req, res) => {
 
 server.put("/:id", (req, res) => {
   const id = req.params.id;
+  console.log(id);
   const {
     fullname,
     email,

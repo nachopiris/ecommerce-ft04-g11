@@ -3,12 +3,14 @@ import { connect } from "react-redux";
 import { logout } from "../actions/auth";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { FiUser } from "react-icons/fi";
-import { getOrders } from "../actions/users";
+import { getOrders, updateUserSelft as updateUser } from "../actions/users";
 import { cancelOrder } from "../actions/checkout";
 import { payOrder } from "../actions/payment";
 import moment from "moment";
+import ConfigAccount from './ConfigAccount';
+import {FaCogs} from 'react-icons/fa';
 
-function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
+function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder, updateUser}) {
   const { user, token } = auth;
   const logOut = () => {
     logout(token).then(() => {
@@ -25,14 +27,28 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
         };
     };
 
+    const handleUpdateAccount = (data) => {
+      updateUser({id: auth.user.id, data});
+    }
+
+    
+
     const [state, setState] = useState({
         orders: [],
         filter: "",
+        updating: false
     });
+
+    const handleConfigAccount = () => {
+      setState({
+          ...state,
+          updating: !state.updating
+      });
+  }
 
     useEffect(() => {
         getOrders(auth.token);
-    }, [auth.token, getOrders]);
+    }, [auth, getOrders]);
 
     useEffect(() => {
         if (orders) {
@@ -93,6 +109,18 @@ function Account({ auth, logout, orders, getOrders, cancelOrder, payOrder }) {
                             <Card.Title>{user.fullname}</Card.Title>
                             <Button variant="primary" onClick={() => logOut()}>
                                 Cerrar sesión
+              </Button>
+
+
+              <ConfigAccount
+                  auth={auth}
+                  show={!!state.updating}
+                  handleUpdate={handleUpdateAccount}
+                  handleClose={handleConfigAccount}
+              />
+
+              <Button onClick={handleConfigAccount} variant="dark ml-1">
+                  <FaCogs/>
               </Button>
             </Card.Body>
           </Card>
@@ -241,6 +269,7 @@ const mapDispatchToProps = (dispatch) => {
     getOrders: (token) => dispatch(getOrders(token)),
     cancelOrder: (data) => dispatch(cancelOrder(data)),
     payOrder: (token, products) => dispatch(payOrder(token, products)),
+    updateUser: data => dispatch(updateUser(data))
   };
 };
 
