@@ -51,6 +51,7 @@ function Cart({cart, token, deleteItem, changeQuantity, emptyCart, guestCart, em
     useEffect(() => {
       
       if(!cart.products) return;
+      console.log('MOSTRAR CARRITO')
       let products = [];
       let total = 0;
       cart.products.forEach(item => {

@@ -7,14 +7,14 @@ import { IconContext } from "react-icons";
 import { BiShowAlt, BiHide } from "react-icons/bi";
 import { Link, Redirect } from "react-router-dom";
 
-function UserRegister({ userRegister, auth }) {
+function UserRegister({ userRegister, guestCart }) {
     const { register, handleSubmit, errors } = useForm();
     const onSubmit = (data) => {
         setState({
             ...state,
             loading: true,
         });
-        userRegister(data)
+        userRegister({data, guestCart})
             .then((res) => {
                 setState({
                     ...state,
@@ -216,6 +216,7 @@ function UserRegister({ userRegister, auth }) {
 function mapStateToProps(state) {
     return {
         auth: state.authReducer,
+        guestCart: state.guestReducer.cart
     };
 }
 
