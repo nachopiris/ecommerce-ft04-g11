@@ -11,7 +11,9 @@ import { ImHome3 } from 'react-icons/im';
 import { CgNotes } from 'react-icons/cg';
 import { IoIosMenu } from 'react-icons/io';
 
+
 export function Navbar({ auth, logout,guestCart, userCart }) {
+
     const location = useLocation();
     const { user, token } = auth;
 
@@ -28,9 +30,9 @@ export function Navbar({ auth, logout,guestCart, userCart }) {
         countCart: 0
     });
 
-    
 
-    useEffect(()=>{
+
+    useEffect(() => {
         const hideCollapse = () => {
             setState(state => {
                 return {
@@ -41,27 +43,27 @@ export function Navbar({ auth, logout,guestCart, userCart }) {
         }
 
         let elements = document.getElementsByClassName('nav-link');
-        
+
         for (let i = 0; i < elements.length; i++) {
-            elements[i].addEventListener("click",hideCollapse);
+            elements[i].addEventListener("click", hideCollapse);
         }
         for (let i = 0; i < elements.length; i++) {
-            elements[i].removeEventListener("click",hideCollapse);
+            elements[i].removeEventListener("click", hideCollapse);
         }
 
-    },[auth]);
+    }, [auth]);
 
-    
+
 
     useEffect(() => {
-        if(!auth.token){
+        if (!auth.token) {
             setState(state => {
                 return {
                     ...state,
                     countCart: guestCart.length
                 }
             })
-        }else{
+        } else {
             setState(state => {
                 return {
                     ...state,
@@ -70,8 +72,8 @@ export function Navbar({ auth, logout,guestCart, userCart }) {
             })
         }
 
-        
-    },[guestCart, userCart, auth, state.navbarExpanded]);
+
+    }, [guestCart, userCart, auth, state.navbarExpanded]);
 
     const handleScroll = (e) => {
         if (
@@ -146,15 +148,18 @@ export function Navbar({ auth, logout,guestCart, userCart }) {
                     <span>Origin<span className="text-danger font-weight-bold">Master</span></span>
                 </Link>
                 <Navb.Toggle id="toggle-nav" onClick={handleToggle} className="position-relative" aria-controls="basic-navbar-nav">
-                <IoIosMenu />
-                <div className={'toggle-mark badge badge-danger' + (state.countCart < 1 ? ' d-none' : '')}> </div>
+                    <IoIosMenu />
+                    <div className={'toggle-mark badge badge-danger' + (state.countCart < 1 ? ' d-none' : '')}> </div>
                 </Navb.Toggle>
                 <Navb.Collapse id="basic-navbar-nav">
                     {location.pathname.split('/')[1] === "admin" && user.role === 'admin' ? (
                         <Nav className="ml-auto">
+                            <NavLink className="nav-link" activeClassName="active" exact to="/admin">
+                                Inicio
+                            </NavLink>
                             <NavLink className="nav-link" activeClassName="active" to="/admin/usuarios">
                                 Usuarios
-                                </NavLink>
+                            </NavLink>
                             <NavLink className="nav-link" activeClassName="active" to="/admin/ordenes">
                                 Órdenes
                             </NavLink>
@@ -182,7 +187,7 @@ export function Navbar({ auth, logout,guestCart, userCart }) {
                                     <NavLink className="nav-link" activeClassName="active" to="/catalogo">
                                         <CgNotes /> Catálogo
                                 </NavLink>
-                                    <NavLink className={'nav-link' +(state.countCart > 0 ? ' text-danger' : '')} activeClassName="active" exact to="/carrito">
+                                    <NavLink className={'nav-link' + (state.countCart > 0 ? ' text-danger' : '')} activeClassName="active" exact to="/carrito">
                                         <FaShoppingCart /> Carrito
                                         <span className={'badge badge-danger' + (state.countCart < 1 ? ' d-none' : '')}>{state.countCart}</span>
                                     </NavLink>
