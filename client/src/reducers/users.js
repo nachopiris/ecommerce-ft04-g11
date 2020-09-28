@@ -41,7 +41,13 @@ export default function usersReducer(state = initialState, action) {
             };
         case 'UPDATE_USER':
             return {
-                ...state
+                ...state,
+                users: state.users.map(item => {
+                    if(item.id === action.payload.id){
+                        item = action.payload;
+                    }
+                    return item;
+                })
             };
         case "GET_ORDERS":
             return {

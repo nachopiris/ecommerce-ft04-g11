@@ -135,13 +135,27 @@ export function giveUserRights(id) {
   };
 }
 
-export function updateUser(id, data) {
+export function updateUserSelft({id,data}){
   return (dispatch) => {
     return axios
       .put(BASE_URI + "/" + id, data)
       .then((res) => res.data)
       .then((res) => {
-        dispatch({ type: UPDATE_USER });
+        dispatch({ type: 'ACCOUNT_UPDATED', payload:res.data});
+      })
+      .catch(err => {
+        dispatch({type:SET_ERROR,payload:errorsHandler(err)})
+      });
+  };
+}
+
+export function updateUser({id,data}) { //{id, data}
+  return (dispatch) => {
+    return axios
+      .put(BASE_URI + "/" + id, data)
+      .then((res) => res.data)
+      .then((res) => {
+        dispatch({ type: UPDATE_USER, payload:res.data});
       })
       .catch(err => {
         dispatch({type:SET_ERROR,payload:errorsHandler(err)})
