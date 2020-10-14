@@ -11,16 +11,10 @@ This is a student project we made as part of our education at SoyHenry, which co
 ## Stack of Technologies
 
 ### Front End:
-HTML - CSS - Javascript
-React
-React-Bootstrap
-Redux
+HTML, CSS, Javascript, React, React-Bootstrap, Redux
 
 ### Back End:
-Node.js
-Express
-Passport
-Sequelize
+Node.js, Express, Passport, Sequelize
 
 ### Database:
 PostgreSQL
